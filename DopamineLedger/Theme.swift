@@ -31,7 +31,11 @@ struct ThemeColors {
     let negative:        Color   // debt, blocked state, warnings
     let neutral:         Color   // quests, default chips
     let divider:         Color
-    let shadow:          Color
+    // Neumorphism needs two shadow directions: a dark shadow (bottom-right
+    // gives "height") and a light highlight (top-left catches the "light").
+    // SystemTheme and PixelArtTheme carry both too — they just use subtler values.
+    let shadowDark:      Color
+    let shadowLight:     Color
 }
 
 // Typography roles. Pre-built Font values — views must not apply
@@ -130,7 +134,8 @@ struct SystemTheme: Theme {
         negative:        .red,
         neutral:         .blue,
         divider:         Color(.separator),
-        shadow:          Color.black.opacity(0.15)
+        shadowDark:      Color.black.opacity(0.15),
+        shadowLight:     Color.white.opacity(0.7)
     )
 
     let typography = ThemeTypography(
@@ -187,7 +192,8 @@ struct PixelArtTheme: Theme {
         negative:        Color(red: 0.95, green: 0.40, blue: 0.45),
         neutral:         Color(red: 0.55, green: 0.65, blue: 0.95),
         divider:         Color(red: 0.20, green: 0.24, blue: 0.34),
-        shadow:          Color.black.opacity(0.35)
+        shadowDark:      Color.black.opacity(0.35),
+        shadowLight:     Color.white.opacity(0.08)   // barely visible on dark bg
     )
 
     // NB: font sizes are larger than SystemTheme's because pixel fonts
@@ -236,9 +242,9 @@ struct PixelArtTheme: Theme {
 // instantiate the right theme.
 
 enum ThemeRegistry {
-    static let all: [any Theme] = [PixelArtTheme(), SystemTheme()]
+    static let all: [any Theme] = [NeuTheme(), PixelArtTheme(), SystemTheme()]
 
     static func theme(forId id: String) -> any Theme {
-        all.first(where: { $0.id == id }) ?? PixelArtTheme()
+        all.first(where: { $0.id == id }) ?? NeuTheme()
     }
 }

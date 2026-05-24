@@ -57,9 +57,9 @@
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
 
-    <!-- Lock to dark mode — the pixel-art design assumes a dark palette. -->
-    <key>UIUserInterfaceStyle</key>
-    <string>Dark</string>
+    <!-- Color scheme is controlled per-theme via .preferredColorScheme in
+         DopamineLedgerApp.swift (NeuTheme → light, PixelArtTheme → dark).
+         Removed the forced Dark lock so the light neumorphic theme renders correctly. -->
 
     <!-- Portrait only, iPhone only. -->
     <key>UISupportedInterfaceOrientations</key>

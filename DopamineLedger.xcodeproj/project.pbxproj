@@ -18,12 +18,15 @@
 		8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632483371A4CE068A0150FD4 /* Ledger.swift */; };
 		A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */; };
 		A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */; };
+		B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73063F24F4207DCD725418F /* BalanceCard.swift */; };
 		B9B71A9BC1B51B7C00D86762 /* Quest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75974194EFB58BCC1BE1D176 /* Quest.swift */; };
 		C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */; };
 		C2E312A784E27EBC690441AA /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2943323D5BB42DAA92FB5 /* Activity.swift */; };
 		C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932E84D7A113B126ACF1715F /* ActivityDebt.swift */; };
+		D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FCBBB164354D8763EAA67F /* NeuTheme.swift */; };
 		DAE6A0BF1A38959C2F4BE7A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B813B8C566B27ABA3F7B15E /* Assets.xcassets */; };
 		E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799737179C6FAA48A05E0539 /* NotificationMath.swift */; };
+		EF39365336812E176767B6DD /* ActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +50,7 @@
 		5B813B8C566B27ABA3F7B15E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D7FB79F275C13CA9BC93E8E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		632483371A4CE068A0150FD4 /* Ledger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ledger.swift; sourceTree = "<group>"; };
+		66FCBBB164354D8763EAA67F /* NeuTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuTheme.swift; sourceTree = "<group>"; };
 		75974194EFB58BCC1BE1D176 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		799737179C6FAA48A05E0539 /* NotificationMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMath.swift; sourceTree = "<group>"; };
 		81157DE817A5C07419A4F7AF /* DopamineLedger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DopamineLedger.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,8 +58,10 @@
 		9853EB8E6D2BE0A858A3572E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AAB2943323D5BB42DAA92FB5 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityListView.swift; sourceTree = "<group>"; };
 		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerTests.swift; sourceTree = "<group>"; };
+		F73063F24F4207DCD725418F /* BalanceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCard.swift; sourceTree = "<group>"; };
 		F77C1A151E12479B7F913952 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -67,6 +73,7 @@
 				24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */,
 				1BEB5036A2BAC59081047C29 /* IconResolver.swift */,
 				9853EB8E6D2BE0A858A3572E /* Info.plist */,
+				66FCBBB164354D8763EAA67F /* NeuTheme.swift */,
 				AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */,
 				F77C1A151E12479B7F913952 /* Theme.swift */,
 				FFCC485C6F78DD808DFEA6ED /* Models */,
@@ -97,6 +104,8 @@
 		5617FC0CB7823E5C8D77847E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */,
+				F73063F24F4207DCD725418F /* BalanceCard.swift */,
 				0D76FA4DE40F275F43E43BF6 /* ContentView.swift */,
 			);
 			path = Views;
@@ -238,10 +247,13 @@
 			files = (
 				C2E312A784E27EBC690441AA /* Activity.swift in Sources */,
 				C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */,
+				EF39365336812E176767B6DD /* ActivityListView.swift in Sources */,
+				B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */,
 				55DD428459901EA8721E53C1 /* ContentView.swift in Sources */,
 				C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */,
 				0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */,
 				8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */,
+				D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */,
 				E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */,
 				A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */,
 				B9B71A9BC1B51B7C00D86762 /* Quest.swift in Sources */,
