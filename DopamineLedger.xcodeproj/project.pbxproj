@@ -16,6 +16,8 @@
 		68BF0EC8341BC559D21A2991 /* DopamineLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */; };
 		6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */; };
 		8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632483371A4CE068A0150FD4 /* Ledger.swift */; };
+		95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4544B842E7F43616765D9F7 /* SessionView.swift */; };
+		A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E384A5EA6024739125C1550C /* AddQuestView.swift */; };
 		A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */; };
 		A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */; };
 		B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73063F24F4207DCD725418F /* BalanceCard.swift */; };
@@ -25,6 +27,7 @@
 		C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932E84D7A113B126ACF1715F /* ActivityDebt.swift */; };
 		D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FCBBB164354D8763EAA67F /* NeuTheme.swift */; };
 		DAE6A0BF1A38959C2F4BE7A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B813B8C566B27ABA3F7B15E /* Assets.xcassets */; };
+		E69390F6F455AC442665AAA0 /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FBDCE63D4A089A5776B180 /* AddActivityView.swift */; };
 		E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799737179C6FAA48A05E0539 /* NotificationMath.swift */; };
 		EF39365336812E176767B6DD /* ActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */; };
 /* End PBXBuildFile section */
@@ -54,13 +57,16 @@
 		75974194EFB58BCC1BE1D176 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		799737179C6FAA48A05E0539 /* NotificationMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMath.swift; sourceTree = "<group>"; };
 		81157DE817A5C07419A4F7AF /* DopamineLedger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DopamineLedger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		84FBDCE63D4A089A5776B180 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		932E84D7A113B126ACF1715F /* ActivityDebt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDebt.swift; sourceTree = "<group>"; };
 		9853EB8E6D2BE0A858A3572E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AAB2943323D5BB42DAA92FB5 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
 		B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityListView.swift; sourceTree = "<group>"; };
+		C4544B842E7F43616765D9F7 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerTests.swift; sourceTree = "<group>"; };
+		E384A5EA6024739125C1550C /* AddQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddQuestView.swift; sourceTree = "<group>"; };
 		F73063F24F4207DCD725418F /* BalanceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCard.swift; sourceTree = "<group>"; };
 		F77C1A151E12479B7F913952 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,8 +111,11 @@
 			isa = PBXGroup;
 			children = (
 				B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */,
+				84FBDCE63D4A089A5776B180 /* AddActivityView.swift */,
+				E384A5EA6024739125C1550C /* AddQuestView.swift */,
 				F73063F24F4207DCD725418F /* BalanceCard.swift */,
 				0D76FA4DE40F275F43E43BF6 /* ContentView.swift */,
+				C4544B842E7F43616765D9F7 /* SessionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -248,6 +257,8 @@
 				C2E312A784E27EBC690441AA /* Activity.swift in Sources */,
 				C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */,
 				EF39365336812E176767B6DD /* ActivityListView.swift in Sources */,
+				E69390F6F455AC442665AAA0 /* AddActivityView.swift in Sources */,
+				A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */,
 				B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */,
 				55DD428459901EA8721E53C1 /* ContentView.swift in Sources */,
 				C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */,
@@ -261,6 +272,7 @@
 				0F684A616242BD4045EA49E6 /* Session.swift in Sources */,
 				6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */,
 				011FFC02E6C417F0895570AE /* SessionMath.swift in Sources */,
+				95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */,
 				A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */,
 				431926C8E8C5E00F349F3AFE /* Theme.swift in Sources */,
 			);

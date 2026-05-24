@@ -27,8 +27,18 @@ struct ActivityListView: View {
                                       private var debts:        [ActivityDebt]
     @Query(filter: #Predicate<Quest>  { $0.isCompleted == false })
                                       private var quests:       [Quest]
+    // Sessions with no endedAt are "running". The app enforces at most one
+    // at a time via the UI, so .first is what we treat as "the" active session.
+    @Query(filter: #Predicate<Session> { $0.endedAt == nil })
+                                      private var activeSessions: [Session]
 
-    @State private var filter: ActivityFilter = .all
+    @State private var filter:          ActivityFilter = .all
+    @State private var showAddActivity: Bool           = false
+    @State private var showAddQuest:    Bool           = false
+    @State private var activityToEdit:  Activity?      = nil
+    // When non-nil, the SessionView sheet is presented for this session.
+    // Bound through to SessionView so it can clear us after STOP.
+    @State private var activeSession:   Session?       = nil
 
     // Ledger is a singleton; .first is safe after fetchOrCreate runs in .task.
     private var ledger: Ledger? { ledgers.first }
@@ -37,12 +47,13 @@ struct ActivityListView: View {
         debts.reduce(0) { $0 + $1.amount }
     }
 
+    // Only meaningful for .chargers / .spenders. .all and .quests have their
+    // own dedicated list views (combinedList / questList) so they don't call this.
     private var filteredActivities: [Activity] {
         switch filter {
-        case .all:      return activities
-        case .chargers: return activities.filter { $0.kind == .charger }
-        case .spenders: return activities.filter { $0.kind == .spender }
-        case .quests:   return []  // quests are a separate model; shown below
+        case .chargers:     return activities.filter { $0.kind == .charger }
+        case .spenders:     return activities.filter { $0.kind == .spender }
+        case .all, .quests: return []
         }
     }
 
@@ -63,11 +74,14 @@ struct ActivityListView: View {
                     // to achieve reliably through the UIKit proxy.
                     FilterPicker(selection: $filter)
 
-                    // Activity / quest rows — or empty state.
-                    if filter == .quests {
-                        questList
-                    } else {
-                        activityList
+                    // Pick the list view for the current filter.
+                    // "All" shows activities followed by quests (grouped, not
+                    // interleaved chronologically) so each row's type stays
+                    // visually obvious without needing section headers.
+                    switch filter {
+                    case .all:                  combinedList
+                    case .chargers, .spenders:  activityList
+                    case .quests:               questList
                     }
                 }
                 .padding(.horizontal, theme.spacing.lg)
@@ -81,6 +95,72 @@ struct ActivityListView: View {
         .task {
             // Ensure the singleton Ledger row exists before any balance reads.
             _ = Ledger.fetchOrCreate(in: context)
+            // Resume a session that was active when the app last closed —
+            // otherwise it would silently keep ticking with no way back in.
+            // .task on this root view runs once per appearance, which here
+            // means once per app launch.
+            if activeSession == nil, let leftover = activeSessions.first {
+                activeSession = leftover
+            }
+        }
+        .sheet(isPresented: $showAddActivity) {
+            // Default the new activity to whichever kind the user is filtering by,
+            // so tapping + from "Spenders" doesn't surprise them with a charger pre-selected.
+            AddActivityView(mode: .create, initialKind: defaultKindForCurrentFilter)
+        }
+        .sheet(isPresented: $showAddQuest) {
+            AddQuestView(mode: .create)
+        }
+        .sheet(item: $activityToEdit) { activity in
+            AddActivityView(mode: .edit(activity))
+        }
+        .sheet(item: $activeSession) { session in
+            // Look up the activity for this session. In practice the UI never
+            // lets an activity be deleted while one of its sessions is open
+            // (the SessionView sheet blocks the list), but if it ever happens
+            // we degrade with a finalize-and-dismiss rather than a crash.
+            if let activity = activities.first(where: { $0.id == session.activityId }) {
+                SessionView(session: session, activity: activity, presented: $activeSession)
+            } else {
+                Color.clear.onAppear {
+                    SessionFinalizer.finalize(session: session, in: context)
+                    activeSession = nil
+                }
+            }
+        }
+    }
+
+    // MARK: - Session lifecycle
+
+    private func startSession(for activity: Activity) {
+        // Defensive guard — the UI shouldn't reach here while another session
+        // is active (the SessionView sheet covers the list). Belt + braces.
+        guard activeSessions.isEmpty else { return }
+
+        let session = Session(activityId: activity.id)
+        context.insert(session)
+        activeSession = session
+
+        // Spender sessions get a 5-min warning + zero alarm so the user is
+        // notified even if the app is backgrounded. Charger sessions never
+        // overrun (no debt possible), so no notifications needed.
+        if activity.kind == .spender {
+            let balance = Ledger.fetchOrCreate(in: context).balance
+            Task {
+                await NotificationScheduler.scheduleSpenderSession(
+                    sessionId:     session.id,
+                    activityName:  activity.name,
+                    balance:       balance,
+                    ratePerSecond: activity.ratePerSecond
+                )
+            }
+        }
+    }
+
+    private var defaultKindForCurrentFilter: ActivityKind {
+        switch filter {
+        case .spenders:                       return .spender
+        case .chargers, .all, .quests:        return .charger
         }
     }
 
@@ -97,7 +177,41 @@ struct ActivityListView: View {
         } else {
             LazyVStack(spacing: theme.spacing.md) {
                 ForEach(items) { activity in
-                    ActivityRow(activity: activity)
+                    ActivityRow(
+                        activity: activity,
+                        onTap:    { startSession(for: activity) },
+                        onEdit:   { activityToEdit = activity },
+                        onDelete: { delete(activity) }
+                    )
+                }
+            }
+        }
+    }
+
+    // Delete in the parent so the row stays a dumb presentational view.
+    // SwiftData propagates the removal to @Query automatically — no manual refresh.
+    private func delete(_ activity: Activity) {
+        context.delete(activity)
+    }
+
+    // Used by the "All" filter — activities at the top, quests below,
+    // single empty state when both are empty.
+    @ViewBuilder
+    private var combinedList: some View {
+        if activities.isEmpty && quests.isEmpty {
+            emptyState(icon: .balance, message: "Nothing yet.\nTap + to add your first.")
+        } else {
+            LazyVStack(spacing: theme.spacing.md) {
+                ForEach(activities) { activity in
+                    ActivityRow(
+                        activity: activity,
+                        onTap:    { startSession(for: activity) },
+                        onEdit:   { activityToEdit = activity },
+                        onDelete: { delete(activity) }
+                    )
+                }
+                ForEach(quests) { quest in
+                    QuestRow(quest: quest)
                 }
             }
         }
@@ -146,7 +260,12 @@ struct ActivityListView: View {
             }
         }
         ToolbarItem(placement: .navigationBarTrailing) {
-            Button { /* add sheet — wired in a later step */ } label: {
+            // + means "add a quest" on the Quests tab and "add an activity"
+            // everywhere else — same icon, context-aware destination.
+            Button {
+                if filter == .quests { showAddQuest = true }
+                else                 { showAddActivity = true }
+            } label: {
                 theme.icon(.add)
                     .foregroundStyle(theme.colors.accent)
             }
@@ -168,6 +287,9 @@ struct ActivityListView: View {
 private struct ActivityRow: View {
     @Environment(\.theme) private var theme
     let activity: Activity
+    let onTap:    () -> Void
+    let onEdit:   () -> Void
+    let onDelete: () -> Void
 
     private var ratePerMinute: Double { activity.ratePerSecond * 60 }
     private var iconColor: Color {
@@ -208,6 +330,22 @@ private struct ActivityRow: View {
         .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
         .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
         .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        // Tap whole row to start a session — the play icon is the visual hint.
+        // contentShape extends the hit area so taps anywhere inside the card
+        // (including the empty Spacer between text and icon) count.
+        .contentShape(Rectangle())
+        .onTapGesture { onTap() }
+        // Long-press for Edit / Delete. SwiftUI's .swipeActions only works inside
+        // a List; since this screen uses LazyVStack (so the neumorphic surface
+        // shows through between cards), a context menu is the right idiom here.
+        .contextMenu {
+            Button { onEdit() } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            Button(role: .destructive) { onDelete() } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
     }
 }
 
