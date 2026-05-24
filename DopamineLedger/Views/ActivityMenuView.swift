@@ -1,11 +1,13 @@
 // ActivityMenuView.swift
-// Pre-session sheet for a spender that has outstanding debt. Lets the user
-// pay down this activity's debt before (or instead of) starting a session.
+// Pre-session sheet for a spender that needs attention before starting.
+// Surfaces one of two situations:
+//   1. Outstanding debt — show it and offer Repay before / instead of
+//      starting a session.
+//   2. Zero balance with no debt yet — warn that starting now will
+//      immediately accrue debt at the 2× penalty rate.
 //
-// Why intercept only spenders with debt? Chargers can't accrue debt by
-// design (SessionMath never produces it for them), and a clean spender
-// shouldn't add a tap to the common path. So the parent (ActivityListView)
-// only presents this view when there's debt to surface.
+// Chargers and clean spenders (balance > 0, no debt) skip this view and
+// go straight to SessionView — no friction added to the common path.
 
 import SwiftUI
 import SwiftData
@@ -33,6 +35,21 @@ struct ActivityMenuView: View {
             .sorted { $0.createdAt < $1.createdAt }
     }
     private var totalDebt: Double { rows.reduce(0) { $0 + $1.amount } }
+    private var balance:   Double { ledger?.balance ?? 0 }
+
+    // Display state — the view shows one of three centres based on the
+    // current data. Computed live so it transitions naturally when the
+    // user repays inside the sheet.
+    private enum Centre {
+        case debt
+        case zeroBalanceWarning
+        case cleared
+    }
+    private var centre: Centre {
+        if totalDebt > 0          { return .debt }
+        if balance   <= 0          { return .zeroBalanceWarning }
+        return .cleared
+    }
 
     var body: some View {
         NavigationStack {
@@ -41,12 +58,16 @@ struct ActivityMenuView: View {
 
                     header
 
-                    if totalDebt > 0 {
+                    switch centre {
+                    case .debt:
                         debtCard
                         actionRow
-                    } else {
-                        // Debt was cleared while the sheet was open — collapse
-                        // to a single CTA so the user can leave or proceed.
+                    case .zeroBalanceWarning:
+                        zeroBalanceCard
+                        startSessionButton
+                    case .cleared:
+                        // Debt was cleared while the sheet was open and there
+                        // is balance to spend — collapse to a single CTA.
                         clearedState
                         startSessionButton
                     }
@@ -151,6 +172,33 @@ struct ActivityMenuView: View {
         }
     }
 
+    // Zero-balance warning — same visual weight as the debt card so the
+    // user reads it as "this is the thing you should know". The body text
+    // explains the consequence ("2× rate") plainly rather than relying on
+    // the user to remember the rule.
+    private var zeroBalanceCard: some View {
+        VStack(spacing: theme.spacing.sm) {
+            Text("BALANCE")
+                .font(theme.typography.caption)
+                .foregroundStyle(theme.colors.textSecondary)
+                .kerning(2)
+            Text(0, format: .number.precision(.fractionLength(1)))
+                .font(theme.typography.display)
+                .foregroundStyle(theme.colors.negative)
+            Text("Starting this spender now will accrue debt at 2× rate.")
+                .font(theme.typography.caption)
+                .foregroundStyle(theme.colors.negative)
+                .multilineTextAlignment(.center)
+                .padding(.top, theme.spacing.xs)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(theme.spacing.xl)
+        .background(theme.colors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
+        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+    }
+
     private var clearedState: some View {
         VStack(spacing: theme.spacing.md) {
             theme.icon(.balance)
@@ -164,20 +212,30 @@ struct ActivityMenuView: View {
         .padding(.vertical, theme.spacing.lg)
     }
 
+    // Filled accent for the "clean state, just start" case; raised
+    // neumorphic (secondary weight) for the zero-balance warning so the
+    // CTA doesn't read like a recommendation when we're actively flagging
+    // a consequence.
     private var startSessionButton: some View {
-        Button {
+        let filled = (centre == .cleared)
+        return Button {
             dismiss()
             onStartSession()
         } label: {
-            Text("Start session")
-                .font(theme.typography.button.weight(.bold))
-                .kerning(4)
-                .foregroundStyle(Color.white)
+            Text(filled ? "Start session" : "Start session anyway")
+                .font(theme.typography.button.weight(filled ? .bold : .semibold))
+                .kerning(filled ? 4 : 2)
+                .foregroundStyle(filled ? Color.white : theme.colors.textPrimary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, theme.spacing.lg)
-                .background(theme.colors.accent)
+                .padding(.vertical, filled ? theme.spacing.lg : theme.spacing.md)
+                .background(filled ? theme.colors.accent : theme.colors.surface)
                 .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                .shadow(color: theme.colors.shadowDark, radius: 8, x: 4, y: 4)
+                .shadow(color: filled ? theme.colors.shadowDark  : theme.colors.shadowLight,
+                        radius: filled ? 8 : 6,
+                        x:      filled ? 4 : -4,
+                        y:      filled ? 4 : -4)
+                .shadow(color: filled ? .clear : theme.colors.shadowDark,
+                        radius: 6, x: 4, y: 4)
         }
         .buttonStyle(.plain)
     }

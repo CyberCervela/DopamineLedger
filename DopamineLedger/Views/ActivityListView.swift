@@ -162,11 +162,18 @@ struct ActivityListView: View {
 
     // MARK: - Session lifecycle
 
-    // Row-tap entry point. Spenders with outstanding debt detour through
-    // the ActivityMenuView so the user can repay before (or instead of)
-    // starting a session. Chargers and clean spenders go straight in.
+    // Row-tap entry point. Spenders detour through ActivityMenuView in
+    // two cases: outstanding debt (so the user can repay first), or zero
+    // balance (so they're warned about the imminent 2× debt accrual).
+    // Chargers and balanced-spenders-with-no-debt go straight to the
+    // SessionView with no intermediate sheet.
     private func openActivity(_ activity: Activity) {
-        if activity.kind == .spender && hasDebt(for: activity) {
+        guard activity.kind == .spender else {
+            startSession(for: activity)
+            return
+        }
+        let balance = ledger?.balance ?? 0
+        if hasDebt(for: activity) || balance <= 0 {
             activityMenuFor = activity
         } else {
             startSession(for: activity)
