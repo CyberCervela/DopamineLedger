@@ -59,22 +59,35 @@ struct ActivityListView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        // Pinned upper section + scrolling list. We deliberately don't use
+        // NavigationStack here: the app doesn't push anywhere from this view
+        // (everything is presented as a sheet), and iOS's stock toolbar
+        // wraps toolbar buttons in a translucent capsule that clashes with
+        // the neumorphic surface. Owning the header gives us full control.
+        VStack(spacing: 0) {
+
+            // Pinned upper section — header, balance, filter picker.
+            // Lives outside the ScrollView so it stays fixed when the list
+            // below is scrolled.
+            VStack(spacing: theme.spacing.xl) {
+                customHeader
+                BalanceCard(
+                    balance:   ledger?.balance ?? 0,
+                    totalDebt: totalDebt
+                )
+                // Custom segmented picker — replaces system Picker(.segmented)
+                // because SwiftUI's wrapper ignores UIAppearance text-color
+                // overrides, making white-on-dark selected text impossible
+                // to achieve reliably through the UIKit proxy.
+                FilterPicker(selection: $filter)
+            }
+            .padding(.horizontal, theme.spacing.lg)
+            .padding(.top,        theme.spacing.md)
+            .padding(.bottom,     theme.spacing.lg)
+
+            // Scrollable list — only this region moves on swipe.
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
-
-                    // Balance card — always visible at top.
-                    BalanceCard(
-                        balance:   ledger?.balance ?? 0,
-                        totalDebt: totalDebt
-                    )
-
-                    // Custom segmented picker — replaces system Picker(.segmented)
-                    // because SwiftUI's wrapper ignores UIAppearance text-color
-                    // overrides, making white-on-dark selected text impossible
-                    // to achieve reliably through the UIKit proxy.
-                    FilterPicker(selection: $filter)
-
                     // Pick the list view for the current filter.
                     // "All" shows activities followed by quests (grouped, not
                     // interleaved chronologically) so each row's type stays
@@ -86,13 +99,10 @@ struct ActivityListView: View {
                     }
                 }
                 .padding(.horizontal, theme.spacing.lg)
-                .padding(.top, theme.spacing.md)
-                .padding(.bottom, theme.spacing.xxl)
+                .padding(.bottom,     theme.spacing.xxl)
             }
-            .background(theme.colors.background.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar { toolbarContent }
         }
+        .background(theme.colors.background.ignoresSafeArea())
         .task {
             // Ensure the singleton Ledger row exists before any balance reads.
             _ = Ledger.fetchOrCreate(in: context)
@@ -278,29 +288,25 @@ struct ActivityListView: View {
         .padding(.vertical, theme.spacing.xxl)
     }
 
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        // Title — custom so the theme font applies (nav title ignores SwiftUI fonts).
-        ToolbarItem(placement: .principal) {
+    // Custom header bar replacing the SwiftUI toolbar. Built as a plain
+    // HStack so the gear + add icons can use the neumorphic disc style
+    // shared by other on-surface icons in the app (NeuIconButton, below).
+    private var customHeader: some View {
+        HStack(spacing: 0) {
+            NeuIconButton(icon: .settings, tint: theme.colors.textSecondary) {
+                // Settings sheet — wired in a later step (step 6).
+            }
+            Spacer()
             Text("Dopamine Ledger")
                 .font(theme.typography.headline)
                 .foregroundStyle(theme.colors.textPrimary)
-        }
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button { /* settings sheet — wired in a later step */ } label: {
-                theme.icon(.settings)
-                    .foregroundStyle(theme.colors.textSecondary)
-            }
-        }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            // + means "add a quest" on the Quests tab and "add an activity"
-            // everywhere else — same icon, context-aware destination.
-            Button {
+            Spacer()
+            NeuIconButton(icon: .add, tint: theme.colors.accent) {
+                // + means "add a quest" on the Quests tab and "add an
+                // activity" everywhere else — same icon, context-aware
+                // destination.
                 if filter == .quests { showAddQuest = true }
                 else                 { showAddActivity = true }
-            } label: {
-                theme.icon(.add)
-                    .foregroundStyle(theme.colors.accent)
             }
         }
     }
@@ -483,6 +489,37 @@ private struct FilterPicker: View {
         .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius - 2))
         .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
         .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+    }
+}
+
+// MARK: - NeuIconButton
+//
+// Small neumorphic disc with an icon — used in the custom header where
+// the stock SwiftUI toolbar item style (a translucent capsule) would
+// clash with the on-surface neumorphic vocabulary. Shadow radius is
+// smaller than card-sized neumorphic surfaces so the disc reads as a
+// control, not a card.
+
+private struct NeuIconButton: View {
+    @Environment(\.theme) private var theme
+    let icon:   SemanticIcon
+    let tint:   Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .fill(theme.colors.surface)
+                    .frame(width: 38, height: 38)
+                    .shadow(color: theme.colors.shadowLight, radius: 5, x: -3, y: -3)
+                    .shadow(color: theme.colors.shadowDark,  radius: 5, x:  3, y:  3)
+                theme.icon(icon)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(tint)
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 
