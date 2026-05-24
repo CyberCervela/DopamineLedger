@@ -26,12 +26,15 @@ struct DopamineLedgerApp: App {
 
     var body: some Scene {
         WindowGroup {
+            // Resolve once per evaluation so the .environment and the
+            // .preferredColorScheme see the same theme value.
+            let theme = ThemeRegistry.theme(forId: themeId)
             ContentView()
-                .environment(\.theme, ThemeRegistry.theme(forId: themeId))
-                // Color scheme follows the active theme: NeuTheme → light,
-                // PixelArtTheme → dark. Overrides the per-device system setting
-                // so the app always looks as designed.
-                .preferredColorScheme(ThemeRegistry.theme(forId: themeId).usesPixelArtRendering ? .dark : .light)
+                .environment(\.theme, theme)
+                // Each theme declares its colour-scheme preference. NeuTheme
+                // forces .light, PixelArtTheme forces .dark, SystemTheme
+                // returns nil so the device's Dark Mode setting wins.
+                .preferredColorScheme(theme.preferredColorScheme)
         }
         .modelContainer(for: [
             Activity.self,

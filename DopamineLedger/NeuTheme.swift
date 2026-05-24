@@ -53,6 +53,7 @@ struct NeuTheme: Theme {
     )
 
     let usesPixelArtRendering = false
+    let preferredColorScheme: ColorScheme? = .light   // palette is tuned for light backgrounds
 
     func icon(_ named: SemanticIcon) -> Image {
         // NeuTheme uses SF Symbols, same as SystemTheme. The symbols are

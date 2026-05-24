@@ -98,6 +98,13 @@ protocol Theme {
     func sound(_ named: SemanticSound) -> SoundAsset?
 
     var usesPixelArtRendering: Bool { get }
+
+    // Forces a colour scheme at the root WindowGroup. NeuTheme returns
+    // .light and PixelArtTheme returns .dark because both have hand-picked
+    // palettes that look wrong outside their intended scheme. SystemTheme
+    // returns nil ("follow the device") so it actually adapts to the
+    // user's Dark Mode setting, which is the whole reason it exists.
+    var preferredColorScheme: ColorScheme? { get }
 }
 
 // MARK: - Environment plumbing
@@ -155,6 +162,7 @@ struct SystemTheme: Theme {
     )
 
     let usesPixelArtRendering = false
+    let preferredColorScheme: ColorScheme? = nil   // follow device setting
 
     func icon(_ named: SemanticIcon) -> Image {
         // SystemTheme answers every role with an SF Symbol.
@@ -216,6 +224,7 @@ struct PixelArtTheme: Theme {
     )
 
     let usesPixelArtRendering = true
+    let preferredColorScheme: ColorScheme? = .dark   // navy palette only reads in dark
 
     func icon(_ named: SemanticIcon) -> Image {
         // PixelArtTheme answers from the asset catalog. Names follow

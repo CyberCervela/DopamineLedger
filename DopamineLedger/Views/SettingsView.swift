@@ -24,6 +24,11 @@ struct SettingsView: View {
     // launches, observed by any view that reads the same @AppStorage key.
     @AppStorage("chillMode") private var chillMode: Bool = false
 
+    // Persisted theme choice. Same key the app root reads, so writes here
+    // re-theme the whole app live (no restart needed) via the existing
+    // .environment(\.theme) binding on the WindowGroup's ContentView.
+    @AppStorage("themeId")   private var themeId:   String = "neu"
+
     // Live queries so the Stop-session row appears only when there's
     // actually a running session, and the wipe action sees current state.
     @Query(filter: #Predicate<Session> { $0.endedAt == nil })
@@ -47,6 +52,7 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
+                    appearanceSection
                     behaviourSection
                     notificationsSection
                     if !activeSessions.isEmpty {
@@ -86,6 +92,65 @@ struct SettingsView: View {
     }
 
     // MARK: - Sections
+
+    // Theme picker. Tapping a row writes to @AppStorage("themeId"), which
+    // the app root observes — so the whole app re-themes live, no restart.
+    // PixelArt is intentionally filtered out until its assets ship
+    // (Monogram / AbaddonBold fonts, pixel.* icons, sfx_* sounds). When
+    // those land the filter goes away and the row appears automatically.
+    private var appearanceSection: some View {
+        sectionCard(title: "APPEARANCE") {
+            VStack(alignment: .leading, spacing: theme.spacing.md) {
+                ForEach(availableThemes, id: \.id) { themeOption in
+                    themeRow(themeOption)
+                }
+            }
+        }
+    }
+
+    private var availableThemes: [any Theme] {
+        ThemeRegistry.all.filter { $0.id != "pixelArt" }
+    }
+
+    @ViewBuilder
+    private func themeRow(_ option: any Theme) -> some View {
+        let isActive = option.id == themeId
+        Button {
+            themeId = option.id
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+                    Text(option.displayName)
+                        .font(theme.typography.bodyStrong)
+                        .foregroundStyle(theme.colors.textPrimary)
+                    Text(captionForTheme(option))
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.textSecondary)
+                }
+                Spacer()
+                if isActive {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(theme.colors.accent)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    // Short user-facing description per theme. Lives in the view (not in
+    // the Theme protocol) because it's UI copy, not a structural property
+    // of the theme — it can be reworded freely without touching every
+    // theme file.
+    private func captionForTheme(_ theme: any Theme) -> String {
+        switch theme.id {
+        case "neu":    return "Light neumorphic with soft surfaces."
+        case "system": return "Standard iOS — adapts to Dark Mode."
+        case "pixelArt": return "Retro pixel art (coming soon)."
+        default:       return ""
+        }
+    }
 
     private var behaviourSection: some View {
         sectionCard(title: "BEHAVIOUR") {
