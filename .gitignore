@@ -9,6 +9,9 @@ DerivedData/
 *.xcuserstate
 build/
 
+# Local-only screenshots / scratch images — never publish
+UserScreenshots/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
