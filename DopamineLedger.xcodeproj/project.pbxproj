@@ -10,11 +10,13 @@
 		011FFC02E6C417F0895570AE /* SessionMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1F5D14F61CCE51BD730674 /* SessionMath.swift */; };
 		0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BEB5036A2BAC59081047C29 /* IconResolver.swift */; };
 		0F684A616242BD4045EA49E6 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7FB79F275C13CA9BC93E8E /* Session.swift */; };
+		2597CCC8D7C78D522E81B5CC /* ActivityMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */; };
 		431926C8E8C5E00F349F3AFE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77C1A151E12479B7F913952 /* Theme.swift */; };
 		55DD428459901EA8721E53C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D76FA4DE40F275F43E43BF6 /* ContentView.swift */; };
 		56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */; };
 		68BF0EC8341BC559D21A2991 /* DopamineLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */; };
 		6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */; };
+		6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */; };
 		8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632483371A4CE068A0150FD4 /* Ledger.swift */; };
 		95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4544B842E7F43616765D9F7 /* SessionView.swift */; };
 		A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E384A5EA6024739125C1550C /* AddQuestView.swift */; };
@@ -50,6 +52,7 @@
 		1BEB5036A2BAC59081047C29 /* IconResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconResolver.swift; sourceTree = "<group>"; };
 		24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerApp.swift; sourceTree = "<group>"; };
 		444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepayMath.swift; sourceTree = "<group>"; };
+		4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityMenuView.swift; sourceTree = "<group>"; };
 		5B813B8C566B27ABA3F7B15E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D7FB79F275C13CA9BC93E8E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		632483371A4CE068A0150FD4 /* Ledger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ledger.swift; sourceTree = "<group>"; };
@@ -67,6 +70,7 @@
 		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerTests.swift; sourceTree = "<group>"; };
 		E384A5EA6024739125C1550C /* AddQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddQuestView.swift; sourceTree = "<group>"; };
+		EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtView.swift; sourceTree = "<group>"; };
 		F73063F24F4207DCD725418F /* BalanceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCard.swift; sourceTree = "<group>"; };
 		F77C1A151E12479B7F913952 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,10 +115,12 @@
 			isa = PBXGroup;
 			children = (
 				B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */,
+				4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */,
 				84FBDCE63D4A089A5776B180 /* AddActivityView.swift */,
 				E384A5EA6024739125C1550C /* AddQuestView.swift */,
 				F73063F24F4207DCD725418F /* BalanceCard.swift */,
 				0D76FA4DE40F275F43E43BF6 /* ContentView.swift */,
+				EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */,
 				C4544B842E7F43616765D9F7 /* SessionView.swift */,
 			);
 			path = Views;
@@ -257,10 +263,12 @@
 				C2E312A784E27EBC690441AA /* Activity.swift in Sources */,
 				C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */,
 				EF39365336812E176767B6DD /* ActivityListView.swift in Sources */,
+				2597CCC8D7C78D522E81B5CC /* ActivityMenuView.swift in Sources */,
 				E69390F6F455AC442665AAA0 /* AddActivityView.swift in Sources */,
 				A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */,
 				B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */,
 				55DD428459901EA8721E53C1 /* ContentView.swift in Sources */,
+				6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */,
 				C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */,
 				0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */,
 				8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */,

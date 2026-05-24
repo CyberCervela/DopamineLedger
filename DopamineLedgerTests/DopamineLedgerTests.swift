@@ -216,6 +216,36 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(outcome.newDebtTotal, 0)
     }
 
+    // Split zeroes oldest-first: 17 paid across [5, 10, 15] fully clears
+    // the first two and partially repays the third (leaving 13).
+    func testRepayMathSplitDistributesOldestFirst() {
+        let new = RepayMath.split(17, across: [5, 10, 15])
+        XCTAssertEqual(new, [0, 0, 13])
+    }
+
+    // If repayment equals total debt, all rows zero out.
+    func testRepayMathSplitFullyClears() {
+        let new = RepayMath.split(30, across: [5, 10, 15])
+        XCTAssertEqual(new, [0, 0, 0])
+    }
+
+    // Repayment of 0 leaves rows untouched.
+    func testRepayMathSplitZeroIsNoOp() {
+        let new = RepayMath.split(0, across: [5, 10, 15])
+        XCTAssertEqual(new, [5, 10, 15])
+    }
+
+    // Negative inputs are clamped (defensive — shouldn't happen, but stays safe).
+    // A negative row amount counts as 0 debt for that row, so the repayment
+    // flows entirely to the next row (rather than being absorbed into the
+    // negative).
+    func testRepayMathSplitClampsNegatives() {
+        let new = RepayMath.split(-5, across: [10, 20])
+        XCTAssertEqual(new, [10, 20])
+        let new2 = RepayMath.split(10, across: [-5, 20])
+        XCTAssertEqual(new2, [0, 10])
+    }
+
     // MARK: - NotificationMath
 
     func testNotificationMathSchedulesBothWhenPlenty() throws {

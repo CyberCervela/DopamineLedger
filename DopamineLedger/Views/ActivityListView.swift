@@ -35,8 +35,12 @@ struct ActivityListView: View {
     @State private var filter:          ActivityFilter = .all
     @State private var showAddActivity: Bool           = false
     @State private var showAddQuest:    Bool           = false
+    @State private var showDebt:        Bool           = false
     @State private var activityToEdit:  Activity?      = nil
     @State private var questToEdit:     Quest?         = nil
+    // When non-nil, the ActivityMenuView sheet is presented for this spender
+    // (only used when there is outstanding debt — see openActivity).
+    @State private var activityMenuFor: Activity?      = nil
     // When non-nil, the SessionView sheet is presented for this session.
     // Bound through to SessionView so it can clear us after STOP.
     @State private var activeSession:   Session?       = nil
@@ -72,8 +76,9 @@ struct ActivityListView: View {
             VStack(spacing: theme.spacing.xl) {
                 customHeader
                 BalanceCard(
-                    balance:   ledger?.balance ?? 0,
-                    totalDebt: totalDebt
+                    balance:    ledger?.balance ?? 0,
+                    totalDebt:  totalDebt,
+                    onDebtTap:  { showDebt = true }
                 )
                 // Custom segmented picker — replaces system Picker(.segmented)
                 // because SwiftUI's wrapper ignores UIAppearance text-color
@@ -122,11 +127,22 @@ struct ActivityListView: View {
         .sheet(isPresented: $showAddQuest) {
             AddQuestView(mode: .create)
         }
+        .sheet(isPresented: $showDebt) {
+            DebtView()
+        }
         .sheet(item: $activityToEdit) { activity in
             AddActivityView(mode: .edit(activity))
         }
         .sheet(item: $questToEdit) { quest in
             AddQuestView(mode: .edit(quest))
+        }
+        .sheet(item: $activityMenuFor) { activity in
+            ActivityMenuView(activity: activity) {
+                // After the menu dismisses with "Start session", proceed
+                // through the normal start path so notifications + active-
+                // session state still go through one funnel.
+                startSession(for: activity)
+            }
         }
         .sheet(item: $activeSession) { session in
             // Look up the activity for this session. In practice the UI never
@@ -145,6 +161,21 @@ struct ActivityListView: View {
     }
 
     // MARK: - Session lifecycle
+
+    // Row-tap entry point. Spenders with outstanding debt detour through
+    // the ActivityMenuView so the user can repay before (or instead of)
+    // starting a session. Chargers and clean spenders go straight in.
+    private func openActivity(_ activity: Activity) {
+        if activity.kind == .spender && hasDebt(for: activity) {
+            activityMenuFor = activity
+        } else {
+            startSession(for: activity)
+        }
+    }
+
+    private func hasDebt(for activity: Activity) -> Bool {
+        debts.contains { $0.activityId == activity.id }
+    }
 
     private func startSession(for activity: Activity) {
         // Defensive guard — the UI shouldn't reach here while another session
@@ -193,7 +224,7 @@ struct ActivityListView: View {
                 ForEach(items) { activity in
                     ActivityRow(
                         activity: activity,
-                        onTap:    { startSession(for: activity) },
+                        onTap:    { openActivity(activity) },
                         onEdit:   { activityToEdit = activity },
                         onDelete: { delete(activity) }
                     )
@@ -238,7 +269,7 @@ struct ActivityListView: View {
                 ForEach(activities) { activity in
                     ActivityRow(
                         activity: activity,
-                        onTap:    { startSession(for: activity) },
+                        onTap:    { openActivity(activity) },
                         onEdit:   { activityToEdit = activity },
                         onDelete: { delete(activity) }
                     )

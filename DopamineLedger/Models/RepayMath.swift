@@ -34,4 +34,21 @@ enum RepayMath {
             newDebtTotal: debt - amount
         )
     }
+
+    // Split a repayment across multiple debt rows by zeroing the oldest
+    // (= earliest in the input order) first. Returns the *new* row amounts
+    // in the same order. Stays pure-function and SwiftData-free so callers
+    // can pass plain Doubles and the test layer doesn't need a model
+    // container.
+    //
+    // Why oldest-first? Older debts have been pending longer; clearing them
+    // first matches the user's mental model ("pay off what I owe in order").
+    static func split(_ amount: Double, across rowAmounts: [Double]) -> [Double] {
+        var remaining = max(0, amount)
+        return rowAmounts.map { current in
+            let pay = min(max(0, current), remaining)
+            remaining -= pay
+            return max(0, current) - pay
+        }
+    }
 }
