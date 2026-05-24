@@ -36,6 +36,7 @@ struct ActivityListView: View {
     @State private var showAddActivity: Bool           = false
     @State private var showAddQuest:    Bool           = false
     @State private var activityToEdit:  Activity?      = nil
+    @State private var questToEdit:     Quest?         = nil
     // When non-nil, the SessionView sheet is presented for this session.
     // Bound through to SessionView so it can clear us after STOP.
     @State private var activeSession:   Session?       = nil
@@ -113,6 +114,9 @@ struct ActivityListView: View {
         }
         .sheet(item: $activityToEdit) { activity in
             AddActivityView(mode: .edit(activity))
+        }
+        .sheet(item: $questToEdit) { quest in
+            AddQuestView(mode: .edit(quest))
         }
         .sheet(item: $activeSession) { session in
             // Look up the activity for this session. In practice the UI never
@@ -194,6 +198,25 @@ struct ActivityListView: View {
         context.delete(activity)
     }
 
+    // Quest completion — soft-delete (flip isCompleted, stamp completedAt)
+    // so the row is filtered out of the active list by the existing
+    // @Query predicate. Pay out the bounty by adding payoffCredits to the
+    // ledger balance. Soft-delete (rather than context.delete) preserves
+    // history for a future "completed quests" view (see Quest.swift).
+    private func complete(_ quest: Quest) {
+        let ledger        = Ledger.fetchOrCreate(in: context)
+        ledger.balance   += quest.payoffCredits
+        ledger.updatedAt  = Date()
+        quest.isCompleted = true
+        quest.completedAt = Date()
+    }
+
+    // Hard-delete a quest entirely — separate from completion (which keeps
+    // the row for history). Used from the long-press context menu.
+    private func deleteQuest(_ quest: Quest) {
+        context.delete(quest)
+    }
+
     // Used by the "All" filter — activities at the top, quests below,
     // single empty state when both are empty.
     @ViewBuilder
@@ -211,7 +234,12 @@ struct ActivityListView: View {
                     )
                 }
                 ForEach(quests) { quest in
-                    QuestRow(quest: quest)
+                    QuestRow(
+                        quest:      quest,
+                        onComplete: { complete(quest) },
+                        onEdit:     { questToEdit = quest },
+                        onDelete:   { deleteQuest(quest) }
+                    )
                 }
             }
         }
@@ -224,7 +252,12 @@ struct ActivityListView: View {
         } else {
             LazyVStack(spacing: theme.spacing.md) {
                 ForEach(quests) { quest in
-                    QuestRow(quest: quest)
+                    QuestRow(
+                        quest:      quest,
+                        onComplete: { complete(quest) },
+                        onEdit:     { questToEdit = quest },
+                        onDelete:   { deleteQuest(quest) }
+                    )
                 }
             }
         }
@@ -353,7 +386,10 @@ private struct ActivityRow: View {
 
 private struct QuestRow: View {
     @Environment(\.theme) private var theme
-    let quest: Quest
+    let quest:      Quest
+    let onComplete: () -> Void
+    let onEdit:     () -> Void
+    let onDelete:   () -> Void
 
     var body: some View {
         HStack(spacing: theme.spacing.md) {
@@ -379,15 +415,35 @@ private struct QuestRow: View {
 
             Spacer()
 
-            Text("Done")
-                .font(theme.typography.button)
-                .foregroundStyle(theme.colors.accent)
+            // "Done" pill — tap pays out the quest, flips isCompleted,
+            // and the row disappears (the active-quests @Query filters
+            // completed ones out). No confirmation: payoff is positive,
+            // so a mistap costs the user nothing.
+            Button(action: onComplete) {
+                Text("Done")
+                    .font(theme.typography.button.weight(.semibold))
+                    .foregroundStyle(Color.white)
+                    .padding(.horizontal, theme.spacing.lg)
+                    .padding(.vertical,   theme.spacing.sm)
+                    .background(theme.colors.accent)
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
         }
         .padding(theme.spacing.lg)
         .background(theme.colors.surface)
         .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
         .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
         .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        // Long-press menu for Edit / Delete — parallel to ActivityRow.
+        .contextMenu {
+            Button { onEdit() } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            Button(role: .destructive) { onDelete() } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
     }
 }
 
