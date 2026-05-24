@@ -42,8 +42,11 @@ struct SessionView: View {
     }
 
     private var content: some View {
+        // While paused, session.elapsed is frozen at the pause instant, so
+        // both the clock and the credits readout naturally stop ticking.
         let elapsed       = session.elapsed
-        let creditsMoved  = activity.ratePerSecond * elapsed  // gross before any clamping
+        let creditsMoved  = activity.ratePerSecond * elapsed
+        let paused        = session.isPaused
 
         return VStack(spacing: theme.spacing.xxl) {
 
@@ -64,17 +67,21 @@ struct SessionView: View {
                 Text(activity.name)
                     .font(theme.typography.headline)
                     .foregroundStyle(theme.colors.textPrimary)
-                Text(activity.kind == .charger ? "Charging" : "Spending")
+                Text(paused
+                     ? "Paused"
+                     : (activity.kind == .charger ? "Charging" : "Spending"))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
                     .kerning(2)
                     .textCase(.uppercase)
             }
 
-            // Big elapsed-time clock.
+            // Big elapsed-time clock. Dims to secondary text colour while
+            // paused so the freeze is visually obvious in addition to the
+            // text not advancing.
             Text(formatElapsed(elapsed))
                 .font(.system(size: 64, weight: .light, design: .rounded).monospacedDigit())
-                .foregroundStyle(theme.colors.textPrimary)
+                .foregroundStyle(paused ? theme.colors.textSecondary : theme.colors.textPrimary)
                 .padding(.vertical, theme.spacing.md)
 
             // Live credits readout. Format with one decimal to make the
@@ -83,7 +90,7 @@ struct SessionView: View {
             VStack(spacing: theme.spacing.xs) {
                 Text("\(creditsMoved, format: .number.precision(.fractionLength(1))) credits \(verb)")
                     .font(theme.typography.bodyStrong)
-                    .foregroundStyle(kindColor)
+                    .foregroundStyle(paused ? theme.colors.textSecondary : kindColor)
                 Text("at \(activity.ratePerSecond * 60, format: .number.precision(.fractionLength(1))) cr / min")
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
@@ -91,19 +98,37 @@ struct SessionView: View {
 
             Spacer()
 
-            // STOP — primary destructive-ish action. Big, dominant, hard to miss.
-            Button(action: stop) {
-                Text("STOP")
-                    .font(theme.typography.button.weight(.bold))
-                    .kerning(4)
-                    .foregroundStyle(Color.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, theme.spacing.lg)
-                    .background(theme.colors.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                    .shadow(color: theme.colors.shadowDark, radius: 8, x: 4, y: 4)
+            // Actions: PAUSE/RESUME above STOP. Pause is secondary visual
+            // weight (raised neumorphic, not filled) so STOP keeps the
+            // primary affordance.
+            VStack(spacing: theme.spacing.md) {
+                Button(action: togglePause) {
+                    Text(paused ? "RESUME" : "PAUSE")
+                        .font(theme.typography.button.weight(.semibold))
+                        .kerning(4)
+                        .foregroundStyle(paused ? theme.colors.positive : theme.colors.textPrimary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, theme.spacing.md)
+                        .background(theme.colors.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                        .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
+                        .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+                }
+                .buttonStyle(.plain)
+
+                Button(action: stop) {
+                    Text("STOP")
+                        .font(theme.typography.button.weight(.bold))
+                        .kerning(4)
+                        .foregroundStyle(Color.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, theme.spacing.lg)
+                        .background(theme.colors.accent)
+                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                        .shadow(color: theme.colors.shadowDark, radius: 8, x: 4, y: 4)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
             .padding(.horizontal, theme.spacing.lg)
         }
         .padding(theme.spacing.lg)
@@ -115,6 +140,37 @@ struct SessionView: View {
     }
 
     // MARK: - Actions
+
+    private func togglePause() {
+        if session.isPaused {
+            session.resume()
+            // Reschedule spender notifications against the *remaining* balance.
+            // Ledger.balance is untouched during a session (SessionFinalizer
+            // applies the delta only on stop), so subtracting credits-spent-
+            // so-far from the current balance gives us the right remaining time.
+            if activity.kind == .spender {
+                let balance       = Ledger.fetchOrCreate(in: context).balance
+                let creditsSpent  = activity.ratePerSecond * session.elapsed
+                let remaining     = max(0, balance - creditsSpent)
+                let sessionId     = session.id
+                let activityName  = activity.name
+                let rate          = activity.ratePerSecond
+                Task {
+                    await NotificationScheduler.scheduleSpenderSession(
+                        sessionId:     sessionId,
+                        activityName:  activityName,
+                        balance:       remaining,
+                        ratePerSecond: rate
+                    )
+                }
+            }
+        } else {
+            session.pause()
+            // Cancel scheduled notifications — they'd otherwise fire at the
+            // original wall-clock time, ignoring the pause.
+            NotificationScheduler.cancelSession(sessionId: session.id)
+        }
+    }
 
     private func stop() {
         SessionFinalizer.finalize(session: session, in: context)

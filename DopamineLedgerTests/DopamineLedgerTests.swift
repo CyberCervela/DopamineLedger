@@ -35,6 +35,73 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(session.elapsed, 30, accuracy: 0.001)
     }
 
+    // While paused, elapsed freezes at the pause instant — repeated reads
+    // return the same value regardless of wall-clock drift.
+    func testSessionPauseFreezesElapsed() {
+        let session = Session(activityId: UUID())
+        let t0      = session.startedAt
+        session.pause(at: t0.addingTimeInterval(10))
+        XCTAssertTrue(session.isPaused)
+        XCTAssertEqual(session.elapsed, 10, accuracy: 0.001)
+        // A small real-time delay shouldn't budge the frozen value.
+        Thread.sleep(forTimeInterval: 0.05)
+        XCTAssertEqual(session.elapsed, 10, accuracy: 0.001)
+    }
+
+    // Resuming records the pause segment in totalPausedSeconds so future
+    // elapsed reads subtract it.
+    func testSessionResumeSubtractsPauseTime() {
+        let session = Session(activityId: UUID())
+        let t0      = session.startedAt
+        session.pause(at:  t0.addingTimeInterval(10))
+        session.resume(at: t0.addingTimeInterval(30))   // 20s spent paused
+        XCTAssertFalse(session.isPaused)
+        session.endedAt = t0.addingTimeInterval(60)
+        XCTAssertEqual(session.elapsed, 40, accuracy: 0.001) // 60 wall - 20 paused
+    }
+
+    // Multiple pause cycles sum correctly.
+    func testSessionMultiplePauseCycles() {
+        let session = Session(activityId: UUID())
+        let t0      = session.startedAt
+        session.pause(at:  t0.addingTimeInterval(10))
+        session.resume(at: t0.addingTimeInterval(15))   // 5s
+        session.pause(at:  t0.addingTimeInterval(25))
+        session.resume(at: t0.addingTimeInterval(30))   // 5s (total 10s)
+        session.endedAt = t0.addingTimeInterval(40)
+        XCTAssertEqual(session.elapsed, 30, accuracy: 0.001) // 40 wall - 10 paused
+    }
+
+    // Stopping while paused (the finalizer flow) must record the open pause
+    // segment so it doesn't count as working time.
+    func testSessionStopWhilePausedDoesNotCountPauseTime() {
+        let session = Session(activityId: UUID())
+        let t0      = session.startedAt
+        session.pause(at: t0.addingTimeInterval(10))
+        // Mirror SessionFinalizer's order: read elapsed (frozen at 10),
+        // resume to record the pause segment, then stamp endedAt.
+        let billed = session.elapsed
+        session.resume(at: t0.addingTimeInterval(30))
+        session.endedAt  = t0.addingTimeInterval(30)
+        XCTAssertEqual(billed, 10, accuracy: 0.001)
+        // After stamping endedAt, elapsed should agree with what we billed.
+        XCTAssertEqual(session.elapsed, 10, accuracy: 0.001)
+    }
+
+    // pause()/resume() are no-ops in invalid states so callsites stay safe.
+    func testSessionPauseResumeGuards() {
+        let session = Session(activityId: UUID())
+        let t0      = session.startedAt
+        // Double-pause shouldn't move pausedAt.
+        session.pause(at: t0.addingTimeInterval(10))
+        session.pause(at: t0.addingTimeInterval(20))
+        XCTAssertEqual(session.elapsed, 10, accuracy: 0.001)
+        // Resume when not paused is also a no-op.
+        session.resume(at: t0.addingTimeInterval(30))
+        session.resume(at: t0.addingTimeInterval(40))
+        XCTAssertFalse(session.isPaused)
+    }
+
     // Debt tracks amount and repaid state correctly.
     func testDebtRepaidFlag() {
         let debt = ActivityDebt(activityId: UUID(), amount: 10.0)

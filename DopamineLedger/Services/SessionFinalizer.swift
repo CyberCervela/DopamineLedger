@@ -37,7 +37,13 @@ enum SessionFinalizer {
         // warning/alarm are no longer relevant. Idempotent for chargers.
         NotificationScheduler.cancelSession(sessionId: session.id)
 
+        // Read elapsed BEFORE resume() — while paused, `elapsed` is frozen
+        // at the pause point, which is the correct value to bill against.
+        // Then resume() to fold the in-progress pause segment into
+        // totalPausedSeconds (so future reads of `elapsed` on this finished
+        // session stay correct), then stamp endedAt.
         let elapsed = session.elapsed
+        session.resume()
         session.endedAt = Date()
 
         // Resolve the activity for this session (could be any activity).
