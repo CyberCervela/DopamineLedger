@@ -1,0 +1,78 @@
+# project.yml — xcodegen manifest for Dopamine Ledger round 2.
+#
+# Round 1 hand-rolled project.pbxproj with a UUID convention; every
+# new Swift file needed four manual edits across the pbxproj. Round 2
+# uses xcodegen instead. This file is the source of truth.
+#
+# Usage:
+#   brew install xcodegen        # one-time
+#   xcodegen generate            # or: make generate
+#
+# After adding/removing/moving Swift files in DopamineLedger/, rerun
+# `make generate` and commit both this file AND the regenerated
+# project.pbxproj.
+
+name: DopamineLedger
+options:
+  bundleIdPrefix: com.cibercervela
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: ""        # fill in once on your machine; do NOT commit a real team id to a public repo
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: NO
+    GCC_TREAT_WARNINGS_AS_ERRORS: NO
+
+targets:
+  DopamineLedger:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: DopamineLedger
+    resources:
+      - path: DopamineLedger/Assets.xcassets
+      - path: DopamineLedger/Fonts            # Monogram.ttf, AbaddonBold.ttf live here
+        optional: true                        # OK if you haven't dropped fonts in yet
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cibercervela.DopamineLedger
+        INFOPLIST_FILE: DopamineLedger/Info.plist
+        TARGETED_DEVICE_FAMILY: "1"           # iPhone only (round 1 locked this)
+        GENERATE_INFOPLIST_FILE: NO           # we supply our own Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+
+  DopamineLedgerTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: DopamineLedgerTests
+    dependencies:
+      - target: DopamineLedger
+    settings:
+      base:
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/DopamineLedger.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DopamineLedger"
+
+schemes:
+  DopamineLedger:
+    build:
+      targets:
+        DopamineLedger: all
+        DopamineLedgerTests: [test]
+    test:
+      targets:
+        - DopamineLedgerTests
+      gatherCoverageData: true
+    run:
+      config: Debug
+    archive:
+      config: Release

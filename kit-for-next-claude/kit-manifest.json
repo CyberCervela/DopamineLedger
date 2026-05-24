@@ -1,0 +1,84 @@
+{
+  "kitName": "kit-for-next-claude",
+  "project": "DopamineLedger",
+  "round": 2,
+  "publicRepo": "https://github.com/CyberCervela/DopamineLedger",
+  "createdAt": "2026-05-24",
+  "lockedDecisions": {
+    "transplantWorkingModules": true,
+    "twoThemesFromDayOne": true,
+    "publicReadability": true
+  },
+  "files": [
+    "README.md",
+    "CLAUDE.md",
+    "SPECIFICATION.md",
+    "ARCHITECTURE.md",
+    "DESIGN_SYSTEM.md",
+    "WORKFLOW.md",
+    "TOOLING.md",
+    "LESSONS_LEARNED.md",
+    "BACKLOG.md",
+    "PRIVACY.md",
+    "APP_STORE_LISTING.md",
+    "SUBMISSION.md",
+    "scaffolds/Theme.swift",
+    "scaffolds/IconResolver.swift",
+    "scaffolds/SoundPlayer.swift",
+    "scaffolds/project.yml",
+    "scaffolds/Info.plist",
+    "scaffolds/Models/Activity.swift",
+    "scaffolds/Models/Session.swift",
+    "scaffolds/Models/ActivityDebt.swift",
+    "scaffolds/Models/Ledger.swift",
+    "scaffolds/Models/Quest.swift",
+    "scaffolds/Models/SessionMath.swift",
+    "scaffolds/Models/RepayMath.swift",
+    "scaffolds/Models/NotificationMath.swift",
+    "scaffolds/Services/SessionFinalizer.swift",
+    "scaffolds/Services/NotificationScheduler.swift",
+    "scaffolds/Tests/DopamineLedgerTests.swift",
+    "scripts/Makefile",
+    "scripts/install-and-screenshot.sh",
+    "scripts/generate-pixel-icons.py"
+  ],
+  "transplanted": [
+    "BACKLOG.md",
+    "PRIVACY.md",
+    "APP_STORE_LISTING.md",
+    "SUBMISSION.md",
+    "scaffolds/Models/Activity.swift",
+    "scaffolds/Models/Session.swift",
+    "scaffolds/Models/ActivityDebt.swift",
+    "scaffolds/Models/Ledger.swift",
+    "scaffolds/Models/Quest.swift",
+    "scaffolds/Models/SessionMath.swift",
+    "scaffolds/Models/RepayMath.swift",
+    "scaffolds/Models/NotificationMath.swift",
+    "scaffolds/Services/SessionFinalizer.swift",
+    "scaffolds/Services/NotificationScheduler.swift",
+    "scaffolds/Tests/DopamineLedgerTests.swift"
+  ],
+  "stubs": [
+    "scaffolds/SoundPlayer.swift"
+  ],
+  "deliberatelyExcluded": [
+    "round1 Theme.swift (one-theme assumption baked in)",
+    "round1 IconResolver.swift (not theme-bound)",
+    "round1 Views/* (coupled to round1 theme)",
+    "round1 Views/Toast.swift (coupled to round1 theme)",
+    "round1 project.pbxproj (handcrafted; round 2 uses xcodegen)"
+  ],
+  "acceptanceChecks": {
+    "xcodegen_generates_pbxproj":      "untested",
+    "theme_protocol_compiles":         "untested",
+    "info_plist_has_required_keys":    "pass",
+    "tests_present":                   "pass"
+  },
+  "acceptanceCheckNotes": {
+    "xcodegen_generates_pbxproj":   "Run `make generate` in the round-2 repo after dropping in project.yml. Confirm DopamineLedger.xcodeproj opens and builds.",
+    "theme_protocol_compiles":      "Add Theme.swift + IconResolver.swift + SoundPlayer.swift to the new project and verify a clean build with no view code referencing them yet.",
+    "info_plist_has_required_keys": "Verified at write time: UIAppFonts, ITSAppUsesNonExemptEncryption, UIUserInterfaceStyle, UISupportedInterfaceOrientations all present.",
+    "tests_present":                "Verified at write time: 22 unit tests in scaffolds/Tests/DopamineLedgerTests.swift covering SessionMath, RepayMath, NotificationMath, Activity, Session, ActivityDebt."
+  }
+}
