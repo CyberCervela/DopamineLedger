@@ -11,6 +11,7 @@
 		0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BEB5036A2BAC59081047C29 /* IconResolver.swift */; };
 		0F684A616242BD4045EA49E6 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7FB79F275C13CA9BC93E8E /* Session.swift */; };
 		2597CCC8D7C78D522E81B5CC /* ActivityMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */; };
+		2B65885662BB4A936E980A79 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB278EAC2CE14CE56E68910D /* SettingsView.swift */; };
 		431926C8E8C5E00F349F3AFE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77C1A151E12479B7F913952 /* Theme.swift */; };
 		55DD428459901EA8721E53C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D76FA4DE40F275F43E43BF6 /* ContentView.swift */; };
 		56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */; };
@@ -66,6 +67,7 @@
 		AAB2943323D5BB42DAA92FB5 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
 		B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityListView.swift; sourceTree = "<group>"; };
+		BB278EAC2CE14CE56E68910D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C4544B842E7F43616765D9F7 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerTests.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				0D76FA4DE40F275F43E43BF6 /* ContentView.swift */,
 				EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */,
 				C4544B842E7F43616765D9F7 /* SessionView.swift */,
+				BB278EAC2CE14CE56E68910D /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */,
 				011FFC02E6C417F0895570AE /* SessionMath.swift in Sources */,
 				95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */,
+				2B65885662BB4A936E980A79 /* SettingsView.swift in Sources */,
 				A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */,
 				431926C8E8C5E00F349F3AFE /* Theme.swift in Sources */,
 			);

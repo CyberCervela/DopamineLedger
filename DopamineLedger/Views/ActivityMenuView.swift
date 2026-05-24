@@ -23,6 +23,13 @@ struct ActivityMenuView: View {
     // so we just signal intent.
     let onStartSession: () -> Void
 
+    // The "original rule" toggle (see step6_backlog memory). When OFF (the
+    // default), starting a spender that is already in debt is blocked —
+    // Repay is the only path forward. When ON, the "Start session anyway"
+    // button is visible and the user can proceed at the 2× penalty rate.
+    // Read-only here; the toggle lives in SettingsView.
+    @AppStorage("chillMode") private var chillMode: Bool = false
+
     // Pulls this activity's unpaid debt rows. Updates live as Repay zeros them.
     @Query                            private var allDebts: [ActivityDebt]
     @Query                            private var ledgers:  [Ledger]
@@ -151,24 +158,26 @@ struct ActivityMenuView: View {
             .buttonStyle(.plain)
             .disabled(!canRepay)
 
-            // Secondary — start anyway, accepting the 2× debt overhead.
-            // Neumorphic raised surface (not filled accent) so Repay reads
-            // as the recommended action.
-            Button {
-                dismiss()
-                onStartSession()
-            } label: {
-                Text("Start session anyway")
-                    .font(theme.typography.button.weight(.semibold))
-                    .foregroundStyle(theme.colors.textPrimary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, theme.spacing.md)
-                    .background(theme.colors.surface)
-                    .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                    .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
-                    .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+            // "Start anyway" only appears when chill mode is ON. With chill
+            // mode OFF (default), the original rule applies: you cannot
+            // start a spender that's already in debt — Repay is the path.
+            if chillMode {
+                Button {
+                    dismiss()
+                    onStartSession()
+                } label: {
+                    Text("Start session anyway")
+                        .font(theme.typography.button.weight(.semibold))
+                        .foregroundStyle(theme.colors.textPrimary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, theme.spacing.md)
+                        .background(theme.colors.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                        .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
+                        .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
     }
 

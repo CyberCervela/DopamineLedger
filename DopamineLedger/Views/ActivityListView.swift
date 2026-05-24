@@ -36,6 +36,7 @@ struct ActivityListView: View {
     @State private var showAddActivity: Bool           = false
     @State private var showAddQuest:    Bool           = false
     @State private var showDebt:        Bool           = false
+    @State private var showSettings:    Bool           = false
     @State private var activityToEdit:  Activity?      = nil
     @State private var questToEdit:     Quest?         = nil
     // When non-nil, the ActivityMenuView sheet is presented for this spender
@@ -129,6 +130,9 @@ struct ActivityListView: View {
         }
         .sheet(isPresented: $showDebt) {
             DebtView()
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .sheet(item: $activityToEdit) { activity in
             AddActivityView(mode: .edit(activity))
@@ -332,7 +336,7 @@ struct ActivityListView: View {
     private var customHeader: some View {
         HStack(spacing: 0) {
             NeuIconButton(icon: .settings, tint: theme.colors.textSecondary) {
-                // Settings sheet — wired in a later step (step 6).
+                showSettings = true
             }
             Spacer()
             Text("Dopamine Ledger")
