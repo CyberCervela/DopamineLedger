@@ -1,15 +1,19 @@
 // SettingsView.swift
-// First-pass settings sheet. Covers the three items that change app
-// behaviour today:
+// First-pass settings sheet. Covers the items that change app behaviour
+// today:
 //   1. Chill mode — gates "Start session anyway" when a spender has debt
-//   2. Stop current session — global escape hatch (only when one is active)
-//   3. Wipe all data — destructive reset for testing / fresh starts
+//   2. Notifications — permission status + path back when denied
+//   3. Stop current session — global escape hatch (only when one is active)
+//   4. Wipe all data — destructive reset for testing / fresh starts
 //
-// Future passes will add: theme switcher, notification permission status,
-// IOT integration, friend sharing (see memory/step6_backlog.md).
+// Future passes will add: theme switcher, IOT integration, friend sharing.
+// See memory/step6_backlog.md for the roadmap and memory/notification_strategy.md
+// for the design constraints around the notification row in particular.
 
 import SwiftUI
 import SwiftData
+import UserNotifications
+import UIKit
 
 struct SettingsView: View {
     @Environment(\.theme)        private var theme
@@ -29,11 +33,22 @@ struct SettingsView: View {
     // (tap row → confirm in alert) so a thumb-bump doesn't nuke data.
     @State private var showWipeConfirm: Bool = false
 
+    // Cached notification authorization. Refreshed when the sheet appears
+    // and whenever the app returns to the foreground (the user might have
+    // toggled it in iOS Settings while we were backgrounded).
+    @State private var notifStatus: UNAuthorizationStatus = .notDetermined
+
+    // Used to re-check notifStatus when the user comes back from iOS
+    // Settings via the deep link — the app transitions through .active
+    // again, which fires this observer.
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
                     behaviourSection
+                    notificationsSection
                     if !activeSessions.isEmpty {
                         activeSessionSection
                     }
@@ -43,6 +58,12 @@ struct SettingsView: View {
             }
             .background(theme.colors.background.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
+            .task { await refreshNotificationStatus() }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    Task { await refreshNotificationStatus() }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text("Settings")
@@ -84,6 +105,92 @@ struct SettingsView: View {
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }
+        }
+    }
+
+    // Notifications row. Three states based on the live UN authorization
+    // status; the row always shows *something* actionable so a denied
+    // state never leaves the user stuck without a path back. Copy is
+    // intentionally generic ("Notifications") and purpose-oriented in
+    // the caption, because the set of categories will grow as Health /
+    // IOT / screen-time integrations land — see notification_strategy.md.
+    private var notificationsSection: some View {
+        sectionCard(title: "NOTIFICATIONS") {
+            VStack(alignment: .leading, spacing: theme.spacing.sm) {
+                HStack {
+                    Text(notifStatusLabel)
+                        .font(theme.typography.bodyStrong)
+                        .foregroundStyle(notifStatusColor)
+                    Spacer()
+                    if let action = notifAction {
+                        Button(action: action.handler) {
+                            Text(action.label)
+                                .font(theme.typography.button.weight(.semibold))
+                                .foregroundStyle(Color.white)
+                                .padding(.horizontal, theme.spacing.md)
+                                .padding(.vertical,   theme.spacing.sm)
+                                .background(theme.colors.accent)
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                Text("Used to alert you about credit, debt, and connected-device events.")
+                    .font(theme.typography.caption)
+                    .foregroundStyle(theme.colors.textSecondary)
+            }
+        }
+    }
+
+    // MARK: Notifications — derived display state
+
+    private var notifStatusLabel: String {
+        switch notifStatus {
+        case .authorized, .provisional, .ephemeral: return "Notifications: Enabled"
+        case .denied:                                return "Notifications: Disabled"
+        case .notDetermined:                         return "Notifications: Not requested"
+        @unknown default:                            return "Notifications: Unknown"
+        }
+    }
+
+    private var notifStatusColor: Color {
+        switch notifStatus {
+        case .authorized, .provisional, .ephemeral: return theme.colors.positive
+        case .denied:                                return theme.colors.negative
+        default:                                     return theme.colors.textPrimary
+        }
+    }
+
+    // Action button shown next to the status, or nil when no action is
+    // applicable (e.g., already authorized).
+    private struct NotifAction { let label: String; let handler: () -> Void }
+    private var notifAction: NotifAction? {
+        switch notifStatus {
+        case .notDetermined:
+            return NotifAction(label: "Request") {
+                Task {
+                    _ = await NotificationScheduler.ensurePermission()
+                    await refreshNotificationStatus()
+                }
+            }
+        case .denied:
+            // iOS does not allow re-prompting once the user has denied.
+            // The only path back is the system Settings app — deep-link
+            // straight to our app's row so they don't have to scroll.
+            return NotifAction(label: "Open iOS Settings", handler: openSystemSettings)
+        default:
+            return nil
+        }
+    }
+
+    private func refreshNotificationStatus() async {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        notifStatus = settings.authorizationStatus
+    }
+
+    private func openSystemSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
         }
     }
 
