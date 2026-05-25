@@ -18,7 +18,9 @@ from google.genai import types
 from PIL import Image
 import io
 
-API_KEY = "REDACTED"
+API_KEY = os.environ.get("GOOGLE_AI_KEY", "")
+if not API_KEY:
+    sys.exit("Error: GOOGLE_AI_KEY not set. Run: export GOOGLE_AI_KEY=<your-key>")
 MODEL   = "imagen-4.0-ultra-generate-001"
 
 OUTDIR = os.path.normpath(
