@@ -22,6 +22,7 @@
 		68BF0EC8341BC559D21A2991 /* DopamineLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */; };
 		6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */; };
 		6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */; };
+		7DCC6D49A8D67608559D07E7 /* NeuTextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6024ED70840D255EBCBE27AB /* NeuTextButton.swift */; };
 		855ADE1173F7BF8C56DD0584 /* SessionActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */; };
 		8C40C567E48F7A333AECB96B /* DopamineLedgerWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDC7B360D85A1338E60DB7 /* DopamineLedgerWidgetsBundle.swift */; };
 		8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632483371A4CE068A0150FD4 /* Ledger.swift */; };
@@ -35,6 +36,7 @@
 		C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */; };
 		C2E312A784E27EBC690441AA /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2943323D5BB42DAA92FB5 /* Activity.swift */; };
 		C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932E84D7A113B126ACF1715F /* ActivityDebt.swift */; };
+		C576944FF0904AB4D44E66EB /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F3B81B178D650B2AB4D444 /* PrivacyPolicyView.swift */; };
 		C57C579F7A1119A0428B66B4 /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6599E0272A30BC468CA04713 /* LiveActivityService.swift */; };
 		D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FCBBB164354D8763EAA67F /* NeuTheme.swift */; };
 		DAE6A0BF1A38959C2F4BE7A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B813B8C566B27ABA3F7B15E /* Assets.xcassets */; };
@@ -78,6 +80,7 @@
 		04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionFinalizer.swift; sourceTree = "<group>"; };
 		0A1F5D14F61CCE51BD730674 /* SessionMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMath.swift; sourceTree = "<group>"; };
 		0D76FA4DE40F275F43E43BF6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		13F3B81B178D650B2AB4D444 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
 		1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		1BEB5036A2BAC59081047C29 /* IconResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconResolver.swift; sourceTree = "<group>"; };
 		2395C755095E2803B843A85D /* SessionLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLiveActivity.swift; sourceTree = "<group>"; };
@@ -88,6 +91,7 @@
 		5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityAttributes.swift; sourceTree = "<group>"; };
 		5B813B8C566B27ABA3F7B15E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D7FB79F275C13CA9BC93E8E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		6024ED70840D255EBCBE27AB /* NeuTextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuTextButton.swift; sourceTree = "<group>"; };
 		632483371A4CE068A0150FD4 /* Ledger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ledger.swift; sourceTree = "<group>"; };
 		6599E0272A30BC468CA04713 /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
 		66FCBBB164354D8763EAA67F /* NeuTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuTheme.swift; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 				F73063F24F4207DCD725418F /* BalanceCard.swift */,
 				0D76FA4DE40F275F43E43BF6 /* ContentView.swift */,
 				EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */,
+				6024ED70840D255EBCBE27AB /* NeuTextButton.swift */,
+				13F3B81B178D650B2AB4D444 /* PrivacyPolicyView.swift */,
 				C4544B842E7F43616765D9F7 /* SessionView.swift */,
 				BB278EAC2CE14CE56E68910D /* SettingsView.swift */,
 			);
@@ -369,9 +375,11 @@
 				468D4DF6CAE0FBC15B357392 /* LanguageBundle.swift in Sources */,
 				8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */,
 				C57C579F7A1119A0428B66B4 /* LiveActivityService.swift in Sources */,
+				7DCC6D49A8D67608559D07E7 /* NeuTextButton.swift in Sources */,
 				D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */,
 				E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */,
 				A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */,
+				C576944FF0904AB4D44E66EB /* PrivacyPolicyView.swift in Sources */,
 				B9B71A9BC1B51B7C00D86762 /* Quest.swift in Sources */,
 				56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */,
 				0F684A616242BD4045EA49E6 /* Session.swift in Sources */,

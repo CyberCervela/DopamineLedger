@@ -27,51 +27,78 @@ struct SettingsView: View {
     @Query(filter: #Predicate<Session> { $0.endedAt == nil })
                                       private var activeSessions: [Session]
 
-    @State private var showWipeConfirm: Bool = false
+    @State private var showPrivacyPolicy: Bool = false
+    @State private var activeAlert: SettingsAlert? = nil
+
+    private enum SettingsAlert: Identifiable {
+        case wipe, mailFallback
+        var id: Self { self }
+    }
     @State private var notifStatus: UNAuthorizationStatus = .notDetermined
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: theme.spacing.xl) {
-                    appearanceSection
-                    languageSection
-                    behaviourSection
-                    notificationsSection
-                    if !activeSessions.isEmpty {
-                        activeSessionSection
-                    }
-                    aboutSection
-                    dangerZoneSection
-                }
-                .padding(theme.spacing.lg)
-            }
-            .background(theme.colors.background.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .task { await refreshNotificationStatus() }
-            .onChange(of: scenePhase) { _, phase in
-                if phase == .active {
-                    Task { await refreshNotificationStatus() }
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
+        VStack(spacing: 0) {
+                HStack {
+                    Spacer()
                     Text(lBundle.l("settings.title"))
                         .font(theme.typography.headline)
                         .foregroundStyle(theme.colors.textPrimary)
+                    Spacer()
+                    NeuTextButton(
+                        title:      lBundle.l("common.done"),
+                        font:       theme.typography.bodyStrong,
+                        foreground: theme.colors.accent,
+                        action:     { dismiss() }
+                    )
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(lBundle.l("common.done")) { dismiss() }
-                        .font(theme.typography.bodyStrong)
-                        .foregroundStyle(theme.colors.accent)
+                .padding(.horizontal, theme.spacing.lg)
+                .padding(.top,        theme.spacing.md)
+                .padding(.bottom,     theme.spacing.sm)
+
+                ScrollView {
+                    VStack(spacing: theme.spacing.xl) {
+                        appearanceSection
+                        languageSection
+                        behaviourSection
+                        notificationsSection
+                        if !activeSessions.isEmpty {
+                            activeSessionSection
+                        }
+                        aboutSection
+                        dangerZoneSection
+                    }
+                    .padding(theme.spacing.lg)
                 }
+        }
+        .presentationBackground(theme.colors.background)
+        .task { await refreshNotificationStatus() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task { await refreshNotificationStatus() }
             }
-            .alert(lBundle.l("alert.wipe.title"), isPresented: $showWipeConfirm) {
-                Button(lBundle.l("common.cancel"), role: .cancel) { }
-                Button(lBundle.l("alert.wipe.confirm"), role: .destructive) { wipeAllData() }
-            } message: {
-                Text(lBundle.l("alert.wipe.message"))
+        }
+        .sheet(isPresented: $showPrivacyPolicy) {
+            PrivacyPolicyView()
+        }
+        .alert(item: $activeAlert) { alert in
+            switch alert {
+            case .mailFallback:
+                return Alert(
+                    title: Text("Send feedback"),
+                    message: Text("cibercervela@pm.me"),
+                    primaryButton: .default(Text("Copy address")) {
+                        UIPasteboard.general.string = "cibercervela@pm.me"
+                    },
+                    secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
+                )
+            case .wipe:
+                return Alert(
+                    title: Text(lBundle.l("alert.wipe.title")),
+                    message: Text(lBundle.l("alert.wipe.message")),
+                    primaryButton: .destructive(Text(lBundle.l("alert.wipe.confirm"))) { wipeAllData() },
+                    secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
+                )
             }
         }
     }
@@ -281,7 +308,7 @@ struct SettingsView: View {
     private var dangerZoneSection: some View {
         sectionCard(title: lBundle.l("settings.section.danger_zone")) {
             Button {
-                showWipeConfirm = true
+                activeAlert = .wipe
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: theme.spacing.xxs) {
@@ -318,15 +345,24 @@ struct SettingsView: View {
 
                 Divider()
 
-                Link(destination: URL(string: "mailto:cibercervela@pm.me")!) {
+                Button {
+                    let url = URL(string: "mailto:cibercervela@pm.me")!
+                    if UIApplication.shared.canOpenURL(url) {
+                        UIApplication.shared.open(url)
+                    } else {
+                        activeAlert = .mailFallback
+                    }
+                } label: {
                     aboutLinkRow(lBundle.l("settings.about.contact"))
                 }
+                .buttonStyle(.plain)
 
                 Divider()
 
-                Link(destination: URL(string: "https://cybercervela.github.io/DopamineLedger/privacy.html")!) {
+                Button { showPrivacyPolicy = true } label: {
                     aboutLinkRow(lBundle.l("settings.about.privacy"))
                 }
+                .buttonStyle(.plain)
 
                 Divider()
 

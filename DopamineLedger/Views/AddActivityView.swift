@@ -52,7 +52,31 @@ struct AddActivityView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            HStack {
+                NeuTextButton(
+                    title:      lBundle.l("common.cancel"),
+                    font:       theme.typography.body,
+                    foreground: theme.colors.textSecondary,
+                    action:     { dismiss() }
+                )
+                Spacer()
+                Text(lBundle.l(isEditing ? "activity.edit" : "activity.new"))
+                    .font(theme.typography.headline)
+                    .foregroundStyle(theme.colors.textPrimary)
+                Spacer()
+                NeuTextButton(
+                    title:      lBundle.l("common.save"),
+                    font:       theme.typography.bodyStrong,
+                    foreground: isValid ? theme.colors.accent : theme.colors.textSecondary.opacity(0.5),
+                    action:     { save() }
+                )
+                .disabled(!isValid)
+            }
+            .padding(.horizontal, theme.spacing.lg)
+            .padding(.top,        theme.spacing.md)
+            .padding(.bottom,     theme.spacing.sm)
+
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
                     neuField(label: lBundle.l("activity.field.name").uppercased()) {
@@ -135,27 +159,8 @@ struct AddActivityView: View {
                 .padding(theme.spacing.lg)
                 .animation(.easeInOut(duration: 0.2), value: parsedRate != nil)
             }
-            .background(theme.colors.background.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(lBundle.l(isEditing ? "activity.edit" : "activity.new"))
-                        .font(theme.typography.headline)
-                        .foregroundStyle(theme.colors.textPrimary)
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(lBundle.l("common.cancel")) { dismiss() }
-                        .font(theme.typography.body)
-                        .foregroundStyle(theme.colors.textSecondary)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(lBundle.l("common.save")) { save() }
-                        .font(theme.typography.bodyStrong)
-                        .foregroundStyle(isValid ? theme.colors.accent : theme.colors.textSecondary.opacity(0.5))
-                        .disabled(!isValid)
-                }
-            }
         }
+        .presentationBackground(theme.colors.background)
     }
 
     @ViewBuilder
