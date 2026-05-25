@@ -2,57 +2,55 @@
 // The active-session sheet. Shown while a session is running; the only way
 // out is the STOP button (swipe-to-dismiss is disabled so users can't
 // orphan a running session by accident).
-//
-// Timing model: the `Session` model computes elapsed seconds from
-// timestamps on every read (see Session.elapsed). That means we don't run
-// a background timer — we just re-render the view once per second via
-// TimelineView, and the elapsed value is naturally accurate. Backgrounding
-// the app, locking the screen, killing the process — none of it loses time.
 
 import SwiftUI
 import SwiftData
 
 struct SessionView: View {
-    @Environment(\.theme)        private var theme
-    @Environment(\.modelContext) private var context
-    @Environment(\.dismiss)      private var dismiss
+    @Environment(\.theme)          private var theme
+    @Environment(\.modelContext)   private var context
+    @Environment(\.dismiss)        private var dismiss
+    @Environment(\.languageBundle) private var lBundle
 
     let session:  Session
     let activity: Activity
 
-    // Bound by the parent so we can clear it after STOP — dismiss() alone
-    // won't suffice because the sheet is item-driven.
     @Binding var presented: Session?
+
+    @Query private var ledgers: [Ledger]
+    // Balance at session start — the Ledger is only updated on finalize,
+    // so this is the pre-session value throughout the session's lifetime.
+    private var sessionStartBalance: Double { ledgers.first?.balance ?? 0 }
 
     private var kindColor: Color {
         activity.kind == .charger ? theme.colors.positive : theme.colors.negative
     }
 
-    private var verb: String {
-        activity.kind == .charger ? "earned" : "spent"
-    }
-
     var body: some View {
-        // TimelineView re-evaluates its closure on a schedule. Combined with
-        // session.elapsed (which derives from Date() on every read), the
-        // clock face ticks each second without a manual Timer.
         TimelineView(.periodic(from: .now, by: 1)) { _ in
             content
         }
     }
 
     private var content: some View {
-        // While paused, session.elapsed is frozen at the pause instant, so
-        // both the clock and the credits readout naturally stop ticking.
         let elapsed       = session.elapsed
         let creditsMoved  = activity.ratePerSecond * elapsed
         let paused        = session.isPaused
+        let creditsKey    = activity.kind == .charger ? "session.credits_earned" : "session.credits_spent"
+        let statusKey     = paused ? "session.paused" : (activity.kind == .charger ? "session.charging" : "session.spending")
+
+        // Spender live balance: how much of the starting balance is left, and
+        // how much debt is accumulating at the 2× rate if we've gone past zero.
+        let spenderRemaining = max(0, sessionStartBalance - creditsMoved)
+        let spenderLiveDebt  = creditsMoved > sessionStartBalance
+            ? (creditsMoved - sessionStartBalance) * 2
+            : 0
+        let isOverrun = activity.kind == .spender && creditsMoved > sessionStartBalance
 
         return VStack(spacing: theme.spacing.xxl) {
 
             Spacer()
 
-            // Header — activity name + kind icon in a neumorphic disc.
             VStack(spacing: theme.spacing.md) {
                 ZStack {
                     Circle()
@@ -62,50 +60,58 @@ struct SessionView: View {
                         .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
                     theme.icon(activity.kind == .charger ? .charger : .spender)
                         .font(.system(size: 28))
-                        .foregroundStyle(kindColor)
+                        .foregroundStyle(isOverrun ? theme.colors.negative : kindColor)
                 }
                 Text(activity.name)
                     .font(theme.typography.headline)
                     .foregroundStyle(theme.colors.textPrimary)
-                Text(paused
-                     ? "Paused"
-                     : (activity.kind == .charger ? "Charging" : "Spending"))
+                Text(lBundle.l(statusKey))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
                     .kerning(2)
                     .textCase(.uppercase)
             }
 
-            // Big elapsed-time clock. Dims to secondary text colour while
-            // paused so the freeze is visually obvious in addition to the
-            // text not advancing.
             Text(formatElapsed(elapsed))
                 .font(.system(size: 64, weight: .light, design: .rounded).monospacedDigit())
-                .foregroundStyle(paused ? theme.colors.textSecondary : theme.colors.textPrimary)
+                .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : theme.colors.textPrimary))
                 .padding(.vertical, theme.spacing.md)
 
-            // Live credits readout. Format with one decimal to make the
-            // motion visible second-to-second (rate is per-second so each
-            // tick changes the fractional digit, signalling "this is live").
             VStack(spacing: theme.spacing.xs) {
-                Text("\(creditsMoved, format: .number.precision(.fractionLength(1))) credits \(verb)")
+                Text(String(format: lBundle.l(creditsKey),
+                            creditsMoved.formatted(.number.precision(.fractionLength(1)))))
                     .font(theme.typography.bodyStrong)
-                    .foregroundStyle(paused ? theme.colors.textSecondary : kindColor)
-                Text("at \(activity.ratePerSecond * 60, format: .number.precision(.fractionLength(1))) cr / min")
+                    .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : kindColor))
+                if activity.kind == .spender {
+                    // Show remaining balance before zero, or live debt once overrun.
+                    if isOverrun {
+                        Text(String(format: lBundle.l("session.live_debt"),
+                                    spenderLiveDebt.formatted(.number.precision(.fractionLength(1)))))
+                            .font(theme.typography.caption)
+                            .foregroundStyle(theme.colors.negative)
+                    } else {
+                        Text(String(format: lBundle.l("session.balance_remaining"),
+                                    spenderRemaining.formatted(.number.precision(.fractionLength(1)))))
+                            .font(theme.typography.caption)
+                            .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
+                                             ? theme.colors.negative
+                                             : theme.colors.textSecondary)
+                    }
+                }
+                Text(String(format: lBundle.l("session.rate"),
+                            (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(1)))))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }
 
             Spacer()
 
-            // Actions: PAUSE/RESUME above STOP. Pause is secondary visual
-            // weight (raised neumorphic, not filled) so STOP keeps the
-            // primary affordance.
             VStack(spacing: theme.spacing.md) {
                 Button(action: togglePause) {
-                    Text(paused ? "RESUME" : "PAUSE")
+                    Text(lBundle.l(paused ? "session.resume" : "session.pause"))
                         .font(theme.typography.button.weight(.semibold))
                         .kerning(4)
+                        .textCase(.uppercase)
                         .foregroundStyle(paused ? theme.colors.positive : theme.colors.textPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, theme.spacing.md)
@@ -117,9 +123,10 @@ struct SessionView: View {
                 .buttonStyle(.plain)
 
                 Button(action: stop) {
-                    Text("STOP")
+                    Text(lBundle.l("session.stop"))
                         .font(theme.typography.button.weight(.bold))
                         .kerning(4)
+                        .textCase(.uppercase)
                         .foregroundStyle(Color.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, theme.spacing.lg)
@@ -134,20 +141,11 @@ struct SessionView: View {
         .padding(theme.spacing.lg)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(theme.colors.background.ignoresSafeArea())
-        // Disable swipe-down-to-dismiss so an in-progress session can't be
-        // orphaned by accident. STOP is the only exit.
-        .interactiveDismissDisabled()
     }
-
-    // MARK: - Actions
 
     private func togglePause() {
         if session.isPaused {
             session.resume()
-            // Reschedule spender notifications against the *remaining* balance.
-            // Ledger.balance is untouched during a session (SessionFinalizer
-            // applies the delta only on stop), so subtracting credits-spent-
-            // so-far from the current balance gives us the right remaining time.
             if activity.kind == .spender {
                 let balance       = Ledger.fetchOrCreate(in: context).balance
                 let creditsSpent  = activity.ratePerSecond * session.elapsed
@@ -164,25 +162,32 @@ struct SessionView: View {
                     )
                 }
             }
+            LiveActivityService.update(
+                adjustedStart: session.startedAt.addingTimeInterval(session.totalPausedSeconds),
+                isPaused:      false,
+                pausedElapsed: 0,
+                creditsMoved:  activity.ratePerSecond * session.elapsed
+            )
         } else {
+            let elapsedNow    = session.elapsed
+            let adjustedStart = session.startedAt.addingTimeInterval(session.totalPausedSeconds)
             session.pause()
-            // Cancel scheduled notifications — they'd otherwise fire at the
-            // original wall-clock time, ignoring the pause.
             NotificationScheduler.cancelSession(sessionId: session.id)
+            LiveActivityService.update(
+                adjustedStart: adjustedStart,
+                isPaused:      true,
+                pausedElapsed: elapsedNow,
+                creditsMoved:  activity.ratePerSecond * elapsedNow
+            )
         }
     }
 
     private func stop() {
         SessionFinalizer.finalize(session: session, in: context)
-        // Clear the parent's binding to drop the sheet. dismiss() alone
-        // wouldn't be enough since the sheet is item-driven on this binding.
         presented = nil
         dismiss()
     }
 
-    // Format seconds as HH:MM:SS, dropping the hour segment under an hour
-    // so a short session reads "12:34" instead of "00:12:34" — feels less
-    // medical / more conversational.
     private func formatElapsed(_ seconds: TimeInterval) -> String {
         let total = Int(seconds)
         let h     = total / 3600

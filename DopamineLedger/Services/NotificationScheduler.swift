@@ -5,6 +5,29 @@
 import Foundation
 import UserNotifications
 
+// MARK: - Foreground delivery
+
+// iOS suppresses notifications silently when the app is in the foreground
+// unless a UNUserNotificationCenterDelegate is wired up. This delegate
+// opts in to banner + sound delivery for every notification that fires
+// while the app is open — the primary case being the debt alarm firing
+// while the user is watching SessionView.
+//
+// Set as delegate once in DopamineLedgerApp.init() via:
+//   UNUserNotificationCenter.current().delegate = NotificationCenterDelegate.shared
+final class NotificationCenterDelegate: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = NotificationCenterDelegate()
+    private override init() {}
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound])
+    }
+}
+
 // Wraps UNUserNotificationCenter for our specific use case: scheduling
 // the 5-min warning + zero alarm at session start, and cancelling them
 // on session stop.

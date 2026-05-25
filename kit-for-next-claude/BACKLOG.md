@@ -4,7 +4,15 @@ Future improvements not part of the current MVP scope. Keep this list
 short and merge into CLAUDE.md (or close as out-of-scope) when each item
 is acted on.
 
-## Active-session indicator on the home screen
+---
+
+> **Implemented (2026-05-25):** Active-session indicator, per-activity debt chip,
+> unconstrained icon picker, and About section in Settings are now shipped.
+> Step 7 (pixel-art polish) is moved to the long-term backlog below.
+
+---
+
+## Active-session indicator on the home screen ✅ Done
 
 When a session is running (charger or spender), the activity list gives
 no visual cue that one of the rows is currently "live." A user navigating
@@ -23,7 +31,7 @@ Decide on one (or layer two) when ready. This is mostly a polish item —
 not urgent, but valuable for the "background it" use case where the user
 may genuinely forget a session is running.
 
-## Per-activity debt visible on the spender row
+## Per-activity debt visible on the spender row ✅ Done
 
 Today, debt is surfaced in two places:
 
@@ -58,7 +66,7 @@ plus the visual treatment.
 Out of MVP scope but a small lift — could be folded into the design
 pass alongside the active-session indicator.
 
-## Unconstrained icon picker
+## Unconstrained icon picker ✅ Done
 
 Currently the icon picker in `AddActivityView` filters icons by activity
 kind (chargers see only charger-tagged + any-tagged icons; spenders see

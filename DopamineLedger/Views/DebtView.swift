@@ -1,21 +1,15 @@
 // DebtView.swift
 // Sheet for repaying outstanding ActivityDebt rows from the global balance.
-//
-// One row per activity (a single activity can have multiple debt rows
-// because each spender overrun creates a new row). We sum them for the
-// display and distribute the repayment back across those rows
-// oldest-first when the user taps Repay.
 
 import SwiftUI
 import SwiftData
 
 struct DebtView: View {
-    @Environment(\.theme)        private var theme
-    @Environment(\.modelContext) private var context
-    @Environment(\.dismiss)      private var dismiss
+    @Environment(\.theme)          private var theme
+    @Environment(\.modelContext)   private var context
+    @Environment(\.dismiss)        private var dismiss
+    @Environment(\.languageBundle) private var lBundle
 
-    // Only unpaid debts — same predicate as the home screen, so the row
-    // disappears as soon as it's zeroed.
     @Query(filter: #Predicate<ActivityDebt> { $0.amount > 0 })
                                       private var debts:      [ActivityDebt]
     @Query                            private var activities: [Activity]
@@ -23,7 +17,6 @@ struct DebtView: View {
 
     private var ledger: Ledger? { ledgers.first }
 
-    // Group debt amounts by activityId so each activity gets one row.
     private var debtsByActivity: [(activity: Activity, total: Double)] {
         let totals = Dictionary(grouping: debts, by: \.activityId)
             .mapValues { $0.reduce(0) { $0 + $1.amount } }
@@ -38,11 +31,7 @@ struct DebtView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
-
-                    // Current balance — prominent so the user sees the pool
-                    // they're spending from before they tap Repay.
                     balanceHeader
-
                     if debtsByActivity.isEmpty {
                         emptyState
                     } else {
@@ -59,12 +48,12 @@ struct DebtView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Debt")
+                    Text(lBundle.l("debt.title"))
                         .font(theme.typography.headline)
                         .foregroundStyle(theme.colors.textPrimary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(lBundle.l("common.done")) { dismiss() }
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(theme.colors.accent)
                 }
@@ -72,11 +61,9 @@ struct DebtView: View {
         }
     }
 
-    // MARK: - Subviews
-
     private var balanceHeader: some View {
         VStack(spacing: theme.spacing.xs) {
-            Text("AVAILABLE BALANCE")
+            Text(lBundle.l("debt.available_balance"))
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .kerning(2)
@@ -95,9 +82,6 @@ struct DebtView: View {
 
     @ViewBuilder
     private func debtRow(activity: Activity, total: Double) -> some View {
-        // Repay is enabled only when the balance has something to spend.
-        // RepayMath would handle the zero case correctly anyway, but the
-        // button being disabled makes the state obvious.
         let canRepay = (ledger?.balance ?? 0) > 0
 
         HStack(spacing: theme.spacing.md) {
@@ -116,7 +100,8 @@ struct DebtView: View {
                 Text(activity.name)
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
-                Text("\(total, format: .number.precision(.fractionLength(1))) credits owed")
+                Text(String(format: lBundle.l("debt.credits_owed"),
+                            total.formatted(.number.precision(.fractionLength(1)))))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.negative)
             }
@@ -124,7 +109,7 @@ struct DebtView: View {
             Spacer()
 
             Button { repay(activityId: activity.id) } label: {
-                Text("Repay")
+                Text(lBundle.l("debt.repay_button"))
                     .font(theme.typography.button.weight(.semibold))
                     .foregroundStyle(canRepay ? Color.white : theme.colors.textSecondary)
                     .padding(.horizontal, theme.spacing.lg)
@@ -147,7 +132,7 @@ struct DebtView: View {
             theme.icon(.balance)
                 .font(.system(size: 36))
                 .foregroundStyle(theme.colors.textSecondary.opacity(0.5))
-            Text("No outstanding debt.")
+            Text(lBundle.l("debt.empty"))
                 .font(theme.typography.body)
                 .foregroundStyle(theme.colors.textSecondary)
                 .multilineTextAlignment(.center)
@@ -156,12 +141,6 @@ struct DebtView: View {
         .padding(.vertical, theme.spacing.xxl)
     }
 
-    // MARK: - Repay logic
-
-    // Pay down this activity's debt using as much of the current balance as
-    // possible. RepayMath.apply returns the moved amount; RepayMath.split
-    // then distributes it across the activity's debt rows oldest-first.
-    // Rows that hit zero stop appearing thanks to the @Query predicate.
     private func repay(activityId: UUID) {
         guard let ledger = ledger else { return }
         let rows  = debts

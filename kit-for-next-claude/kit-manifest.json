@@ -70,15 +70,19 @@
     "round1 project.pbxproj (handcrafted; round 2 uses xcodegen)"
   ],
   "acceptanceChecks": {
-    "xcodegen_generates_pbxproj":      "untested",
-    "theme_protocol_compiles":         "untested",
+    "xcodegen_generates_pbxproj":      "pass",
+    "theme_protocol_compiles":         "pass",
     "info_plist_has_required_keys":    "pass",
-    "tests_present":                   "pass"
+    "tests_present":                   "pass",
+    "live_activity_builds":            "pass",
+    "app_runs_on_simulator":           "pass"
   },
   "acceptanceCheckNotes": {
-    "xcodegen_generates_pbxproj":   "Run `make generate` in the round-2 repo after dropping in project.yml. Confirm DopamineLedger.xcodeproj opens and builds.",
-    "theme_protocol_compiles":      "Add Theme.swift + IconResolver.swift + SoundPlayer.swift to the new project and verify a clean build with no view code referencing them yet.",
-    "info_plist_has_required_keys": "Verified at write time: UIAppFonts, ITSAppUsesNonExemptEncryption, UIUserInterfaceStyle, UISupportedInterfaceOrientations all present.",
-    "tests_present":                "Verified at write time: 22 unit tests in scaffolds/Tests/DopamineLedgerTests.swift covering SessionMath, RepayMath, NotificationMath, Activity, Session, ActivityDebt."
+    "xcodegen_generates_pbxproj":   "Verified 2026-05-25: make generate produces clean project including DopamineLedgerWidgets extension target.",
+    "theme_protocol_compiles":      "Verified 2026-05-25: NeuTheme, SystemTheme, PixelArtTheme all compile. NeuTheme is active default.",
+    "info_plist_has_required_keys": "Verified at write time: UIAppFonts, ITSAppUsesNonExemptEncryption, UIUserInterfaceStyle, UISupportedInterfaceOrientations all present. NSSupportsLiveActivities=YES added 2026-05-25.",
+    "tests_present":                "Verified at write time: 22 unit tests in scaffolds/Tests/DopamineLedgerTests.swift covering SessionMath, RepayMath, NotificationMath, Activity, Session, ActivityDebt.",
+    "live_activity_builds":         "Verified 2026-05-25: DopamineLedgerWidgets extension target compiles clean. ActivityKit.Activity<> fully qualified to avoid clash with SwiftData Activity model.",
+    "app_runs_on_simulator":        "Verified 2026-05-25: screenshot taken on iPhone 17 Pro Max simulator. Home screen renders correctly."
   }
 }

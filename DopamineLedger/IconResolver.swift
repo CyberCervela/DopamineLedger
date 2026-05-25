@@ -29,6 +29,32 @@ import SwiftUI
 
 enum IconResolver {
 
+    // MARK: User-chosen activity icons
+    //
+    // A flat curated list of SF Symbol names the user can assign to an activity.
+    // Keeping it flat (no tags, no kind-filtering) — that was the backlog note.
+    // The rule "Never call Image(systemName:) outside IconResolver" is satisfied
+    // because views call activityIconImage(named:), not Image(systemName:) directly.
+
+    static let activityIcons: [String] = [
+        // study / mind
+        "book.fill", "graduationcap.fill", "brain.head.profile", "pencil", "doc.fill",
+        // health / body
+        "figure.walk", "figure.run", "heart.fill", "dumbbell.fill", "bed.double.fill",
+        // leisure
+        "gamecontroller.fill", "tv.fill", "music.note", "film.fill", "headphones",
+        // food / home
+        "fork.knife", "cup.and.saucer.fill", "house.fill", "leaf.fill", "cart.fill",
+        // work / comms
+        "briefcase.fill", "laptopcomputer", "phone.fill", "message.fill",
+        // misc
+        "star.fill", "bolt.fill", "hourglass", "moon.fill", "sun.max.fill", "drop.fill", "clock.fill"
+    ]
+
+    static func activityIconImage(named symbol: String) -> Image {
+        Image(systemName: symbol)
+    }
+
     // MARK: SystemTheme mapping (semantic → SF Symbol name)
 
     static func systemSymbolName(for icon: SemanticIcon) -> String {

@@ -1,36 +1,20 @@
 // ActivityMenuView.swift
 // Pre-session sheet for a spender that needs attention before starting.
-// Surfaces one of two situations:
-//   1. Outstanding debt — show it and offer Repay before / instead of
-//      starting a session.
-//   2. Zero balance with no debt yet — warn that starting now will
-//      immediately accrue debt at the 2× penalty rate.
-//
-// Chargers and clean spenders (balance > 0, no debt) skip this view and
-// go straight to SessionView — no friction added to the common path.
 
 import SwiftUI
 import SwiftData
 
 struct ActivityMenuView: View {
-    @Environment(\.theme)        private var theme
-    @Environment(\.modelContext) private var context
-    @Environment(\.dismiss)      private var dismiss
+    @Environment(\.theme)          private var theme
+    @Environment(\.modelContext)   private var context
+    @Environment(\.dismiss)        private var dismiss
+    @Environment(\.languageBundle) private var lBundle
 
     let activity: Activity
-    // Called after dismissal when the user picks "Start session". The parent
-    // owns the session-creation logic (notifications, active-session state),
-    // so we just signal intent.
     let onStartSession: () -> Void
 
-    // The "original rule" toggle (see step6_backlog memory). When OFF (the
-    // default), starting a spender that is already in debt is blocked —
-    // Repay is the only path forward. When ON, the "Start session anyway"
-    // button is visible and the user can proceed at the 2× penalty rate.
-    // Read-only here; the toggle lives in SettingsView.
     @AppStorage("chillMode") private var chillMode: Bool = false
 
-    // Pulls this activity's unpaid debt rows. Updates live as Repay zeros them.
     @Query                            private var allDebts: [ActivityDebt]
     @Query                            private var ledgers:  [Ledger]
 
@@ -44,17 +28,10 @@ struct ActivityMenuView: View {
     private var totalDebt: Double { rows.reduce(0) { $0 + $1.amount } }
     private var balance:   Double { ledger?.balance ?? 0 }
 
-    // Display state — the view shows one of three centres based on the
-    // current data. Computed live so it transitions naturally when the
-    // user repays inside the sheet.
-    private enum Centre {
-        case debt
-        case zeroBalanceWarning
-        case cleared
-    }
+    private enum Centre { case debt, zeroBalanceWarning, cleared }
     private var centre: Centre {
-        if totalDebt > 0          { return .debt }
-        if balance   <= 0          { return .zeroBalanceWarning }
+        if totalDebt > 0 { return .debt }
+        if balance   <= 0 { return .zeroBalanceWarning }
         return .cleared
     }
 
@@ -62,9 +39,7 @@ struct ActivityMenuView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: theme.spacing.xxl) {
-
                     header
-
                     switch centre {
                     case .debt:
                         debtCard
@@ -73,8 +48,6 @@ struct ActivityMenuView: View {
                         zeroBalanceCard
                         startSessionButton
                     case .cleared:
-                        // Debt was cleared while the sheet was open and there
-                        // is balance to spend — collapse to a single CTA.
                         clearedState
                         startSessionButton
                     }
@@ -85,20 +58,18 @@ struct ActivityMenuView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Activity")
+                    Text(lBundle.l("activitymenu.title"))
                         .font(theme.typography.headline)
                         .foregroundStyle(theme.colors.textPrimary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(lBundle.l("common.done")) { dismiss() }
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(theme.colors.accent)
                 }
             }
         }
     }
-
-    // MARK: - Subviews
 
     private var header: some View {
         VStack(spacing: theme.spacing.md) {
@@ -115,7 +86,8 @@ struct ActivityMenuView: View {
             Text(activity.name)
                 .font(theme.typography.headline)
                 .foregroundStyle(theme.colors.textPrimary)
-            Text("\(activity.ratePerSecond * 60, format: .number.precision(.fractionLength(1))) cr / min")
+            Text(String(format: lBundle.l("session.rate"),
+                        (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(1)))))
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
         }
@@ -123,7 +95,7 @@ struct ActivityMenuView: View {
 
     private var debtCard: some View {
         VStack(spacing: theme.spacing.xs) {
-            Text("CREDITS OWED")
+            Text(lBundle.l("activitymenu.credits_owed_label"))
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .kerning(2)
@@ -143,9 +115,8 @@ struct ActivityMenuView: View {
     private var actionRow: some View {
         let canRepay = (ledger?.balance ?? 0) > 0
         return VStack(spacing: theme.spacing.md) {
-            // Repay — primary action when there's debt to clear.
             Button(action: repay) {
-                Text(canRepay ? "Repay (uses balance)" : "Repay — need balance")
+                Text(lBundle.l(canRepay ? "activitymenu.repay.can" : "activitymenu.repay.cannot"))
                     .font(theme.typography.button.weight(.semibold))
                     .foregroundStyle(canRepay ? Color.white : theme.colors.textSecondary)
                     .frame(maxWidth: .infinity)
@@ -158,15 +129,12 @@ struct ActivityMenuView: View {
             .buttonStyle(.plain)
             .disabled(!canRepay)
 
-            // "Start anyway" only appears when chill mode is ON. With chill
-            // mode OFF (default), the original rule applies: you cannot
-            // start a spender that's already in debt — Repay is the path.
             if chillMode {
                 Button {
                     dismiss()
                     onStartSession()
                 } label: {
-                    Text("Start session anyway")
+                    Text(lBundle.l("activitymenu.start_anyway"))
                         .font(theme.typography.button.weight(.semibold))
                         .foregroundStyle(theme.colors.textPrimary)
                         .frame(maxWidth: .infinity)
@@ -181,20 +149,16 @@ struct ActivityMenuView: View {
         }
     }
 
-    // Zero-balance warning — same visual weight as the debt card so the
-    // user reads it as "this is the thing you should know". The body text
-    // explains the consequence ("2× rate") plainly rather than relying on
-    // the user to remember the rule.
     private var zeroBalanceCard: some View {
         VStack(spacing: theme.spacing.sm) {
-            Text("BALANCE")
+            Text(lBundle.l("activitymenu.balance_label"))
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .kerning(2)
             Text(0, format: .number.precision(.fractionLength(1)))
                 .font(theme.typography.display)
                 .foregroundStyle(theme.colors.negative)
-            Text("Starting this spender now will accrue debt at 2× rate.")
+            Text(lBundle.l("activitymenu.zero_warning"))
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.negative)
                 .multilineTextAlignment(.center)
@@ -213,7 +177,7 @@ struct ActivityMenuView: View {
             theme.icon(.balance)
                 .font(.system(size: 28))
                 .foregroundStyle(theme.colors.positive)
-            Text("All debt cleared.")
+            Text(lBundle.l("activitymenu.cleared"))
                 .font(theme.typography.body)
                 .foregroundStyle(theme.colors.textSecondary)
         }
@@ -221,17 +185,13 @@ struct ActivityMenuView: View {
         .padding(.vertical, theme.spacing.lg)
     }
 
-    // Filled accent for the "clean state, just start" case; raised
-    // neumorphic (secondary weight) for the zero-balance warning so the
-    // CTA doesn't read like a recommendation when we're actively flagging
-    // a consequence.
     private var startSessionButton: some View {
         let filled = (centre == .cleared)
         return Button {
             dismiss()
             onStartSession()
         } label: {
-            Text(filled ? "Start session" : "Start session anyway")
+            Text(lBundle.l(filled ? "activitymenu.start_session" : "activitymenu.start_anyway"))
                 .font(theme.typography.button.weight(filled ? .bold : .semibold))
                 .kerning(filled ? 4 : 2)
                 .foregroundStyle(filled ? Color.white : theme.colors.textPrimary)
@@ -248,13 +208,6 @@ struct ActivityMenuView: View {
         }
         .buttonStyle(.plain)
     }
-
-    // MARK: - Repay logic
-    //
-    // Same shape as DebtView.repay — RepayMath.apply for the amount,
-    // RepayMath.split for the per-row distribution. Kept inline (rather
-    // than extracted to a service) because the two call sites are small,
-    // and pulling them apart now would obscure where mutations happen.
 
     private func repay() {
         guard let ledger = ledger else { return }

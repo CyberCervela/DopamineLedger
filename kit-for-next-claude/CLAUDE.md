@@ -1,7 +1,9 @@
 # CLAUDE.md — Dopamine Ledger, round 2
 
-Start here. Open `kit-for-next-claude/README.md` and follow the Quick start
-section. Then read `CLAUDE.md` end-to-end before writing any code.
+Start here. Read **`FEATURES.md`** (feature status) and **`JOURNAL.md`**
+(session log + decisions) at the project root first — they are the fastest
+way to understand current state after a `/clear`. Then read this file
+end-to-end before writing any code.
 
 This file is the master operating contract for the next Claude session
 rebuilding Dopamine Ledger. The user is the product manager. They are
@@ -84,7 +86,8 @@ catches structural issues before they compound. Re-order only with reason.
    transplanted services.
 6. **Debt + repay + quests + settings.** Round out the MVP.
 7. **Polish, custom fonts (`Info.plist` already has the keys), pixel-art
-   icons via `scripts/generate-pixel-icons.py --execute`.**
+   icons via `scripts/generate-pixel-icons.py --execute`.** ← Long-term backlog;
+   excluded from the current MVP submission.
 8. **Live Activities / Widget Extension.** Deferred from round 1; biggest
    remaining tech lift.
 

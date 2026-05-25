@@ -1,9 +1,5 @@
 // AddQuestView.swift
 // Sheet for creating or editing a Quest.
-//
-// Mirrors AddActivityView's structure — same NavigationStack chrome,
-// same neuField + label helpers, same Mode-based init pattern. Keeping
-// the shapes parallel means a change to one is easy to mirror in the other.
 
 import SwiftUI
 import SwiftData
@@ -14,14 +10,15 @@ enum QuestMode {
 }
 
 struct AddQuestView: View {
-    @Environment(\.theme)        private var theme
-    @Environment(\.modelContext) private var context
-    @Environment(\.dismiss)      private var dismiss
+    @Environment(\.theme)          private var theme
+    @Environment(\.modelContext)   private var context
+    @Environment(\.dismiss)        private var dismiss
+    @Environment(\.languageBundle) private var lBundle
 
     let mode: QuestMode
 
     @State private var name:   String
-    @State private var payoff: String  // String so the decimal field is editable
+    @State private var payoff: String
 
     init(mode: QuestMode = .create) {
         self.mode = mode
@@ -49,29 +46,29 @@ struct AddQuestView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
-                    neuField(label: "NAME") {
-                        TextField("e.g. File tax declaration", text: $name)
+                    neuField(label: lBundle.l("quest.field.name").uppercased()) {
+                        TextField(lBundle.l("quest.name.placeholder"), text: $name)
                             .font(theme.typography.body)
                             .foregroundStyle(theme.colors.textPrimary)
                             .autocorrectionDisabled()
                     }
 
-                    neuField(label: "PAYOFF — CREDITS ON COMPLETION") {
+                    neuField(label: lBundle.l("quest.field.payoff").uppercased()) {
                         HStack {
                             TextField("50", text: $payoff)
                                 .font(theme.typography.body)
                                 .foregroundStyle(theme.colors.textPrimary)
                                 .keyboardType(.numberPad)
                             Spacer()
-                            Text("credits")
+                            Text(lBundle.l("quest.payoff_suffix"))
                                 .font(theme.typography.caption)
                                 .foregroundStyle(theme.colors.textSecondary)
                         }
                     }
 
-                    // Plain-language hint — mirrors the rate hint in AddActivityView.
                     if let payoff = parsedPayoff {
-                        Text("Completing this quest will add \(payoff, format: .number.precision(.fractionLength(0))) credits to your balance.")
+                        Text(String(format: lBundle.l("quest.hint"),
+                                    payoff.formatted(.number.precision(.fractionLength(0)))))
                             .font(theme.typography.caption)
                             .foregroundStyle(theme.colors.positive)
                             .multilineTextAlignment(.center)
@@ -85,17 +82,17 @@ struct AddQuestView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text(isEditing ? "Edit Quest" : "New Quest")
+                    Text(lBundle.l(isEditing ? "quest.edit" : "quest.new"))
                         .font(theme.typography.headline)
                         .foregroundStyle(theme.colors.textPrimary)
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(lBundle.l("common.cancel")) { dismiss() }
                         .font(theme.typography.body)
                         .foregroundStyle(theme.colors.textSecondary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") { save() }
+                    Button(lBundle.l("common.save")) { save() }
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(isValid ? theme.colors.accent : theme.colors.textSecondary.opacity(0.5))
                         .disabled(!isValid)
@@ -103,10 +100,6 @@ struct AddQuestView: View {
             }
         }
     }
-
-    // MARK: - Reusable pieces (mirrors AddActivityView — kept local on purpose
-    // so each sheet stays standalone; promote to a shared helper if a third
-    // sheet needs the same chrome.)
 
     @ViewBuilder
     private func label(_ text: String) -> some View {
@@ -128,8 +121,6 @@ struct AddQuestView: View {
                 .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
         }
     }
-
-    // MARK: - Save
 
     private func save() {
         guard isValid, let payoff = parsedPayoff else { return }

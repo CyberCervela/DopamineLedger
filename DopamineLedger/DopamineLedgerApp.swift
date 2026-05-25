@@ -16,24 +16,33 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
 
 @main
 struct DopamineLedgerApp: App {
 
+    init() {
+        // Wire up the delegate so notifications display as banners even while
+        // the app is in the foreground (e.g., the debt alarm firing during a
+        // spender session in SessionView). Without this, iOS silently drops them.
+        UNUserNotificationCenter.current().delegate = NotificationCenterDelegate.shared
+    }
+
     // Persists the user's theme choice across launches.
     // Default is "neu" (light neumorphic) — the primary round-2 experience.
-    @AppStorage("themeId") private var themeId: String = "neu"
+    @AppStorage("themeId")      private var themeId:      String = "neu"
+    // Persists the user's in-app language choice. Default "en".
+    // Changing this immediately re-injects a different .lproj Bundle, so
+    // every view re-renders in the new language without an app restart.
+    @AppStorage("languageCode") private var languageCode: String = "en"
 
     var body: some Scene {
         WindowGroup {
-            // Resolve once per evaluation so the .environment and the
-            // .preferredColorScheme see the same theme value.
-            let theme = ThemeRegistry.theme(forId: themeId)
+            let theme  = ThemeRegistry.theme(forId: themeId)
+            let bundle = languageBundle(for: languageCode)
             ContentView()
                 .environment(\.theme, theme)
-                // Each theme declares its colour-scheme preference. NeuTheme
-                // forces .light, PixelArtTheme forces .dark, SystemTheme
-                // returns nil so the device's Dark Mode setting wins.
+                .environment(\.languageBundle, bundle)
                 .preferredColorScheme(theme.preferredColorScheme)
         }
         .modelContainer(for: [

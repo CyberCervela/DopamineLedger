@@ -78,6 +78,14 @@ enum SessionFinalizer {
             )
         }
 
+        // End the Live Activity with a 30-second frozen summary on the Lock Screen.
+        // isPaused = true in the final state freezes the timer so it doesn't
+        // tick forward past the session's actual stop time.
+        LiveActivityService.end(
+            finalElapsed: elapsed,
+            creditsMoved: activity.ratePerSecond * elapsed
+        )
+
         return FinalizedSession(
             outcome:       outcome,
             activityKind:  activity.kind,

@@ -8,19 +8,26 @@
 
 /* Begin PBXBuildFile section */
 		011FFC02E6C417F0895570AE /* SessionMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1F5D14F61CCE51BD730674 /* SessionMath.swift */; };
+		0A6E971D4643B0127FED2F50 /* SessionLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2395C755095E2803B843A85D /* SessionLiveActivity.swift */; };
 		0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BEB5036A2BAC59081047C29 /* IconResolver.swift */; };
 		0F684A616242BD4045EA49E6 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D7FB79F275C13CA9BC93E8E /* Session.swift */; };
+		160D2C2FF9763B0E9FA103CF /* DopamineLedgerWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2597CCC8D7C78D522E81B5CC /* ActivityMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */; };
+		28D95240A425C910FF9FDAA1 /* SessionActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */; };
 		2B65885662BB4A936E980A79 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB278EAC2CE14CE56E68910D /* SettingsView.swift */; };
 		431926C8E8C5E00F349F3AFE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77C1A151E12479B7F913952 /* Theme.swift */; };
+		468D4DF6CAE0FBC15B357392 /* LanguageBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B293ACE821753303628DCE0 /* LanguageBundle.swift */; };
 		55DD428459901EA8721E53C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D76FA4DE40F275F43E43BF6 /* ContentView.swift */; };
 		56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */; };
 		68BF0EC8341BC559D21A2991 /* DopamineLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */; };
 		6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */; };
 		6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */; };
+		855ADE1173F7BF8C56DD0584 /* SessionActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */; };
+		8C40C567E48F7A333AECB96B /* DopamineLedgerWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDC7B360D85A1338E60DB7 /* DopamineLedgerWidgetsBundle.swift */; };
 		8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632483371A4CE068A0150FD4 /* Ledger.swift */; };
 		95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4544B842E7F43616765D9F7 /* SessionView.swift */; };
 		A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E384A5EA6024739125C1550C /* AddQuestView.swift */; };
+		A55BFE80ACABC142C58DDEA9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */; };
 		A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */; };
 		A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */; };
 		B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73063F24F4207DCD725418F /* BalanceCard.swift */; };
@@ -28,6 +35,7 @@
 		C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */; };
 		C2E312A784E27EBC690441AA /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB2943323D5BB42DAA92FB5 /* Activity.swift */; };
 		C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 932E84D7A113B126ACF1715F /* ActivityDebt.swift */; };
+		C57C579F7A1119A0428B66B4 /* LiveActivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6599E0272A30BC468CA04713 /* LiveActivityService.swift */; };
 		D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FCBBB164354D8763EAA67F /* NeuTheme.swift */; };
 		DAE6A0BF1A38959C2F4BE7A0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B813B8C566B27ABA3F7B15E /* Assets.xcassets */; };
 		E69390F6F455AC442665AAA0 /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FBDCE63D4A089A5776B180 /* AddActivityView.swift */; };
@@ -43,7 +51,28 @@
 			remoteGlobalIDString = E69120AD4ADE44BF6D36ACA0;
 			remoteInfo = DopamineLedger;
 		};
+		BC3B71F1B09A63054B85C6BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63ADBC32C47998FCAE858711 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 74E54054CB17E55A294ECBE0;
+			remoteInfo = DopamineLedgerWidgets;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9B75207799052AC15FB186CE /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				160D2C2FF9763B0E9FA103CF /* DopamineLedgerWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionFinalizer.swift; sourceTree = "<group>"; };
@@ -51,12 +80,16 @@
 		0D76FA4DE40F275F43E43BF6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		1BEB5036A2BAC59081047C29 /* IconResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconResolver.swift; sourceTree = "<group>"; };
+		2395C755095E2803B843A85D /* SessionLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLiveActivity.swift; sourceTree = "<group>"; };
 		24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerApp.swift; sourceTree = "<group>"; };
+		413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DopamineLedgerWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepayMath.swift; sourceTree = "<group>"; };
 		4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityMenuView.swift; sourceTree = "<group>"; };
+		5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityAttributes.swift; sourceTree = "<group>"; };
 		5B813B8C566B27ABA3F7B15E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5D7FB79F275C13CA9BC93E8E /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		632483371A4CE068A0150FD4 /* Ledger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ledger.swift; sourceTree = "<group>"; };
+		6599E0272A30BC468CA04713 /* LiveActivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityService.swift; sourceTree = "<group>"; };
 		66FCBBB164354D8763EAA67F /* NeuTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuTheme.swift; sourceTree = "<group>"; };
 		75974194EFB58BCC1BE1D176 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		799737179C6FAA48A05E0539 /* NotificationMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMath.swift; sourceTree = "<group>"; };
@@ -64,14 +97,18 @@
 		84FBDCE63D4A089A5776B180 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		932E84D7A113B126ACF1715F /* ActivityDebt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDebt.swift; sourceTree = "<group>"; };
 		9853EB8E6D2BE0A858A3572E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		9B293ACE821753303628DCE0 /* LanguageBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageBundle.swift; sourceTree = "<group>"; };
 		AAB2943323D5BB42DAA92FB5 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
 		B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityListView.swift; sourceTree = "<group>"; };
+		BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BB278EAC2CE14CE56E68910D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		C4544B842E7F43616765D9F7 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerTests.swift; sourceTree = "<group>"; };
+		DD2250D301CE1869E52D82EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E384A5EA6024739125C1550C /* AddQuestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddQuestView.swift; sourceTree = "<group>"; };
+		EBFDC7B360D85A1338E60DB7 /* DopamineLedgerWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerWidgetsBundle.swift; sourceTree = "<group>"; };
 		EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebtView.swift; sourceTree = "<group>"; };
 		F73063F24F4207DCD725418F /* BalanceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalanceCard.swift; sourceTree = "<group>"; };
 		F77C1A151E12479B7F913952 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -86,8 +123,10 @@
 				1BEB5036A2BAC59081047C29 /* IconResolver.swift */,
 				9853EB8E6D2BE0A858A3572E /* Info.plist */,
 				66FCBBB164354D8763EAA67F /* NeuTheme.swift */,
+				5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */,
 				AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */,
 				F77C1A151E12479B7F913952 /* Theme.swift */,
+				DA8820430376F9181B409FE1 /* Localization */,
 				FFCC485C6F78DD808DFEA6ED /* Models */,
 				239FA22A6D5CDABE19B452C7 /* Services */,
 				5617FC0CB7823E5C8D77847E /* Views */,
@@ -98,6 +137,7 @@
 		239FA22A6D5CDABE19B452C7 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				6599E0272A30BC468CA04713 /* LiveActivityService.swift */,
 				1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */,
 				04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */,
 			);
@@ -109,6 +149,7 @@
 			children = (
 				81157DE817A5C07419A4F7AF /* DopamineLedger.app */,
 				D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */,
+				413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,6 +175,7 @@
 			children = (
 				0A8E9DE82389D8BF6CF6E180 /* DopamineLedger */,
 				92843329AF4291957A304FAB /* DopamineLedgerTests */,
+				D022895F464060179FE6F105 /* DopamineLedgerWidgets */,
 				463088C4671F850066047D81 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -144,6 +186,25 @@
 				DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */,
 			);
 			path = DopamineLedgerTests;
+			sourceTree = "<group>";
+		};
+		D022895F464060179FE6F105 /* DopamineLedgerWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				EBFDC7B360D85A1338E60DB7 /* DopamineLedgerWidgetsBundle.swift */,
+				DD2250D301CE1869E52D82EC /* Info.plist */,
+				2395C755095E2803B843A85D /* SessionLiveActivity.swift */,
+			);
+			path = DopamineLedgerWidgets;
+			sourceTree = "<group>";
+		};
+		DA8820430376F9181B409FE1 /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				9B293ACE821753303628DCE0 /* LanguageBundle.swift */,
+				BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */,
+			);
+			path = Localization;
 			sourceTree = "<group>";
 		};
 		FFCC485C6F78DD808DFEA6ED /* Models */ = {
@@ -182,16 +243,35 @@
 			productReference = D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		74E54054CB17E55A294ECBE0 /* DopamineLedgerWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D766F560F193910B1DECF447 /* Build configuration list for PBXNativeTarget "DopamineLedgerWidgets" */;
+			buildPhases = (
+				E2BB59948145D9A5356158DD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DopamineLedgerWidgets;
+			packageProductDependencies = (
+			);
+			productName = DopamineLedgerWidgets;
+			productReference = 413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 05141E6CF3E76B48DEB7C7B3 /* Build configuration list for PBXNativeTarget "DopamineLedger" */;
 			buildPhases = (
 				87BECC5D8E76D22908091C88 /* Sources */,
 				B149BA732390997E2A2E597A /* Resources */,
+				9B75207799052AC15FB186CE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3F65E904263920AAE77BD7F1 /* PBXTargetDependency */,
 			);
 			name = DopamineLedger;
 			packageProductDependencies = (
@@ -213,6 +293,10 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					74E54054CB17E55A294ECBE0 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					E69120AD4ADE44BF6D36ACA0 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -224,7 +308,13 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				de,
 				en,
+				es,
+				fr,
+				ja,
+				ko,
+				"zh-Hans",
 			);
 			mainGroup = 62C6E67253A1DEEB8705DEA0;
 			minimizedProjectReferenceProxies = 1;
@@ -235,6 +325,7 @@
 			targets = (
 				E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */,
 				1039CB380E1D9F9882B477ED /* DopamineLedgerTests */,
+				74E54054CB17E55A294ECBE0 /* DopamineLedgerWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -245,6 +336,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DAE6A0BF1A38959C2F4BE7A0 /* Assets.xcassets in Resources */,
+				A55BFE80ACABC142C58DDEA9 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,13 +366,16 @@
 				6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */,
 				C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */,
 				0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */,
+				468D4DF6CAE0FBC15B357392 /* LanguageBundle.swift in Sources */,
 				8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */,
+				C57C579F7A1119A0428B66B4 /* LiveActivityService.swift in Sources */,
 				D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */,
 				E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */,
 				A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */,
 				B9B71A9BC1B51B7C00D86762 /* Quest.swift in Sources */,
 				56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */,
 				0F684A616242BD4045EA49E6 /* Session.swift in Sources */,
+				855ADE1173F7BF8C56DD0584 /* SessionActivityAttributes.swift in Sources */,
 				6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */,
 				011FFC02E6C417F0895570AE /* SessionMath.swift in Sources */,
 				95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */,
@@ -290,9 +385,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2BB59948145D9A5356158DD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C40C567E48F7A333AECB96B /* DopamineLedgerWidgetsBundle.swift in Sources */,
+				28D95240A425C910FF9FDAA1 /* SessionActivityAttributes.swift in Sources */,
+				0A6E971D4643B0127FED2F50 /* SessionLiveActivity.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3F65E904263920AAE77BD7F1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 74E54054CB17E55A294ECBE0 /* DopamineLedgerWidgets */;
+			targetProxy = BC3B71F1B09A63054B85C6BA /* PBXContainerItemProxy */;
+		};
 		8BC6D96A34A56275ECA51D76 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */;
@@ -488,6 +598,44 @@
 			};
 			name = Release;
 		};
+		825F62FE36D07E2173CA5D4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DopamineLedgerWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cibercervela.DopamineLedger.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		ADCB4FB8380DFE6629B5C94E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DopamineLedgerWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cibercervela.DopamineLedger.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 		C6269D2B3FE25D5651320FFD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -532,6 +680,15 @@
 			buildConfigurations = (
 				565E12A9E5539AC685355C06 /* Debug */,
 				C6269D2B3FE25D5651320FFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D766F560F193910B1DECF447 /* Build configuration list for PBXNativeTarget "DopamineLedgerWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ADCB4FB8380DFE6629B5C94E /* Debug */,
+				825F62FE36D07E2173CA5D4E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

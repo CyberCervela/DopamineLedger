@@ -1,0 +1,69 @@
+# DopamineLedger — Session Journal
+
+> **Read this before starting a session** to understand decisions already made,
+> bugs already fixed, and things already tried. Don't re-litigate closed items.
+
+---
+
+## Session 3 — 2026-05-25
+
+**Focus:** MVP polish pass — four backlog features + two bug fixes.
+
+**Shipped:**
+- Icon picker (31 SF Symbols in `IconResolver.activityIcons`; grid in `AddActivityView`; `Activity.iconName` now persisted and displayed in `ActivityRow` with kind-icon fallback for old `"circle"` default)
+- Active-session indicator (pulsing `.strokeBorder` on `ActivityRow` when `isActive`)
+- Per-activity debt chip (red capsule pill below rate on spender rows with debt)
+- About section in Settings (version from bundle, mailto:cibercervela@pm.me, GitHub links)
+- Step 7 (pixel-art polish) permanently moved to long-term backlog; excluded from MVP
+- **Bug fix — foreground notifications silently dropped:** iOS suppresses notifications when the app is in the foreground unless `UNUserNotificationCenterDelegate` is set. Added `NotificationCenterDelegate.shared` wired at app init in `DopamineLedgerApp.init()`.
+- **Bug fix — swipe-down blocked on SessionView:** Removed `.interactiveDismissDisabled()`. Session survives in DB on swipe; active indicator on home row; tapping the row re-opens the session (new guard in `openActivity`).
+- **Live debt display in SessionView:** Spender sessions now show "X remaining" (turns red below 20% of starting balance) and "X in debt · 2× rate" once past zero. Timer and icon also turn red on overrun. Fixes user confusion about balance not updating during a session (Ledger only updates at finalize — by design — but SessionView now shows the live picture).
+
+**Decisions:**
+- `NotificationCenterDelegate` placed at the bottom of `NotificationScheduler.swift` (keeps notification logic in one file).
+- `SessionView` queries `@Query var ledgers` itself for the pre-session balance; no need to pass it as a parameter since the Ledger doesn't change during a session.
+- `openActivity` now checks `activeSessions.first(where: { $0.activityId == activity.id })` before the `activeSessions.isEmpty` guard, so tapping the pulsing row re-opens the sheet.
+
+**Known remaining:**
+- Privacy Policy URL in About section is the GitHub repo (placeholder). Needs a real hosted page before App Store submission.
+- Pixel-art theme assets not generated. Step 7 deferred.
+
+---
+
+## Session 2 — 2026-05-25
+
+**Focus:** In-app localisation + language switcher.
+
+**Shipped:**
+- Custom `\.languageBundle` environment key (`Localization/LanguageBundle.swift`)
+- `Localizable.xcstrings` with 80+ keys × 7 languages (EN/FR/DE/ES/ZH/JA/KO)
+- In-app language switcher in Settings; CJK hidden from picker until native-speaker review
+- All views migrated to `lBundle.l("key")` pattern
+- `ActivityFilter` raw values changed from display strings to localization keys (e.g. `"filter.all"`)
+- `project.yml` updated with `knownRegions`
+
+**Gotchas:**
+- SwiftUI `Text(LocalizedStringKey)` ignores `.environment(\.locale)` for bundle selection — always uses `Bundle.main`. The custom environment key + `NSLocalizedString(key, bundle:, comment:)` is the only reliable fix.
+- German "ausgeben" (to spend) is separable — "aus" goes to sentence end. Required two separate format-string keys (`activity.hint.earns` / `activity.hint.spends`) rather than interpolating a verb.
+- Format strings with numbers need `String(format: lBundle.l("key"), formattedValue)` not `Text("\(lBundle.l("key"), value)")`.
+
+---
+
+## Session 1 — 2026-05-23 / 2026-05-24
+
+**Focus:** Round 2 green-field rebuild + Live Activities.
+
+**Shipped:**
+- Full xcodegen scaffold (`project.yml`, `make generate/build/install`)
+- Theme protocol: `NeuTheme` (primary), `SystemTheme`, `PixelArtTheme` (stub)
+- All models + math transplanted from round 1; 22 unit tests passing
+- Complete view layer: ActivityListView, BalanceCard, SessionView, AddActivityView, AddQuestView, DebtView, ActivityMenuView, SettingsView
+- `DopamineLedgerWidgets` extension: Lock Screen + Dynamic Island Live Activity
+- `LiveActivityService` wired into session start/pause/resume/stop
+- Ghost "Test Session" Live Activity bug fixed (TEMP debug `init()` block removed from `DopamineLedgerApp`)
+
+**Key architectural decisions:**
+- `ActivityKit.Activity` must be fully qualified (`ActivityKit.Activity<...>`) — clashes with SwiftData `Activity` model.
+- `ThemeRegistry.all` excludes `pixelArt` from the Settings picker (`filter { $0.id != "pixelArt" }`).
+- `Session.elapsed` is a computed property that accounts for `totalPausedSeconds`.
+- `SessionFinalizer` is a shared enum (not a method on SessionView) so both SessionView and SettingsView's global stop use the same path.

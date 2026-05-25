@@ -35,6 +35,20 @@
                ReferencedContainer = "container:DopamineLedger.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "74E54054CB17E55A294ECBE0"
+               BuildableName = "DopamineLedgerWidgets.appex"
+               BlueprintName = "DopamineLedgerWidgets"
+               ReferencedContainer = "container:DopamineLedger.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

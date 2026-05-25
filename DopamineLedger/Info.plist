@@ -78,5 +78,9 @@
         <key>UIApplicationSupportsMultipleScenes</key>
         <false/>
     </dict>
+
+    <!-- Required for ActivityKit Live Activities. -->
+    <key>NSSupportsLiveActivities</key>
+    <true/>
 </dict>
 </plist>

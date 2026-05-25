@@ -1,0 +1,967 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+
+    "common.cancel" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Cancelar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "取消" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "キャンセル" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "취소" } }
+    }},
+
+    "common.save" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Save" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Enregistrer" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Speichern" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Guardar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "保存" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "保存" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "저장" } }
+    }},
+
+    "common.done" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Done" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Fertig" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Listo" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "完了" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "완료" } }
+    }},
+
+    "common.edit" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Edit" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Modifier" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Bearbeiten" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Editar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编辑" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "編集" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "편집" } }
+    }},
+
+    "common.delete" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Delete" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Supprimer" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Löschen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Eliminar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "删除" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "削除" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "삭제" } }
+    }},
+
+    "home.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "Dopamine Ledger" } }
+    }},
+
+    "filter.all" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "All" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Tout" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Alle" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Todo" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "全部" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべて" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "전체" } }
+    }},
+
+    "filter.chargers" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Chargers" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Chargeurs" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Lader" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Cargadores" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "充值" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "チャージ" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "충전" } }
+    }},
+
+    "filter.spenders" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Spenders" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Dépenseurs" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Ausgeber" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Gastadores" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "消耗" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "消費" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "소비" } }
+    }},
+
+    "filter.quests" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Quests" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Quêtes" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Quests" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Misiones" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "任务" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クエスト" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "퀘스트" } }
+    }},
+
+    "home.empty.all" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Nothing yet.\nTap + to add your first." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Rien encore.\nAppuyez sur + pour commencer." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Noch nichts.\nTippe +, um zu beginnen." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Nada aún.\nPulsa + para añadir el primero." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还没有内容。\n点击 + 开始添加。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "まだ何もありません。\n+ をタップして追加しましょう。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "아직 없습니다.\n+ 를 눌러 추가하세요." } }
+    }},
+
+    "home.empty.chargers" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "No chargers yet.\nChargers earn credits over time." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Pas encore de chargeurs.\nLes chargeurs gagnent des crédits avec le temps." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Noch keine Lader.\nLader verdienen im Laufe der Zeit Credits." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Sin cargadores aún.\nLos cargadores ganan créditos con el tiempo." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还没有充值活动。\n充值活动会随时间积累积分。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "チャージ活動がまだありません。\nチャージ活動は時間とともにクレジットを獲得します。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "충전 활동이 없습니다.\n충전 활동은 시간이 지남에 따라 크레딧을 획득합니다." } }
+    }},
+
+    "home.empty.spenders" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "No spenders yet.\nSpenders spend credits over time." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Pas encore de dépenseurs.\nLes dépenseurs dépensent des crédits avec le temps." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Noch keine Ausgeber.\nAusgeber verbrauchen im Laufe der Zeit Credits." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Sin gastadores aún.\nLos gastadores gastan créditos con el tiempo." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还没有消耗活动。\n消耗活动会随时间消耗积分。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "消費活動がまだありません。\n消費活動は時間とともにクレジットを消費します。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "소비 활동이 없습니다.\n소비 활동은 시간이 지남에 따라 크레딧을 소모합니다." } }
+    }},
+
+    "home.empty.quests" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "No active quests.\nTap + to add one." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Aucune quête active.\nAppuyez sur + pour en ajouter." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Keine aktiven Quests.\nTippe +, um eine hinzuzufügen." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Sin misiones activas.\nPulsa + para añadir una." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "没有进行中的任务。\n点击 + 添加一个。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "進行中のクエストはありません。\n+ をタップして追加しましょう。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "진행 중인 퀘스트가 없습니다.\n+ 를 눌러 추가하세요." } }
+    }},
+
+    "row.quest.payoff" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "+%@ credits on completion" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "+%@ crédits à la complétion" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "+%@ Credits bei Abschluss" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "+%@ créditos al completar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成时 +%@ 积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "完了時 +%@ クレジット" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "완료 시 +%@ 크레딧" } }
+    }},
+
+    "row.quest.done" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Done" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Fait" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Erledigt" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Hecho" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "完了" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "완료" } }
+    }},
+
+    "balance.label" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "BALANCE" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "SOLDE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "GUTHABEN" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "SALDO" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "余额" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "残高" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "잔액" } }
+    }},
+
+    "balance.in_debt" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ credits in debt" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ crédits de dette" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ Credits Schulden" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ créditos de deuda" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@ 积分负债" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ クレジット負債" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 크레딧 부채" } }
+    }},
+
+    "debt.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Debt" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Dettes" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Schulden" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Deudas" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "债务" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "負債" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "부채" } }
+    }},
+
+    "debt.available_balance" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "AVAILABLE BALANCE" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "SOLDE DISPONIBLE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "VERFÜGBARES GUTHABEN" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "SALDO DISPONIBLE" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "可用余额" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "利用可能残高" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "사용 가능 잔액" } }
+    }},
+
+    "debt.credits_owed" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ credits owed" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ crédits dus" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ Credits geschuldet" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ créditos adeudados" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "欠 %@ 积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ クレジット未払い" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 크레딧 미납" } }
+    }},
+
+    "debt.repay_button" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Repay" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Rembourser" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Tilgen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Pagar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还款" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "返済" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "상환" } }
+    }},
+
+    "debt.empty" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "No outstanding debt." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Aucune dette en cours." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Keine ausstehenden Schulden." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Sin deudas pendientes." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "没有未偿债务。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "未払いの負債はありません。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "미납 부채가 없습니다." } }
+    }},
+
+    "session.charging" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Charging" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "En charge" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Lädt" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Cargando" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "充值中" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "チャージ中" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "충전 중" } }
+    }},
+
+    "session.spending" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Spending" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "En dépense" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Verbraucht" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Gastando" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "消耗中" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "消費中" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "소비 중" } }
+    }},
+
+    "session.paused" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Paused" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "En pause" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Pausiert" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Pausado" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已暂停" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "一時停止中" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "일시정지" } }
+    }},
+
+    "session.credits_earned" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ credits earned" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ crédits gagnés" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ Credits verdient" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ créditos ganados" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已获得 %@ 积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ クレジット獲得" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 크레딧 획득" } }
+    }},
+
+    "session.credits_spent" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ credits spent" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ crédits dépensés" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ Credits verbraucht" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ créditos gastados" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已消耗 %@ 积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ クレジット消費" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 크레딧 소모" } }
+    }},
+
+    "session.rate" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "at %@ cr / min" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "à %@ cr / min" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "bei %@ Cr./Min." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "a %@ cr / min" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "每分钟 %@ 积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ クレジット/分" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 크레딧/분" } }
+    }},
+
+    "session.pause" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Pause" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Pause" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Pause" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Pausa" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "暂停" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "一時停止" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "일시정지" } }
+    }},
+
+    "session.resume" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Resume" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Reprendre" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Fortsetzen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Reanudar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "继续" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "再開" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "재개" } }
+    }},
+
+    "session.stop" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Stop" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Stop" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Stop" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Parar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "停止" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "停止" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "정지" } }
+    }},
+
+    "activity.new" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "New Activity" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Nouvelle activité" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Neue Aktivität" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Nueva actividad" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新建活动" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "新しい活動" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "새 활동" } }
+    }},
+
+    "activity.edit" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Edit Activity" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Modifier l'activité" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Aktivität bearbeiten" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Editar actividad" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编辑活动" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "活動を編集" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "활동 편집" } }
+    }},
+
+    "activity.field.name" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Name" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Nom" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Name" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Nombre" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "名称" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "名前" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "이름" } }
+    }},
+
+    "activity.field.type" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Type" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Type" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Typ" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Tipo" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "类型" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "タイプ" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "유형" } }
+    }},
+
+    "activity.field.rate" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Rate — Credits / Min" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Taux — Crédits / Min" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Rate — Credits / Min" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Tasa — Créditos / Min" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "速率 — 积分/分钟" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "レート — クレジット/分" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "속도 — 크레딧/분" } }
+    }},
+
+    "activity.name.placeholder" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "e.g. Reading" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "ex. : Lecture" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "z. B. Lesen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "ej. Lectura" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "例如：阅读" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "例：読書" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "예: 독서" } }
+    }},
+
+    "activity.kind.charger.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Charger" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Chargeur" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Lader" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Cargador" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "充值活动" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "チャージ" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "충전 활동" } }
+    }},
+
+    "activity.kind.charger.subtitle" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "earns credits" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "gagne des crédits" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "verdient Credits" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "gana créditos" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "赚取积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クレジットを獲得" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "크레딧 획득" } }
+    }},
+
+    "activity.kind.spender.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Spender" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Dépenseur" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Ausgeber" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Gastador" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "消耗活动" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "消費" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "소비 활동" } }
+    }},
+
+    "activity.kind.spender.subtitle" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "spends credits" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "dépense des crédits" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "gibt Credits aus" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "gasta créditos" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "消耗积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クレジットを消費" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "크레딧 소모" } }
+    }},
+
+    "activity.rate_suffix" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "cr / min" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "cr / min" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Cr./Min." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "cr / min" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "积分/分钟" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クレジット/分" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "크레딧/분" } }
+    }},
+
+    "activity.hint.earns" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "This activity earns %@ credits per minute." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Cette activité gagne %@ crédits par minute." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Diese Aktivität verdient %@ Credits pro Minute." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Esta actividad gana %@ créditos por minuto." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "此活动每分钟赚取 %@ 积分。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "この活動は毎分 %@ クレジットを獲得します。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "이 활동은 분당 %@ 크레딧을 획득합니다." } }
+    }},
+
+    "activity.hint.spends" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "This activity spends %@ credits per minute." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Cette activité dépense %@ crédits par minute." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Diese Aktivität gibt %@ Credits pro Minute aus." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Esta actividad gasta %@ créditos por minuto." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "此活动每分钟消耗 %@ 积分。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "この活動は毎分 %@ クレジットを消費します。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "이 활동은 분당 %@ 크레딧을 소모합니다." } }
+    }},
+
+    "quest.new" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "New Quest" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Nouvelle quête" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Neue Quest" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Nueva misión" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新建任务" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "新しいクエスト" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "새 퀘스트" } }
+    }},
+
+    "quest.edit" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Edit Quest" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Modifier la quête" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Quest bearbeiten" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Editar misión" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编辑任务" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クエストを編集" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "퀘스트 편집" } }
+    }},
+
+    "quest.field.name" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Name" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Nom" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Name" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Nombre" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "名称" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "名前" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "이름" } }
+    }},
+
+    "quest.field.payoff" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Payoff — Credits on Completion" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Récompense — Crédits à la complétion" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Belohnung — Credits bei Abschluss" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Recompensa — Créditos al completar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "奖励 — 完成时积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "報酬 — 完了時クレジット" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "보상 — 완료 시 크레딧" } }
+    }},
+
+    "quest.payoff_suffix" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "credits" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "crédits" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Credits" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "créditos" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クレジット" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "크레딧" } }
+    }},
+
+    "quest.name.placeholder" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "e.g. File tax return" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "ex. : Déclaration d'impôts" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "z. B. Steuererklärung" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "ej. Declaración de impuestos" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "例如：提交税务申报" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "例：確定申告" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "예: 세금 신고" } }
+    }},
+
+    "quest.hint" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Completing this quest adds %@ credits to your balance." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Compléter cette quête ajoute %@ crédits à votre solde." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Das Abschließen dieser Quest fügt %@ Credits zu deinem Guthaben hinzu." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Completar esta misión añade %@ créditos a tu saldo." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "完成此任务将为余额增加 %@ 积分。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "このクエストを完了すると %@ クレジットが残高に追加されます。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "이 퀘스트를 완료하면 잔액에 %@ 크레딧이 추가됩니다." } }
+    }},
+
+    "activitymenu.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Activity" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Activité" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Aktivität" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Actividad" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "活动" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "活動" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "활동" } }
+    }},
+
+    "activitymenu.credits_owed_label" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "CREDITS OWED" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "CRÉDITS DÛS" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "GESCHULDETE CREDITS" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "CRÉDITOS ADEUDADOS" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "欠款积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "未払いクレジット" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "미납 크레딧" } }
+    }},
+
+    "activitymenu.repay.can" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Repay (uses balance)" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Rembourser (utilise le solde)" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Tilgen (nutzt Guthaben)" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Pagar (usa el saldo)" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还款（消耗余额）" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "返済（残高を使用）" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "상환 (잔액 사용)" } }
+    }},
+
+    "activitymenu.repay.cannot" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Repay — need balance" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Rembourser — solde insuffisant" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Tilgen — Guthaben benötigt" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Pagar — necesitas saldo" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "还款 — 余额不足" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "返済 — 残高が必要" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "상환 — 잔액 필요" } }
+    }},
+
+    "activitymenu.balance_label" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "BALANCE" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "SOLDE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "GUTHABEN" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "SALDO" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "余额" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "残高" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "잔액" } }
+    }},
+
+    "activitymenu.zero_warning" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Starting this spender now will accrue debt at 2× rate." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Démarrer ce dépenseur maintenant accumulera des dettes au taux 2×." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Wenn du diesen Ausgeber jetzt startest, häufen sich Schulden mit 2× Rate an." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Iniciar este gastador ahora acumulará deudas a una tasa 2×." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "现在启动此消耗活动将以 2 倍速率累积债务。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "今この消費活動を開始すると、2倍の速度で負債が積み上がります。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "지금 이 소비 활동을 시작하면 2배 속도로 부채가 쌓입니다." } }
+    }},
+
+    "activitymenu.cleared" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "All debt cleared." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Toutes les dettes ont été soldées." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Alle Schulden beglichen." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Todas las deudas saldadas." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "所有债务已清偿。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべての負債を返済しました。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "모든 부채가 상환되었습니다." } }
+    }},
+
+    "activitymenu.start_session" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Start session" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Démarrer la session" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Sitzung starten" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Iniciar sesión" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "开始会话" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "セッション開始" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "세션 시작" } }
+    }},
+
+    "activitymenu.start_anyway" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Start session anyway" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Commencer quand même" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Trotzdem starten" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Iniciar de todas formas" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "仍然开始" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "それでも開始" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "그래도 시작" } }
+    }},
+
+    "settings.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Settings" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Paramètres" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Ajustes" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "设置" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "設定" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "설정" } }
+    }},
+
+    "settings.section.appearance" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "APPEARANCE" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "APPARENCE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "ERSCHEINUNGSBILD" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "APARIENCIA" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "外观" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "外観" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "외관" } }
+    }},
+
+    "settings.section.language" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "LANGUAGE" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "LANGUE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "SPRACHE" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "IDIOMA" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "语言" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "言語" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "언어" } }
+    }},
+
+    "settings.section.behaviour" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "BEHAVIOUR" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "COMPORTEMENT" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "VERHALTEN" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "COMPORTAMIENTO" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "行为" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "動作" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "동작" } }
+    }},
+
+    "settings.section.notifications" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "NOTIFICATIONS" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "NOTIFICATIONS" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "BENACHRICHTIGUNGEN" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "NOTIFICACIONES" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通知" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "通知" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "알림" } }
+    }},
+
+    "settings.section.active_session" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "ACTIVE SESSION" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "SESSION ACTIVE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "AKTIVE SITZUNG" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "SESIÓN ACTIVA" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "当前会话" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "進行中のセッション" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "진행 중인 세션" } }
+    }},
+
+    "settings.section.danger_zone" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "DANGER ZONE" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "ZONE DANGEREUSE" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "GEFAHRENZONE" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "ZONA DE PELIGRO" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "危险区域" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "危険ゾーン" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "위험 구역" } }
+    }},
+
+    "settings.theme.neu" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Light neumorphic with soft surfaces." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Néomorphique clair avec des surfaces douces." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Helles Neumorphismus-Design mit weichen Oberflächen." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Neumórfico claro con superficies suaves." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "明亮的新拟态风格，柔和界面。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "ソフトなサーフェスのライトニューモーフィック。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "부드러운 표면의 밝은 뉴모피즘 스타일." } }
+    }},
+
+    "settings.theme.system" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Standard iOS — adapts to Dark Mode." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "iOS standard — s'adapte au mode sombre." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Standard iOS — passt sich dem Dunkelmodus an." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "iOS estándar — se adapta al modo oscuro." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "标准 iOS 风格，支持深色模式。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "標準 iOS — ダークモードに対応。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "표준 iOS — 다크 모드 지원." } }
+    }},
+
+    "settings.theme.pixelart" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Retro pixel art (coming soon)." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Pixel art rétro (bientôt disponible)." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Retro-Pixel-Art (demnächst verfügbar)." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Pixel art retro (próximamente)." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "复古像素风格（即将推出）。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "レトロピクセルアート（近日公開）。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "레트로 픽셀 아트 (출시 예정)." } }
+    }},
+
+    "settings.chill.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Chill mode" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Mode décontracté" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Entspannter Modus" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Modo relajado" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "宽松模式" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "チルモード" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "여유 모드" } }
+    }},
+
+    "settings.chill.on" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "You can start a spender that's already in debt. Debt accrues at 2× rate." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Vous pouvez démarrer un dépenseur déjà endetté. Les dettes s'accumulent au taux 2×." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Du kannst einen Ausgeber starten, der bereits Schulden hat. Schulden häufen sich mit 2× Rate an." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Puedes iniciar un gastador que ya tiene deudas. Las deudas se acumulan a una tasa 2×." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你可以开始已有债务的消耗活动。债务以 2 倍速率累积。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すでに負債のある消費活動を開始できます。負債は2倍の速度で積み上がります。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "이미 부채가 있는 소비 활동을 시작할 수 있습니다. 부채는 2배 속도로 쌓입니다." } }
+    }},
+
+    "settings.chill.off" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Starting a spender with debt is blocked — repay first." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Démarrer un dépenseur endetté est bloqué — remboursez d'abord." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Ein Ausgeber mit Schulden kann nicht gestartet werden — erst tilgen." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Iniciar un gastador con deudas está bloqueado — paga primero." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "有债务的消耗活动被锁定 — 请先还款。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "負債のある消費活動は開始できません — まず返済してください。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "부채가 있는 소비 활동은 차단됩니다 — 먼저 상환하세요." } }
+    }},
+
+    "settings.notif.enabled" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications: Enabled" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications : Activées" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Benachrichtigungen: Aktiviert" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Notificaciones: Activadas" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通知：已开启" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "通知：有効" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "알림: 활성화됨" } }
+    }},
+
+    "settings.notif.disabled" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications: Disabled" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications : Désactivées" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Benachrichtigungen: Deaktiviert" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Notificaciones: Desactivadas" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通知：已关闭" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "通知：無効" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "알림: 비활성화됨" } }
+    }},
+
+    "settings.notif.not_determined" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications: Not set up" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications : Non configurées" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Benachrichtigungen: Nicht eingerichtet" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Notificaciones: No configuradas" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通知：未设置" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "通知：未設定" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "알림: 설정되지 않음" } }
+    }},
+
+    "settings.notif.unknown" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications: Unknown" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Notifications : Inconnu" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Benachrichtigungen: Unbekannt" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Notificaciones: Desconocidas" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通知：未知" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "通知：不明" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "알림: 알 수 없음" } }
+    }},
+
+    "settings.notif.request" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Request" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Demander" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Einrichten" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Configurar" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "请求" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "リクエスト" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "요청" } }
+    }},
+
+    "settings.notif.open_settings" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Open iOS Settings" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir les réglages iOS" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "iOS-Einstellungen öffnen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Abrir ajustes de iOS" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开 iOS 设置" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "iOS設定を開く" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "iOS 설정 열기" } }
+    }},
+
+    "settings.notif.caption" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Used to alert you about credit, debt, and connected-device events." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Utilisées pour vous alerter sur les crédits, les dettes et les événements d'appareils connectés." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Benachrichtigt dich über Credits, Schulden und verbundene Geräte." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Usadas para alertarte sobre créditos, deudas y dispositivos conectados." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "用于提醒你积分、债务和连接设备的相关事件。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "クレジット、負債、接続デバイスのイベントをお知らせします。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "크레딧, 부채, 연결된 기기 이벤트를 알려드립니다." } }
+    }},
+
+    "settings.active_session.stop" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Stop current session" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Arrêter la session en cours" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Sitzung beenden" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Detener sesión actual" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "停止当前会话" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "現在のセッションを停止" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "현재 세션 중지" } }
+    }},
+
+    "settings.wipe.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Wipe all data" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Effacer toutes les données" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Alle Daten löschen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Borrar todos los datos" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清除所有数据" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべてのデータを削除" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "모든 데이터 삭제" } }
+    }},
+
+    "settings.wipe.caption" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Resets every activity, session, debt, quest, and balance." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Réinitialise toutes les activités, sessions, dettes, quêtes et le solde." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Setzt alle Aktivitäten, Sitzungen, Schulden, Quests und das Guthaben zurück." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Restablece todas las actividades, sesiones, deudas, misiones y el saldo." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "重置所有活动、会话、债务、任务和余额。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべての活動、セッション、負債、クエスト、残高をリセットします。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "모든 활동, 세션, 부채, 퀘스트, 잔액을 초기화합니다." } }
+    }},
+
+    "alert.wipe.title" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Wipe all data?" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Effacer toutes les données ?" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Alle Daten löschen?" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "¿Borrar todos los datos?" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "清除所有数据？" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべてのデータを削除しますか？" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "모든 데이터를 삭제할까요?" } }
+    }},
+
+    "alert.wipe.message" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "This deletes every activity, session, debt, and quest, and resets your balance to 0. This cannot be undone." } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Cela supprime toutes les activités, sessions, dettes et quêtes, et remet le solde à 0. Cette action est irréversible." } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Damit werden alle Aktivitäten, Sitzungen, Schulden und Quests gelöscht und das Guthaben auf 0 zurückgesetzt. Dies kann nicht rückgängig gemacht werden." } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Esto elimina todas las actividades, sesiones, deudas y misiones, y restablece el saldo a 0. No se puede deshacer." } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "这将删除所有活动、会话、债务和任务，并将余额重置为 0。此操作无法撤销。" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべての活動、セッション、負債、クエストが削除され、残高が0にリセットされます。この操作は元に戻せません。" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "모든 활동, 세션, 부채, 퀘스트가 삭제되고 잔액이 0으로 초기화됩니다. 이 작업은 취소할 수 없습니다." } }
+    }},
+
+    "alert.wipe.confirm" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Wipe everything" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Tout effacer" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Alles löschen" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Borrar todo" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "全部清除" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "すべて削除" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "모두 삭제" } }
+    }},
+
+    "session.balance_remaining" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ remaining" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ restants" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ verbleibend" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ restantes" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "剩余 %@" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "残り %@" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 남음" } }
+    }},
+
+    "session.live_debt" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ in debt · 2× rate" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ de dette · taux 2×" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ Schulden · 2-facher Satz" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ en deuda · tasa 2×" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@ 负债 · 2 倍速率" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 負債 · 2 倍レート" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 부채 · 2배 속도" } }
+    }},
+
+    "row.activity.debt" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "%@ in debt" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "%@ de dette" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "%@ Schulden" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "%@ de deuda" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "欠 %@ 积分" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 負債" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "%@ 부채" } }
+    }},
+
+    "activity.field.icon" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Icon" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Icône" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Symbol" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Ícono" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "图标" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "アイコン" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "아이콘" } }
+    }},
+
+    "settings.section.about" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "ABOUT" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "À PROPOS" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "ÜBER" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "ACERCA DE" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关于" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "アプリについて" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "앱 정보" } }
+    }},
+
+    "settings.about.version" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Version" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Version" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Version" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Versión" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "版本" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "バージョン" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "버전" } }
+    }},
+
+    "settings.about.contact" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Send feedback" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Envoyer un commentaire" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Feedback senden" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Enviar comentarios" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "发送反馈" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "フィードバックを送る" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "피드백 보내기" } }
+    }},
+
+    "settings.about.privacy" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Privacy Policy" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Politique de confidentialité" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Datenschutzrichtlinie" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Política de privacidad" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "隐私政策" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "プライバシーポリシー" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "개인정보 처리방침" } }
+    }},
+
+    "settings.about.repo" : { "localizations" : {
+      "en"      : { "stringUnit" : { "state" : "translated", "value" : "Source Code" } },
+      "fr"      : { "stringUnit" : { "state" : "translated", "value" : "Code source" } },
+      "de"      : { "stringUnit" : { "state" : "translated", "value" : "Quellcode" } },
+      "es"      : { "stringUnit" : { "state" : "translated", "value" : "Código fuente" } },
+      "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "源代码" } },
+      "ja"      : { "stringUnit" : { "state" : "translated", "value" : "ソースコード" } },
+      "ko"      : { "stringUnit" : { "state" : "translated", "value" : "소스 코드" } }
+    }}
+
+  }
+}

@@ -1,14 +1,11 @@
 // SettingsView.swift
-// First-pass settings sheet. Covers the items that change app behaviour
-// today:
-//   1. Chill mode — gates "Start session anyway" when a spender has debt
-//   2. Notifications — permission status + path back when denied
-//   3. Stop current session — global escape hatch (only when one is active)
-//   4. Wipe all data — destructive reset for testing / fresh starts
-//
-// Future passes will add: theme switcher, IOT integration, friend sharing.
-// See memory/step6_backlog.md for the roadmap and memory/notification_strategy.md
-// for the design constraints around the notification row in particular.
+// Settings sheet. Covers:
+//   1. Appearance — theme picker
+//   2. Language — in-app language switcher (takes effect instantly, no restart)
+//   3. Behaviour — chill mode toggle
+//   4. Notifications — permission status + path to iOS Settings
+//   5. Active Session — global stop escape hatch
+//   6. Danger Zone — destructive data wipe
 
 import SwiftUI
 import SwiftData
@@ -16,36 +13,22 @@ import UserNotifications
 import UIKit
 
 struct SettingsView: View {
-    @Environment(\.theme)        private var theme
-    @Environment(\.modelContext) private var context
-    @Environment(\.dismiss)      private var dismiss
+    @Environment(\.theme)          private var theme
+    @Environment(\.modelContext)   private var context
+    @Environment(\.dismiss)        private var dismiss
+    @Environment(\.languageBundle) private var lBundle
 
-    // Persisted via UserDefaults under the key "chillMode" — survives
-    // launches, observed by any view that reads the same @AppStorage key.
-    @AppStorage("chillMode") private var chillMode: Bool = false
+    @AppStorage("chillMode")    private var chillMode:    Bool   = false
+    @AppStorage("themeId")      private var themeId:      String = "neu"
+    // Writing languageCode here re-injects the bundle in DopamineLedgerApp,
+    // so the whole view hierarchy re-renders in the new language immediately.
+    @AppStorage("languageCode") private var languageCode: String = "en"
 
-    // Persisted theme choice. Same key the app root reads, so writes here
-    // re-theme the whole app live (no restart needed) via the existing
-    // .environment(\.theme) binding on the WindowGroup's ContentView.
-    @AppStorage("themeId")   private var themeId:   String = "neu"
-
-    // Live queries so the Stop-session row appears only when there's
-    // actually a running session, and the wipe action sees current state.
     @Query(filter: #Predicate<Session> { $0.endedAt == nil })
                                       private var activeSessions: [Session]
 
-    // Confirmation alert for the destructive wipe. Two-step interaction
-    // (tap row → confirm in alert) so a thumb-bump doesn't nuke data.
     @State private var showWipeConfirm: Bool = false
-
-    // Cached notification authorization. Refreshed when the sheet appears
-    // and whenever the app returns to the foreground (the user might have
-    // toggled it in iOS Settings while we were backgrounded).
     @State private var notifStatus: UNAuthorizationStatus = .notDetermined
-
-    // Used to re-check notifStatus when the user comes back from iOS
-    // Settings via the deep link — the app transitions through .active
-    // again, which fires this observer.
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -53,11 +36,13 @@ struct SettingsView: View {
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
                     appearanceSection
+                    languageSection
                     behaviourSection
                     notificationsSection
                     if !activeSessions.isEmpty {
                         activeSessionSection
                     }
+                    aboutSection
                     dangerZoneSection
                 }
                 .padding(theme.spacing.lg)
@@ -72,34 +57,29 @@ struct SettingsView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Settings")
+                    Text(lBundle.l("settings.title"))
                         .font(theme.typography.headline)
                         .foregroundStyle(theme.colors.textPrimary)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(lBundle.l("common.done")) { dismiss() }
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(theme.colors.accent)
                 }
             }
-            .alert("Wipe all data?", isPresented: $showWipeConfirm) {
-                Button("Cancel", role: .cancel) { }
-                Button("Wipe everything", role: .destructive) { wipeAllData() }
+            .alert(lBundle.l("alert.wipe.title"), isPresented: $showWipeConfirm) {
+                Button(lBundle.l("common.cancel"), role: .cancel) { }
+                Button(lBundle.l("alert.wipe.confirm"), role: .destructive) { wipeAllData() }
             } message: {
-                Text("This deletes every activity, session, debt, and quest, and resets your balance to 0. This cannot be undone.")
+                Text(lBundle.l("alert.wipe.message"))
             }
         }
     }
 
     // MARK: - Sections
 
-    // Theme picker. Tapping a row writes to @AppStorage("themeId"), which
-    // the app root observes — so the whole app re-themes live, no restart.
-    // PixelArt is intentionally filtered out until its assets ship
-    // (Monogram / AbaddonBold fonts, pixel.* icons, sfx_* sounds). When
-    // those land the filter goes away and the row appears automatically.
     private var appearanceSection: some View {
-        sectionCard(title: "APPEARANCE") {
+        sectionCard(title: lBundle.l("settings.section.appearance")) {
             VStack(alignment: .leading, spacing: theme.spacing.md) {
                 ForEach(availableThemes, id: \.id) { themeOption in
                     themeRow(themeOption)
@@ -139,48 +119,73 @@ struct SettingsView: View {
         .buttonStyle(.plain)
     }
 
-    // Short user-facing description per theme. Lives in the view (not in
-    // the Theme protocol) because it's UI copy, not a structural property
-    // of the theme — it can be reworded freely without touching every
-    // theme file.
-    private func captionForTheme(_ theme: any Theme) -> String {
-        switch theme.id {
-        case "neu":    return "Light neumorphic with soft surfaces."
-        case "system": return "Standard iOS — adapts to Dark Mode."
-        case "pixelArt": return "Retro pixel art (coming soon)."
-        default:       return ""
+    private func captionForTheme(_ t: any Theme) -> String {
+        switch t.id {
+        case "neu":      return lBundle.l("settings.theme.neu")
+        case "system":   return lBundle.l("settings.theme.system")
+        case "pixelArt": return lBundle.l("settings.theme.pixelart")
+        default:         return ""
         }
     }
 
+    // Language picker. Each row shows the language's native name so the user
+    // can recognise their target language even before switching. Writing to
+    // @AppStorage("languageCode") propagates back to DopamineLedgerApp, which
+    // re-injects the bundle and re-renders the whole hierarchy — instant switch.
+    // CJK languages are prepared in the string catalog but hidden from the
+    // picker until a native speaker can verify the translations.
+    private let visibleLanguages: [SupportedLanguage] = [.en, .fr, .de, .es]
+
+    private var languageSection: some View {
+        sectionCard(title: lBundle.l("settings.section.language")) {
+            VStack(alignment: .leading, spacing: theme.spacing.md) {
+                ForEach(visibleLanguages) { lang in
+                    languageRow(lang)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func languageRow(_ lang: SupportedLanguage) -> some View {
+        let isActive = lang.rawValue == languageCode
+        Button {
+            languageCode = lang.rawValue
+        } label: {
+            HStack {
+                Text(lang.displayName)
+                    .font(theme.typography.bodyStrong)
+                    .foregroundStyle(theme.colors.textPrimary)
+                Spacer()
+                if isActive {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(theme.colors.accent)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
     private var behaviourSection: some View {
-        sectionCard(title: "BEHAVIOUR") {
-            // Toggle row. The caption explains the consequence in plain
-            // language so the user doesn't have to remember what "chill"
-            // means from the documentation.
+        sectionCard(title: lBundle.l("settings.section.behaviour")) {
             VStack(alignment: .leading, spacing: theme.spacing.xs) {
                 Toggle(isOn: $chillMode) {
-                    Text("Chill mode")
+                    Text(lBundle.l("settings.chill.title"))
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(theme.colors.textPrimary)
                 }
                 .tint(theme.colors.accent)
-                Text(chillMode
-                     ? "You can start a spender that's already in debt. Debt accrues at 2× rate."
-                     : "Starting a spender with debt is blocked — repay first.")
+                Text(lBundle.l(chillMode ? "settings.chill.on" : "settings.chill.off"))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }
         }
     }
 
-    // Notifications row. Three states based on the live UN authorization
-    // status; the row always shows *something* actionable so a denied
-    // state never leaves the user stuck without a path back. Copy is
-    // intentionally generic ("Notifications") and purpose-oriented in
-    // the caption, because the set of categories will grow as Health /
-    // IOT / screen-time integrations land — see notification_strategy.md.
     private var notificationsSection: some View {
-        sectionCard(title: "NOTIFICATIONS") {
+        sectionCard(title: lBundle.l("settings.section.notifications")) {
             VStack(alignment: .leading, spacing: theme.spacing.sm) {
                 HStack {
                     Text(notifStatusLabel)
@@ -200,21 +205,19 @@ struct SettingsView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                Text("Used to alert you about credit, debt, and connected-device events.")
+                Text(lBundle.l("settings.notif.caption"))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }
         }
     }
 
-    // MARK: Notifications — derived display state
-
     private var notifStatusLabel: String {
         switch notifStatus {
-        case .authorized, .provisional, .ephemeral: return "Notifications: Enabled"
-        case .denied:                                return "Notifications: Disabled"
-        case .notDetermined:                         return "Notifications: Not requested"
-        @unknown default:                            return "Notifications: Unknown"
+        case .authorized, .provisional, .ephemeral: return lBundle.l("settings.notif.enabled")
+        case .denied:                                return lBundle.l("settings.notif.disabled")
+        case .notDetermined:                         return lBundle.l("settings.notif.not_determined")
+        @unknown default:                            return lBundle.l("settings.notif.unknown")
         }
     }
 
@@ -226,23 +229,19 @@ struct SettingsView: View {
         }
     }
 
-    // Action button shown next to the status, or nil when no action is
-    // applicable (e.g., already authorized).
     private struct NotifAction { let label: String; let handler: () -> Void }
     private var notifAction: NotifAction? {
         switch notifStatus {
         case .notDetermined:
-            return NotifAction(label: "Request") {
+            return NotifAction(label: lBundle.l("settings.notif.request")) {
                 Task {
                     _ = await NotificationScheduler.ensurePermission()
                     await refreshNotificationStatus()
                 }
             }
         case .denied:
-            // iOS does not allow re-prompting once the user has denied.
-            // The only path back is the system Settings app — deep-link
-            // straight to our app's row so they don't have to scroll.
-            return NotifAction(label: "Open iOS Settings", handler: openSystemSettings)
+            return NotifAction(label: lBundle.l("settings.notif.open_settings"),
+                               handler: openSystemSettings)
         default:
             return nil
         }
@@ -260,12 +259,12 @@ struct SettingsView: View {
     }
 
     private var activeSessionSection: some View {
-        sectionCard(title: "ACTIVE SESSION") {
+        sectionCard(title: lBundle.l("settings.section.active_session")) {
             Button {
                 stopActiveSession()
             } label: {
                 HStack {
-                    Text("Stop current session")
+                    Text(lBundle.l("settings.active_session.stop"))
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(theme.colors.textPrimary)
                     Spacer()
@@ -280,16 +279,16 @@ struct SettingsView: View {
     }
 
     private var dangerZoneSection: some View {
-        sectionCard(title: "DANGER ZONE") {
+        sectionCard(title: lBundle.l("settings.section.danger_zone")) {
             Button {
                 showWipeConfirm = true
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: theme.spacing.xxs) {
-                        Text("Wipe all data")
+                        Text(lBundle.l("settings.wipe.title"))
                             .font(theme.typography.bodyStrong)
                             .foregroundStyle(theme.colors.negative)
-                        Text("Resets every activity, session, debt, quest, and balance.")
+                        Text(lBundle.l("settings.wipe.caption"))
                             .font(theme.typography.caption)
                             .foregroundStyle(theme.colors.textSecondary)
                     }
@@ -304,8 +303,60 @@ struct SettingsView: View {
         }
     }
 
-    // Section chrome — small uppercase label + raised neumorphic card.
-    // Pulled out so adding sections later stays a one-liner.
+    private var aboutSection: some View {
+        sectionCard(title: lBundle.l("settings.section.about")) {
+            VStack(alignment: .leading, spacing: theme.spacing.md) {
+                HStack {
+                    Text(lBundle.l("settings.about.version"))
+                        .font(theme.typography.bodyStrong)
+                        .foregroundStyle(theme.colors.textPrimary)
+                    Spacer()
+                    Text(appVersion)
+                        .font(theme.typography.body)
+                        .foregroundStyle(theme.colors.textSecondary)
+                }
+
+                Divider()
+
+                Link(destination: URL(string: "mailto:cibercervela@pm.me")!) {
+                    aboutLinkRow(lBundle.l("settings.about.contact"))
+                }
+
+                Divider()
+
+                Link(destination: URL(string: "https://github.com/CyberCervela/DopamineLedger")!) {
+                    aboutLinkRow(lBundle.l("settings.about.privacy"))
+                }
+
+                Divider()
+
+                Link(destination: URL(string: "https://github.com/CyberCervela/DopamineLedger")!) {
+                    aboutLinkRow(lBundle.l("settings.about.repo"))
+                }
+            }
+        }
+    }
+
+    private var appVersion: String {
+        let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–"
+        let b = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "–"
+        return "\(v) (\(b))"
+    }
+
+    @ViewBuilder
+    private func aboutLinkRow(_ title: String) -> some View {
+        HStack {
+            Text(title)
+                .font(theme.typography.bodyStrong)
+                .foregroundStyle(theme.colors.textPrimary)
+            Spacer()
+            Text("›")
+                .font(theme.typography.body)
+                .foregroundStyle(theme.colors.textSecondary)
+        }
+        .contentShape(Rectangle())
+    }
+
     @ViewBuilder
     private func sectionCard<Content: View>(title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: theme.spacing.sm) {
@@ -331,10 +382,6 @@ struct SettingsView: View {
         dismiss()
     }
 
-    // Delete every row of every user-facing model. The Ledger row is
-    // deleted too; the home screen's .task runs fetchOrCreate(in:) on
-    // next launch (and again on appearance), so a fresh zero-balance
-    // ledger is recreated automatically.
     private func wipeAllData() {
         do {
             try context.delete(model: Session.self)
@@ -344,9 +391,6 @@ struct SettingsView: View {
             try context.delete(model: Ledger.self)
             try context.save()
         } catch {
-            // Wipe is best-effort; if SwiftData throws there's not much
-            // we can recover at the view layer. Surface to the console
-            // for debugging rather than crashing the app.
             print("SettingsView.wipeAllData failed: \(error)")
         }
         dismiss()

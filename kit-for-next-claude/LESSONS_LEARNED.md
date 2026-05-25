@@ -161,6 +161,14 @@ day one, but explicit, not "later."
 
 ---
 
+### 11. ActivityKit `Activity` conflicts with the app's `Activity` SwiftData model
+
+When adding the Live Activity service, calling `Activity<SessionActivityAttributes>.request(...)` fails to compile because Swift resolves `Activity` to the local SwiftData model class, not `ActivityKit.Activity`.
+
+**Fix:** fully qualify as `ActivityKit.Activity<SessionActivityAttributes>` wherever both types are in scope. Also, `.after(...)` on the dismissal policy needs a fully qualified `ActivityUIDismissalPolicy.after(...)` for the same reason (a `Date` extension method named `after` might otherwise be inferred). Document this in `LiveActivityService.swift` with a comment if it trips you again.
+
+---
+
 ## Things that are genuinely open
 
 - **Soft-delete vs hard-delete for completed quests.** We picked soft
