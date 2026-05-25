@@ -22,9 +22,15 @@
 
 **Known:**
 - `formatDuration` is duplicated in two files. Backlog item added for consolidation into a shared utility.
-- App Store screenshots exist in `AppStore Pictures/` but have a size mismatch: `Dashboard.png` is 1320×2868 (iPhone 16 Pro Max / 6.9") while the other five are 1206×2622 (iPhone 16 / 6.3"). Needs a consistent set before submission.
-- `Settings.png` was captured scrolled down — the theme section header is partially cut off. Should be retaken from the top.
-- `Create quest.png` has a lot of empty space in the lower half — may want to retake or replace with a more visually rich screen.
+
+---
+
+**Screenshots update (same session):**
+- All five screenshots retaken on iPhone 17 Pro Max / iOS 26.5 simulator → consistent 1320×2868.
+- `Create quest.png` removed (too much empty space).
+- `Charger (running).png` replaced by `Spending.png` — shows a live Doomscrolling session with burn-down label ("~17 min left") visible, which better showcases the feature just shipped.
+- `Settings.png` retaken from the top — Appearance, Language, Behaviour, Notifications, About all visible.
+- Final set: `Dashboard.png`, `Create Charger.png`, `Create Spender.png`, `Settings.png`, `Spending.png` — all 1320×2868, App Store ready.
 
 ---
 
