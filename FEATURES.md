@@ -29,7 +29,7 @@
 | Active-session indicator (pulsing border on row) | `done` | `Views/ActivityListView.swift` (ActivityRow) | |
 | Per-activity debt chip on spender rows | `done` | `Views/ActivityListView.swift` (ActivityRow) | |
 | Icon picker (31 curated SF Symbols) | `done` | `IconResolver.swift`, `Views/AddActivityView.swift` | Activity.iconName persisted |
-| About section in Settings (version, contact, privacy, repo) | `done` | `Views/SettingsView.swift` | Privacy URL is GitHub placeholder until real page published |
+| About section in Settings (version, contact, privacy, repo) | `done` | `Views/SettingsView.swift` | Privacy URL → `https://cybercervela.github.io/DopamineLedger/privacy.html` |
 | In-app language switcher (EN / FR / DE / ES) | `done` | `Views/SettingsView.swift`, `Localization/LanguageBundle.swift` | CJK strings present in catalog but hidden from picker |
 | Foreground notification delivery | `done` | `Services/NotificationScheduler.swift`, `DopamineLedgerApp.swift` | `NotificationCenterDelegate` wired at app init |
 | Live balance / debt display in SessionView | `done` | `Views/SessionView.swift` | Shows "X remaining" → turns red → "X in debt · 2× rate" |
@@ -44,6 +44,22 @@
 | Notification scheduling (5-min warning + zero alarm) | `done` | `Services/NotificationScheduler.swift`, `Models/NotificationMath.swift` | |
 | Session recovery on relaunch / swipe-dismiss | `done` | `Views/ActivityListView.swift` (.task block) | |
 
+## Privacy commitments (published — do not violate)
+
+> The privacy policy at `docs/privacy.html` makes the following binding
+> promises. **Any feature that would break one of these must update the
+> policy and App Store listing before shipping.**
+
+| Commitment | Detail |
+|---|---|
+| No data collection | Nothing is transmitted to any server — ever |
+| All user data is local-only | Activities, sessions, ledger, quests, settings → SwiftData (on-device SQLite) |
+| No iCloud sync | Data does not transfer between devices |
+| Notifications are local | Scheduled via UserNotifications on-device; no server involved |
+| Live Activities are local | ActivityKit data never leaves the device |
+| No third-party SDKs | No analytics, crash reporters, or ad frameworks at runtime |
+| Children safe | No data collection from any user, including under-13 |
+
 ## Backlog (post-MVP)
 
 | Feature | Status | Notes |
@@ -53,4 +69,4 @@
 | Decimal display for sub-1 credit amounts | `planned` | See `BACKLOG.md` |
 | "How long can I keep going?" burn-down on spender rows | `planned` | See `BACKLOG.md` |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
-| App Store submission | `planned` | App icon ✓; privacy policy URL needed; TestFlight build needed |
+| App Store submission | `planned` | App icon ✓; privacy policy ✓; TestFlight build needed |

@@ -324,7 +324,7 @@ struct SettingsView: View {
 
                 Divider()
 
-                Link(destination: URL(string: "https://github.com/CyberCervela/DopamineLedger")!) {
+                Link(destination: URL(string: "https://cybercervela.github.io/DopamineLedger/privacy.html")!) {
                     aboutLinkRow(lBundle.l("settings.about.privacy"))
                 }
 
