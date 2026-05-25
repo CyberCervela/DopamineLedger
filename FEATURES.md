@@ -53,4 +53,4 @@
 | Decimal display for sub-1 credit amounts | `planned` | See `BACKLOG.md` |
 | "How long can I keep going?" burn-down on spender rows | `planned` | See `BACKLOG.md` |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
-| App Store submission | `planned` | Privacy policy URL needed; TestFlight build needed |
+| App Store submission | `planned` | App icon ✓; privacy policy URL needed; TestFlight build needed |

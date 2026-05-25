@@ -5,6 +5,27 @@
 
 ---
 
+## Session 4 — 2026-05-25
+
+**Focus:** App icon.
+
+**Shipped:**
+- `AppIcon-1024.png` — neumorphic DL monogram, generated via Gemini web UI, converted and wired into `AppIcon.appiconset/Contents.json`.
+- `scripts/generate_app_icon.py` — Python/Pillow generator for the neumorphic lightning bolt (kept as a reference/fallback; not the active icon).
+- `scripts/generate_dl_icons.py` — Python/Pillow generator for 3 DL letter variants (also kept as reference).
+- `scripts/generate_ai_icons.py` — Imagen 4 Ultra generation script; requires a paid Google AI Studio key to run (free tier quota is 0 for all image models).
+
+**Decisions:**
+- Gemini web UI produced a better result than Pillow-generated icons — the neumorphic card with raised DL letters reads clearly at home-screen size.
+- Active icon: `AppIcon-1024.png` (Gemini-generated, 1024×1024 RGB PNG, no alpha).
+- The icon has Gemini's pre-rounded corners inside an outer background — Apple's squircle mask clips the outer area cleanly in production.
+
+**Known:**
+- Tiny Gemini ✦ watermark in bottom-right corner — invisible at 60×60 home-screen size.
+- Google API key used during this session should be rotated (was shared in conversation).
+
+---
+
 ## Session 3 — 2026-05-25
 
 **Focus:** MVP polish pass — four backlog features + two bug fixes.
