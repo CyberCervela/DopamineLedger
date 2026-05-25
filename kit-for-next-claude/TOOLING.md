@@ -250,3 +250,35 @@ the middle," cap insets are wrong.
 - No banking, no payment processing, no third-party SDKs — this app
   needs none of them. If a future feature seems to demand one, surface
   the question to the user before pulling it in.
+
+### Incident — Session 5: Google API key committed to public repo
+
+**What happened:** `scripts/generate_ai_icons.py` was written with the
+Google AI Studio key hardcoded as a string literal. The script was
+committed and pushed. GitHub secret scanning flagged it immediately.
+
+**Why `.gitignore` didn't help:** `.gitignore` blocks files by name
+(e.g. `*.env`). It cannot inspect the *contents* of committed files for
+secret strings. A `.py` file with a hardcoded key bypasses it entirely.
+
+**Fix applied:**
+1. Key rotated in Google AI Studio (do this first — always).
+2. Script updated to read from environment: `os.environ.get("GOOGLE_AI_KEY")`.
+3. `git filter-repo --replace-text` used to scrub the string from every
+   commit in history.
+4. Force-pushed to GitHub. Secret scanning alert closed as revoked.
+
+**Rule for every future script that needs an API key:**
+
+```python
+import os, sys
+API_KEY = os.environ.get("MY_SERVICE_KEY", "")
+if not API_KEY:
+    sys.exit("Error: MY_SERVICE_KEY not set. Run: export MY_SERVICE_KEY=<key>")
+```
+
+The key itself lives in `~/.dopamine-ledger.env` (outside the repo,
+chmod 600). Before running: `source ~/.dopamine-ledger.env`.
+
+**Never hardcode a secret, even temporarily.** The assumption "I'll
+remove it before committing" has a 100% failure rate across the industry.
