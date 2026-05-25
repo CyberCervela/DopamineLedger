@@ -5,6 +5,29 @@
 
 ---
 
+## Session 5 — 2026-05-25
+
+**Focus:** Burn-down feature ("How long can I keep going?") on spender rows.
+
+**Shipped:**
+- `ActivityListView.swift` — `ActivityRow` now shows "Can run for X h Y m" below the rate on spender rows when the activity is idle and balance > 0. Hidden when the activity is already active or balance is zero. Balance is passed in from the parent `ActivityListView` (queries `ledger?.balance`).
+- `SessionView.swift` — same burn-down label shown inside the open session sheet, live-updating as the timer runs. Colour inherits the red overrun state below 20% balance.
+- `Localizable.xcstrings` — new `row.activity.burndown` key added and localised across all 7 languages.
+- `BACKLOG.md` — priority list updated; burn-down moved from backlog to done; History screen added as a new post-MVP idea.
+
+**Decisions:**
+- `formatDuration` helper is duplicated in both `ActivityListView.swift` and `SessionView.swift` — accepted for now, logged in backlog for a future cleanup pass.
+- Burn-down shows "< 1 min" when remaining time rounds to zero rather than hiding — prevents a confusing flash-to-gone at very low balances.
+- SessionView burn-down inherits the red colour when below 20% of starting balance, giving it an urgent feel as time runs out.
+
+**Known:**
+- `formatDuration` is duplicated in two files. Backlog item added for consolidation into a shared utility.
+- App Store screenshots exist in `AppStore Pictures/` but have a size mismatch: `Dashboard.png` is 1320×2868 (iPhone 16 Pro Max / 6.9") while the other five are 1206×2622 (iPhone 16 / 6.3"). Needs a consistent set before submission.
+- `Settings.png` was captured scrolled down — the theme section header is partially cut off. Should be retaken from the top.
+- `Create quest.png` has a lot of empty space in the lower half — may want to retake or replace with a more visually rich screen.
+
+---
+
 ## Session 4 — 2026-05-25
 
 **Focus:** App icon.

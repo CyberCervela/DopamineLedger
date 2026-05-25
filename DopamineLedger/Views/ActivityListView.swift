@@ -201,6 +201,7 @@ struct ActivityListView: View {
                         activity:   activity,
                         isActive:   isActive(activity),
                         debtAmount: debtAmount(for: activity),
+                        balance:    ledger?.balance ?? 0,
                         onTap:      { openActivity(activity) },
                         onEdit:     { activityToEdit = activity },
                         onDelete:   { delete(activity) }
@@ -237,6 +238,7 @@ struct ActivityListView: View {
                         activity:   activity,
                         isActive:   isActive(activity),
                         debtAmount: debtAmount(for: activity),
+                        balance:    ledger?.balance ?? 0,
                         onTap:      { openActivity(activity) },
                         onEdit:     { activityToEdit = activity },
                         onDelete:   { delete(activity) }
@@ -322,6 +324,7 @@ private struct ActivityRow: View {
     let activity:   Activity
     let isActive:   Bool
     let debtAmount: Double
+    let balance:    Double
     let onTap:    () -> Void
     let onEdit:   () -> Void
     let onDelete: () -> Void
@@ -331,6 +334,23 @@ private struct ActivityRow: View {
     private var ratePerMinute: Double { activity.ratePerSecond * 60 }
     private var iconColor: Color {
         activity.kind == .charger ? theme.colors.positive : theme.colors.negative
+    }
+
+    private var burndownSeconds: Double? {
+        guard activity.kind == .spender,
+              !isActive,
+              balance > 0,
+              activity.ratePerSecond > 0 else { return nil }
+        return balance / activity.ratePerSecond
+    }
+
+    private func formatDuration(_ seconds: Double) -> String {
+        let totalMins = Int(seconds / 60)
+        if totalMins < 1 { return "< 1 min" }
+        if totalMins < 60 { return "\(totalMins) min" }
+        let hours = totalMins / 60
+        let mins  = totalMins % 60
+        return mins == 0 ? "\(hours) h" : "\(hours) h \(mins) m"
     }
 
     // Use the user-chosen icon, or fall back to the semantic kind icon for
@@ -362,6 +382,11 @@ private struct ActivityRow: View {
                             ratePerMinute.formatted(.number.precision(.fractionLength(1)))))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
+                if let secs = burndownSeconds {
+                    Text(String(format: lBundle.l("row.activity.burndown"), formatDuration(secs)))
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.textSecondary)
+                }
                 if debtAmount > 0 {
                     Text(String(format: lBundle.l("row.activity.debt"),
                                 debtAmount.formatted(.number.precision(.fractionLength(1)))))

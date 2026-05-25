@@ -96,6 +96,14 @@ struct SessionView: View {
                             .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
                                              ? theme.colors.negative
                                              : theme.colors.textSecondary)
+                        if activity.ratePerSecond > 0 {
+                            Text(String(format: lBundle.l("row.activity.burndown"),
+                                        formatDuration(spenderRemaining / activity.ratePerSecond)))
+                                .font(theme.typography.caption)
+                                .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
+                                                 ? theme.colors.negative
+                                                 : theme.colors.textSecondary)
+                        }
                     }
                 }
                 Text(String(format: lBundle.l("session.rate"),
@@ -186,6 +194,15 @@ struct SessionView: View {
         SessionFinalizer.finalize(session: session, in: context)
         presented = nil
         dismiss()
+    }
+
+    private func formatDuration(_ seconds: Double) -> String {
+        let totalMins = Int(seconds / 60)
+        if totalMins < 1 { return "< 1 min" }
+        if totalMins < 60 { return "\(totalMins) min" }
+        let hours = totalMins / 60
+        let mins  = totalMins % 60
+        return mins == 0 ? "\(hours) h" : "\(hours) h \(mins) m"
     }
 
     private func formatElapsed(_ seconds: TimeInterval) -> String {
