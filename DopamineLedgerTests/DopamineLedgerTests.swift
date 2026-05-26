@@ -246,6 +246,154 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(new2, [0, 10])
     }
 
+    // MARK: - DashboardStats
+
+    func testDashboardStatsEmpty() {
+        let stats = DashboardStats.compute(sessions: [], quests: [], activities: [], debts: [], scope: .allTime)
+        XCTAssertEqual(stats.creditsEarned, 0)
+        XCTAssertEqual(stats.creditsSpent, 0)
+        XCTAssertEqual(stats.questPayoff, 0)
+        XCTAssertEqual(stats.debtRepaid, 0)
+        XCTAssertEqual(stats.netDelta, 0)
+        XCTAssertEqual(stats.totalOutstandingDebt, 0)
+        XCTAssertTrue(stats.activitySummaries.isEmpty)
+        XCTAssertTrue(stats.completedQuests.isEmpty)
+    }
+
+    func testDashboardStatsChargerEarns() {
+        let activity = Activity(name: "Reading", kind: .charger, ratePerMinute: 6.0)
+        let session  = Session(activityId: activity.id)
+        session.endedAt = session.startedAt.addingTimeInterval(60) // 6 credits earned
+        let stats = DashboardStats.compute(sessions: [session], quests: [], activities: [activity], debts: [], scope: .allTime)
+        XCTAssertEqual(stats.creditsEarned, 6.0, accuracy: 0.001)
+        XCTAssertEqual(stats.creditsSpent, 0)
+        XCTAssertEqual(stats.netDelta, 6.0, accuracy: 0.001)
+        XCTAssertEqual(stats.activitySummaries.count, 1)
+        XCTAssertEqual(stats.activitySummaries[0].sessionCount, 1)
+    }
+
+    func testDashboardStatsSpenderSpends() {
+        let activity = Activity(name: "Phone", kind: .spender, ratePerMinute: 6.0)
+        let session  = Session(activityId: activity.id)
+        session.endedAt = session.startedAt.addingTimeInterval(60) // 6 credits spent
+        let stats = DashboardStats.compute(sessions: [session], quests: [], activities: [activity], debts: [], scope: .allTime)
+        XCTAssertEqual(stats.creditsEarned, 0)
+        XCTAssertEqual(stats.creditsSpent, 6.0, accuracy: 0.001)
+        XCTAssertEqual(stats.netDelta, -6.0, accuracy: 0.001)
+    }
+
+    func testDashboardStatsQuestPayoff() {
+        let quest         = Quest(name: "File taxes", payoffCredits: 100)
+        quest.isCompleted = true
+        quest.completedAt = Date()
+        let stats = DashboardStats.compute(sessions: [], quests: [quest], activities: [], debts: [], scope: .allTime)
+        XCTAssertEqual(stats.questPayoff, 100.0, accuracy: 0.001)
+        XCTAssertEqual(stats.netDelta, 100.0, accuracy: 0.001)
+        XCTAssertEqual(stats.completedQuests.count, 1)
+        XCTAssertEqual(stats.completedQuests[0].name, "File taxes")
+    }
+
+    // An active session (no endedAt) must not appear in stats — its credits
+    // haven't hit the ledger yet and including it would cause flickering numbers.
+    func testDashboardStatsActiveSessionExcluded() {
+        let activity = Activity(name: "Exercise", kind: .charger, ratePerMinute: 6.0)
+        let session  = Session(activityId: activity.id) // endedAt stays nil
+        let stats = DashboardStats.compute(sessions: [session], quests: [], activities: [activity], debts: [], scope: .allTime)
+        XCTAssertEqual(stats.creditsEarned, 0)
+        XCTAssertTrue(stats.activitySummaries.isEmpty)
+    }
+
+    // Sessions started before the scope window must not count.
+    func testDashboardStatsScopeFiltersOldSessions() {
+        let activity = Activity(name: "Reading", kind: .charger, ratePerMinute: 6.0)
+
+        let oldSession       = Session(activityId: activity.id)
+        oldSession.startedAt = Date().addingTimeInterval(-8 * 86400) // 8 days ago — outside "this week"
+        oldSession.endedAt   = oldSession.startedAt.addingTimeInterval(60)
+
+        let recentSession    = Session(activityId: activity.id) // startedAt ≈ now
+        recentSession.endedAt = recentSession.startedAt.addingTimeInterval(60)
+
+        let stats = DashboardStats.compute(
+            sessions: [oldSession, recentSession], quests: [], activities: [activity], debts: [], scope: .thisWeek
+        )
+        XCTAssertEqual(stats.creditsEarned, 6.0, accuracy: 0.001) // only the recent session
+    }
+
+    // Sessions whose activity was deleted must be silently skipped.
+    func testDashboardStatsOrphanedSessionSkipped() {
+        let session  = Session(activityId: UUID()) // no matching activity
+        session.endedAt = session.startedAt.addingTimeInterval(60)
+        let stats = DashboardStats.compute(sessions: [session], quests: [], activities: [], debts: [], scope: .allTime)
+        XCTAssertEqual(stats.creditsEarned, 0)
+        XCTAssertEqual(stats.creditsSpent, 0)
+    }
+
+    // A fully-repaid debt in scope must appear in debtRepaid and reduce netDelta.
+    func testDashboardStatsDebtRepaidInScope() {
+        let debt        = ActivityDebt(activityId: UUID(), amount: 30)
+        debt.amount     = 0          // cleared
+        debt.repaidAt   = Date()     // repaid now — within any scope
+        let stats = DashboardStats.compute(sessions: [], quests: [], activities: [], debts: [debt], scope: .allTime)
+        XCTAssertEqual(stats.debtRepaid, 30.0, accuracy: 0.001)
+        XCTAssertEqual(stats.netDelta, -30.0, accuracy: 0.001)
+        XCTAssertEqual(stats.totalOutstandingDebt, 0)
+    }
+
+    // A debt repaid outside the scope window must not appear in debtRepaid.
+    func testDashboardStatsDebtRepaidOutsideScopeExcluded() {
+        let debt        = ActivityDebt(activityId: UUID(), amount: 20)
+        debt.amount     = 0
+        debt.repaidAt   = Date().addingTimeInterval(-8 * 86400) // 8 days ago — outside "this week"
+        let stats = DashboardStats.compute(sessions: [], quests: [], activities: [], debts: [debt], scope: .thisWeek)
+        XCTAssertEqual(stats.debtRepaid, 0)
+    }
+
+    // An unrepaid debt must show in totalOutstandingDebt but not in debtRepaid.
+    func testDashboardStatsOutstandingDebtIsUnscoped() {
+        let debt = ActivityDebt(activityId: UUID(), amount: 50) // repaidAt stays nil
+        let stats = DashboardStats.compute(sessions: [], quests: [], activities: [], debts: [debt], scope: .today)
+        XCTAssertEqual(stats.totalOutstandingDebt, 50.0, accuracy: 0.001)
+        XCTAssertEqual(stats.debtRepaid, 0)
+    }
+
+    // Full integration: charger + spender + quest + repaid debt → correct netDelta.
+    func testDashboardStatsNetDeltaCombinesAll() {
+        let charger = Activity(name: "Exercise",    kind: .charger, ratePerMinute: 6.0)
+        let spender = Activity(name: "Doomscroll",  kind: .spender, ratePerMinute: 6.0)
+
+        let chargerSession    = Session(activityId: charger.id)
+        chargerSession.endedAt = chargerSession.startedAt.addingTimeInterval(120) // 12 credits earned
+
+        let spenderSession    = Session(activityId: spender.id)
+        spenderSession.endedAt = spenderSession.startedAt.addingTimeInterval(60)  // 6 credits spent
+
+        let quest         = Quest(name: "Do laundry", payoffCredits: 10)
+        quest.isCompleted = true
+        quest.completedAt = Date()
+
+        let debt        = ActivityDebt(activityId: spender.id, amount: 8)
+        debt.amount     = 0
+        debt.repaidAt   = Date() // cleared today
+
+        // netDelta = 12 (earned) + 10 (quest) - 6 (spent) - 8 (repaid) = 8
+        let stats = DashboardStats.compute(
+            sessions:   [chargerSession, spenderSession],
+            quests:     [quest],
+            activities: [charger, spender],
+            debts:      [debt],
+            scope:      .allTime
+        )
+        XCTAssertEqual(stats.creditsEarned, 12.0, accuracy: 0.001)
+        XCTAssertEqual(stats.creditsSpent,  6.0,  accuracy: 0.001)
+        XCTAssertEqual(stats.questPayoff,   10.0, accuracy: 0.001)
+        XCTAssertEqual(stats.debtRepaid,    8.0,  accuracy: 0.001)
+        XCTAssertEqual(stats.netDelta,      8.0,  accuracy: 0.001)
+        // Charger appears before spender in summaries.
+        XCTAssertEqual(stats.activitySummaries[0].kind, ActivityKind.charger)
+        XCTAssertEqual(stats.activitySummaries[1].kind, ActivityKind.spender)
+    }
+
     // MARK: - NotificationMath
 
     func testNotificationMathSchedulesBothWhenPlenty() throws {

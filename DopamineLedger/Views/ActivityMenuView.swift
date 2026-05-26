@@ -218,8 +218,10 @@ struct ActivityMenuView: View {
         ledger.updatedAt = Date()
 
         let newAmounts = RepayMath.split(outcome.amountRepaid, across: rows.map(\.amount))
+        let now = Date()
         for (row, newAmount) in zip(rows, newAmounts) {
             row.amount = newAmount
+            if newAmount == 0 { row.repaidAt = now }
         }
     }
 }

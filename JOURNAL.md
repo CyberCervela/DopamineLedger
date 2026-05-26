@@ -5,6 +5,82 @@
 
 ---
 
+## Session 7 — 2026-05-26
+
+**Focus:** Dashboard / Stats — Steps 2–5 (model, UI, strings, seeder).
+
+**Status:** All four steps complete. Dashboard is fully functional.
+
+**Shipped:**
+
+- `Models/DashboardStats.swift` (new) — `DashboardScope` enum (Today / This Week / All Time), `ActivitySummary`, `CompletedQuestEntry`, `DashboardStats.compute()`. Pure struct, no SwiftUI, no `@Model`. Follows SessionMath / RepayMath pattern.
+- `Models/ActivityDebt.swift` — added `originalAmount: Double = 0` (frozen at creation for stats history) and `repaidAt: Date?` (stamped when debt row reaches zero). Default `= 0` on `originalAmount` keeps lightweight migration safe for existing installs.
+- `Views/DebtView.swift` + `Views/ActivityMenuView.swift` — one-liner each: stamp `repaidAt = now` when a debt row hits zero in the repay loop.
+- `Views/DashboardView.swift` (full implementation) — `ScopePicker`, `SummaryCard` (NET delta headline + four breakdown rows + outstanding debt), `ActivityStatsSection`, `QuestHistorySection`. All values from `DashboardStats.compute()`. Pure presentation, no business logic.
+- `Localization/Localizable.xcstrings` — 16 new keys × 7 languages: `scope.*`, `stats.*`.
+- `DopamineLedger/Debug/DebugSeeder.swift` (new) — `#if DEBUG` only. Seeds 4 activities, 6 sessions, 4 quests, 2 debts, and a 420 cr balance on first launch when the store is empty. Auto-runs via `.task` in `ContentView`. Wipe the simulator app to trigger it.
+- `DopamineLedgerTests/DopamineLedgerTests.swift` — 11 new `DashboardStats` test cases (33 total, all passing).
+- `kit-for-next-claude/WORKFLOW.md` — added "Handing off to the user for testing" section with the `✅ READY TO TEST` block convention.
+
+**Decisions and gotchas:**
+
+- `netDelta` uses base rate × elapsed for spender sessions — intentionally overstates spend for overrun sessions (the overrun becomes debt, not a direct balance draw-down). Backlog item added. Accurate for within-balance sessions.
+- `debtRepaid` uses `ActivityDebt.originalAmount` filtered by `repaidAt`. Partial repayments across multiple sessions are attributed to the session that zeroed the row — acceptable for MVP.
+- `DashboardScope.thisWeek` anchors to the locale's first weekday via `calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)`. This respects the device region (Monday in Europe, Sunday in US).
+- `RelativeDateTimeFormatter` on quest dates follows system locale, not the in-app language switcher — acceptable for MVP.
+- `formatDuration` is now duplicated in three files (ActivityListView, SessionView, DashboardView). Backlog item exists for consolidation.
+- The `#if DEBUG` seeder guard means `DebugSeeder.swift` is excluded from Release/App Store builds at the compiler level.
+
+**What to pick up next:**
+- Step 5 (project.yml glob check) was already confirmed — no changes needed.
+- Next work: user testing of the Dashboard, then App Store submission prep (see BACKLOG.md).
+
+---
+
+## Session 6 — 2026-05-25
+
+**Focus:** Dashboard / Stats — concept design phase.
+
+**Status:** Step 1 complete. Steps 2–5 pending next session.
+
+**Implementation plan:**
+- Step 1: `ContentView.swift` → wrap in `TabView`; two tabs: Home (`house`) and Stats (`chart.bar`); localized tab labels.
+- Step 2: `Models/DashboardStats.swift` (new) → pure struct, no SwiftUI; takes `[Session]`, `[Quest]`, `[Activity]` + scope; returns aggregates (credits earned/spent, net delta, quests + payoff, per-activity summary). Unit-testable.
+- Step 3: `Views/DashboardView.swift` (new) → root container + four internal subviews: `ScopePicker` (Today/Week/All time toggle), `SummaryCard` (neumorphic raised card), `ActivityStatsSection` (per-activity rows, chargers first), `QuestHistorySection` (reverse-chron completed quests, with empty state).
+- Step 4: `Localizable.xcstrings` → ~10 new keys × 7 languages (`tab.home`, `tab.stats`, scope labels, section headers, stat labels).
+- Step 5: Confirm `project.yml` globs cover new files before running `make generate` (expected: no edits needed).
+- No changes to `ActivityListView`, `SessionView`, any model, or any service. Fully additive.
+
+**Step 1 — shipped:**
+- `Views/ContentView.swift` — replaced `TabView` with a plain `ZStack` (both views always in hierarchy, switched via `opacity`). Custom `NeuTabBar` injected via `.safeAreaInset(edge: .bottom)`. `AppTab` enum defined at top level.
+- `Views/DashboardView.swift` — new stub file; themed placeholder text on correct background. Will be fully implemented in Steps 2–3.
+- `Theme.swift` — added `.home` and `.stats` cases to `SemanticIcon` under a new `// navigation` group.
+- `IconResolver.swift` — wired `house` / `chart.bar` SF Symbol names for both cases; added `pixel.home` / `pixel.stats` stubs for the deferred PixelArt theme.
+- `Localizable.xcstrings` — added `tab.home` and `tab.stats` keys across all 7 languages.
+
+**Step 1 — decisions and gotchas:**
+- `TabView` was dropped entirely. It creates a `UITabBarController` underneath; hiding its system bar with `.toolbar(.hidden, for: .tabBar)` is unreliable and `UITabBar.appearance().isHidden = true` in `onAppear` fires too late. A plain `ZStack` + `NeuTabBar` is simpler and fully owned.
+- Both views kept live in the `ZStack` (not `if/else`) so `@Query` state is preserved when switching tabs.
+- `NeuTabBar` uses the same dual-shadow pattern as `BalanceCard`: `shadowLight x:-6 y:-6` + `shadowDark x:6 y:6`.
+- `UITabBar.appearance()` must NOT be used — sets a global UIKit appearance that can bleed into sheets and other contexts.
+
+**Lessons documented this session (also added to WORKFLOW.md):**
+- Screenshot review must check both directions: new elements present AND old elements gone. The original system tab bar was still rendering beneath the new pill and was missed in the first screenshot review.
+- The starting prompt for new sessions was updated to include explicit `read` instructions for WORKFLOW.md and LESSONS_LEARNED.md (not just passive "apply" / "keep in mind").
+- UI completion checklist added to WORKFLOW.md: Gate 1 (theme applied), Gate 2 (strings localised) — both must clear before a step is called done.
+
+**Agreed design decisions:**
+- Dashboard lives in a **tab bar** (two tabs: Home + Stats). Not a sheet, not a header button — a persistent destination.
+- `ContentView` becomes a `TabView` wrapping `ActivityListView` and the new `DashboardView`.
+- Three sections inside DashboardView: (1) Summary card scoped to the selected time range, (2) Per-activity breakdown list, (3) Quest history (reverse-chron completed quests).
+- A single **time scope segmented control** at the top (Today / This week / All time) drives all three sections.
+- Stats math lives in a new `DashboardStats.swift` helper (pure struct, no @Model) — follows the SessionMath / RepayMath pattern and keeps it unit-testable.
+- No charts in v1 — numbers only, neumorphic cards. Charts are a follow-up.
+- No streaks in v1 — consecutive-day logic is its own session.
+- Feel: quiet ledger, not a gamified wall. No badges, no confetti.
+
+---
+
 ## Session 5 — 2026-05-25
 
 **Focus:** Burn-down feature ("How long can I keep going?") on spender rows.

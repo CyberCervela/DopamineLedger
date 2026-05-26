@@ -27,7 +27,9 @@ Items deferred from active development. Verify or ship when ready.
 
 | Item | Notes |
 |---|---|
-| **Dashboard / stats** | Streaks, total credits earned/spent, session count, most-used activities. New tab or sheet off the home screen. All data is already in SwiftData. |
+| **Dashboard / stats** | Done — Sessions 6–7. See JOURNAL.md. |
+| **`netDelta` accuracy for overrun sessions** | Currently uses base rate × elapsed for spenders; doesn't reflect the 2× debt penalty on overrun. Fix requires storing `balanceAtSessionStart` on `Session` and replaying `SessionMath.apply()` in `DashboardStats.compute()`. Low urgency (stats are directionally correct). Block on before any "weekly summary" notification or export feature. |
+| **Consolidate `formatDuration`** | Duplicated in `ActivityListView.swift`, `SessionView.swift`, and `DashboardView.swift`. Extract to `DurationFormatter.swift` or a `TimeInterval` extension. Zero user-visible impact. |
 | **History screen** | Chronological log of completed sessions and — most importantly — completed quests. Quests are big rewarding life milestones (e.g. "Publish Dopamine Ledger") and deserve their own timeline view. Think: a scrollable journal of achievements, date-stamped, showing the quest name, payoff earned, and date completed. Could live inside the Dashboard or as its own tab. |
 | Decimal display for sub-1 credit amounts | e.g. show "0.4 cr" instead of "0 cr" |
 | Shortcut / HealthKit auto-session triggers | Start/stop sessions via Shortcuts app or HealthKit workout events |

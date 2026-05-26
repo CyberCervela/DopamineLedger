@@ -4464,5 +4464,204 @@
         }
       }
     }
+    ,
+    "tab.home": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Home"          } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Accueil"       } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Start"         } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Inicio"        } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "主页"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "ホーム"         } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "홈"            } }
+      }
+    },
+    "tab.stats": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Stats"         } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Stats"         } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Statistiken"   } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Estadísticas"  } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "统计"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "統計"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "통계"           } }
+      }
+    },
+    "scope.today": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Today"         } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Aujourd'hui"   } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Heute"         } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Hoy"           } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "今天"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "今日"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "오늘"           } }
+      }
+    },
+    "scope.this_week": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "This Week"     } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Cette semaine" } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Diese Woche"   } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Esta semana"   } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "本周"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "今週"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "이번 주"        } }
+      }
+    },
+    "scope.all_time": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "All Time"      } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Tout"          } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Gesamt"        } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Todo"          } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "全部"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "全期間"         } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "전체"           } }
+      }
+    },
+    "stats.title": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Stats"         } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Stats"         } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Statistiken"   } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Estadísticas"  } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "统计"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "統計"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "통계"           } }
+      }
+    },
+    "stats.net_delta_label": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "NET"           } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "NET"           } },
+        "de":      { "stringUnit": { "state": "translated", "value": "NETTO"         } },
+        "es":      { "stringUnit": { "state": "translated", "value": "NETO"          } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "净值"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "純額"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "순액"           } }
+      }
+    },
+    "stats.earned_label": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Earned"        } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Gagné"         } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Verdient"      } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Ganado"        } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "赚取"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "獲得"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "획득"           } }
+      }
+    },
+    "stats.spent_label": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Spent"         } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Dépensé"       } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Ausgegeben"    } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Gastado"       } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "花费"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "消費"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "소비"           } }
+      }
+    },
+    "stats.quests_label": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Quests"        } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Quêtes"        } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Aufgaben"      } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Misiones"      } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "任务"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "クエスト"       } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "퀘스트"         } }
+      }
+    },
+    "stats.debt_repaid_label": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Debt Repaid"         } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Dette remboursée"    } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Schulden getilgt"    } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Deuda pagada"        } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "已还债"               } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "返済済み"             } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "부채 상환"            } }
+      }
+    },
+    "stats.outstanding_debt_label": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "Outstanding Debt"    } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Dette en cours"      } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Offene Schulden"     } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Deuda pendiente"     } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "未还债务"              } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "未返済"               } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "미상환 부채"           } }
+      }
+    },
+    "stats.activities_header": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "ACTIVITIES"             } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "ACTIVITÉS"              } },
+        "de":      { "stringUnit": { "state": "translated", "value": "AKTIVITÄTEN"            } },
+        "es":      { "stringUnit": { "state": "translated", "value": "ACTIVIDADES"            } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "活动"                   } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "アクティビティ"          } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "활동"                   } }
+      }
+    },
+    "stats.quests_header": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "COMPLETED QUESTS"       } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "QUÊTES COMPLÉTÉES"      } },
+        "de":      { "stringUnit": { "state": "translated", "value": "ABGESCHLOSSENE AUFGABEN"} },
+        "es":      { "stringUnit": { "state": "translated", "value": "MISIONES COMPLETADAS"   } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "已完成任务"               } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "完了クエスト"             } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "완료된 퀘스트"            } }
+      }
+    },
+    "stats.no_sessions": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "No sessions in this period"               } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Aucune séance dans cette période"         } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Keine Sitzungen in diesem Zeitraum"       } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Sin sesiones en este período"             } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "此时间段内无会话"                           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "この期間中のセッションなし"                  } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "이 기간 동안 세션 없음"                     } }
+      }
+    },
+    "stats.no_quests": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "No quests completed in this period"           } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "Aucune quête complétée dans cette période"    } },
+        "de":      { "stringUnit": { "state": "translated", "value": "Keine Aufgaben in diesem Zeitraum erledigt"   } },
+        "es":      { "stringUnit": { "state": "translated", "value": "Sin misiones completadas en este período"     } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "此时间段内无已完成任务"                          } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "この期間中に完了したクエストなし"                } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "이 기간 동안 완료된 퀘스트 없음"                } }
+      }
+    },
+    "stats.sessions_one": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "1 session"    } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "1 séance"     } },
+        "de":      { "stringUnit": { "state": "translated", "value": "1 Sitzung"    } },
+        "es":      { "stringUnit": { "state": "translated", "value": "1 sesión"     } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "1次"           } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "1回"           } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "1회"           } }
+      }
+    },
+    "stats.sessions_other": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "%d sessions"  } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "%d séances"   } },
+        "de":      { "stringUnit": { "state": "translated", "value": "%d Sitzungen" } },
+        "es":      { "stringUnit": { "state": "translated", "value": "%d sesiones"  } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "%d次"          } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "%d回"          } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "%d회"          } }
+      }
+    }
   }
 }

@@ -48,6 +48,29 @@ Aim for the first kind. Delete the second kind.
 
 ---
 
+## UI completion checklist — two gates before marking a step done
+
+Every new UI element must clear both gates before the step is called complete:
+
+**Gate 1 — Theme applied.**
+No hardcoded colors, fonts, icons, or spacing values in view code. Every
+value must flow from `@Environment(\.theme)`. Test by switching from
+NeuTheme to SystemTheme in Settings — if anything looks wrong or
+inconsistent, the gate isn't cleared. Tab bars, pickers, sheet backgrounds,
+and toolbar items are common places this gets missed.
+
+**Gate 2 — Strings localised.**
+Every user-visible string must have a key in `Localizable.xcstrings` and
+be accessed via `lBundle.l("key")`. Hardcoded English is acceptable only
+as a temporary placeholder during the same step, and must be resolved
+before the step is marked done. Test by switching the in-app language to
+French or German — if any string stays in English, the gate isn't cleared.
+
+Catching both issues at the end of a step is far cheaper than discovering
+them after several steps have stacked on top.
+
+---
+
 ## Verify visually after UI changes
 
 Use `scripts/install-and-screenshot.sh`:
@@ -67,6 +90,24 @@ make test
 
 22 tests already exist for the math layer. If you add business math,
 add tests in the same `DopamineLedgerTests.swift` file.
+
+### How to read the screenshot — removal check
+
+When reviewing a screenshot, read the **full screen top-to-bottom**, not
+just the area you were working on. Apply two checks in order:
+
+1. **New elements present?** Confirm every element you added is visible
+   and looks correct.
+2. **Old elements gone?** For every element the change was supposed to
+   remove or hide, explicitly name it and confirm it is absent. If you
+   replaced a system tab bar, verify the system tab bar is not still
+   showing beneath the new one. If you removed a button, verify it is
+   not still there.
+
+The failure mode is pattern-matching forward (new thing looks good →
+ship it) without checking backward. A strip at the bottom of the screen
+is not always a background colour mismatch — it might be the old UI
+element still present underneath the new one.
 
 ---
 
@@ -122,3 +163,23 @@ The kit only stays useful if it stays current.
 - Saying "I don't know — let me check" instead of guessing.
 - Calling out when a request would create technical debt and proposing
   a cleaner alternative.
+
+---
+
+## Handing off to the user for testing
+
+When a step is fully implemented, built, and self-verified (build green,
+tests pass, screenshot reviewed), end your message with a clearly visible
+handoff block so the user knows it is their turn:
+
+```
+---
+✅ READY TO TEST
+What to check: [one-line summary of the feature]
+How: [what to tap / where to look]
+Known: [anything intentionally deferred or imperfect]
+---
+```
+
+Do not write this block mid-task or while still making changes.
+Only write it once — the final message of the step.

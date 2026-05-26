@@ -65,7 +65,7 @@
 | Feature | Status | Notes |
 |---|---|---|
 | Pixel-art theme (Step 7) | `planned` | Assets not generated; excluded from MVP submission |
-| Dashboard / streaks / stats | `planned` | See `BACKLOG.md` |
+| Dashboard / stats | `done` | Steps 1–5 complete. `DashboardStats.swift` (pure model), `DashboardView.swift` (ScopePicker, SummaryCard, ActivityStatsSection, QuestHistorySection). See `JOURNAL.md` Sessions 6–7. |
 | Decimal display for sub-1 credit amounts | `planned` | See `BACKLOG.md` |
 | "How long can I keep going?" burn-down on spender rows | `planned` | See `BACKLOG.md` |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
