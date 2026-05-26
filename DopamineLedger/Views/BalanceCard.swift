@@ -12,6 +12,15 @@ struct BalanceCard: View {
     let totalDebt:  Double
     var onDebtTap:  (() -> Void)? = nil
 
+    // Mirrors the `balance` prop but is only ever mutated inside withAnimation,
+    // so .contentTransition(.numericText()) sees an animated change and rolls
+    // the digits. Updating the prop directly (no animation context) would make
+    // the number jump rather than roll.
+    @State private var animatedBalance: Double = 0
+    // nil = resting state (textPrimary). Set to positive/negative on balance
+    // change, then cleared after a short delay to fade back to neutral.
+    @State private var flashColor: Color?
+
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.sm) {
 
@@ -25,9 +34,9 @@ struct BalanceCard: View {
                     .kerning(2)
             }
 
-            Text(balance, format: .number.precision(.fractionLength(1)))
+            Text(animatedBalance, format: .number.precision(.fractionLength(1)))
                 .font(theme.typography.display)
-                .foregroundStyle(theme.colors.textPrimary)
+                .foregroundStyle(flashColor ?? theme.colors.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .contentTransition(.numericText())
                 .padding(.vertical, theme.spacing.sm)
@@ -63,6 +72,23 @@ struct BalanceCard: View {
         .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
         .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
         .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .onAppear {
+            // Set without animation so the number doesn't roll on first render.
+            animatedBalance = balance
+        }
+        .onChange(of: balance) { oldValue, newValue in
+            let target = newValue > oldValue ? theme.colors.positive : theme.colors.negative
+            // Roll the digits and flash the colour in the same animation so they
+            // are perfectly synchronised.
+            withAnimation(.easeInOut(duration: 0.4)) {
+                animatedBalance = newValue
+                flashColor = target
+            }
+            Task {
+                try? await Task.sleep(for: .seconds(0.7))
+                withAnimation(.easeOut(duration: 0.5)) { flashColor = nil }
+            }
+        }
     }
 }
 

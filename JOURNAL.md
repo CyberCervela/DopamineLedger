@@ -5,6 +5,21 @@
 
 ---
 
+## Session 8 — 2026-05-26
+
+**Focus:** BalanceCard animated balance update.
+
+**Shipped:**
+- `Views/BalanceCard.swift` — balance number now rolls its digits and flashes colour in sync when the balance changes. Added `@State private var animatedBalance` (mirrors the `balance` prop, updated inside `withAnimation` so `.contentTransition(.numericText())` sees an animated change and rolls). Added `@State private var flashColor` (green on credit, red on debit, fades out after ~0.7 s via a `Task.sleep` + `.easeOut`). Both state changes share one `withAnimation(.easeInOut(duration: 0.4))` call so roll and flash are perfectly synchronised.
+
+**Key decision:**
+- `.contentTransition(.numericText())` only rolls when the text value changes inside a `withAnimation` context. The `balance` prop arrives from a `@Query` re-render with no animation wrapper, so the digit just jumped. The fix is a local `animatedBalance` state that is always mutated inside `withAnimation` — the prop drives the trigger, the state drives the display.
+
+**What to pick up next:**
+- App Store submission prep (see BACKLOG.md).
+
+---
+
 ## Session 7 — 2026-05-26
 
 **Focus:** Dashboard / Stats — Steps 2–5 (model, UI, strings, seeder).

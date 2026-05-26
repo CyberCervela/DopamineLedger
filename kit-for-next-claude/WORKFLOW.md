@@ -183,3 +183,27 @@ Known: [anything intentionally deferred or imperfect]
 
 Do not write this block mid-task or while still making changes.
 Only write it once — the final message of the step.
+
+---
+
+## Closing a testing loop
+
+Once the user confirms the feature looks good (explicit "all good", "looks
+great", "approved", or equivalent — not silence), always do the following
+before moving to the next task:
+
+1. **Update the kit docs** in one pass:
+   - `JOURNAL.md` — add a session entry with what shipped, decisions made,
+     gotchas, and what to pick up next.
+   - `FEATURES.md` — mark the feature `done` (or update its status/notes).
+   - `BACKLOG.md` — add any newly discovered deferred items; remove or
+     update anything that was resolved.
+   - `WORKFLOW.md` — add any new process lessons learned this session
+     (non-obvious things that should change how we work together).
+
+2. **Ask the user** in a single message:
+   > "Docs updated. Want me to commit and push to GitHub?"
+
+   Wait for their answer before running any git commands. Do not bundle
+   the commit into the doc-update message — the user may want to review
+   the diff or add unstaged files first.
