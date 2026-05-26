@@ -198,8 +198,11 @@ before moving to the next task:
    - `FEATURES.md` — mark the feature `done` (or update its status/notes).
    - `BACKLOG.md` — add any newly discovered deferred items; remove or
      update anything that was resolved.
-   - `WORKFLOW.md` — add any new process lessons learned this session
-     (non-obvious things that should change how we work together).
+   - `DECISIONS.md` — if a non-obvious decision was *locked* this session,
+     log it (dated, with the why) so it isn't re-litigated later.
+   - `WORKFLOW.md` / `PRINCIPLES.md` — add any new process or architecture
+     lesson learned this session (non-obvious things that should change how
+     we work together or how the code is shaped).
 
 2. **Ask the user** in a single message:
    > "Docs updated. Want me to commit and push to GitHub?"
@@ -207,3 +210,39 @@ before moving to the next task:
    Wait for their answer before running any git commands. Do not bundle
    the commit into the doc-update message — the user may want to review
    the diff or add unstaged files first.
+
+---
+
+## Standing rituals (not one-offs)
+
+These are easy to treat as "things we did once." Make them recurring:
+
+- **Hard-rule lint before every `READY TO TEST`.** Run
+  `bash kit-for-next-claude/scripts/lint-rules.sh DopamineLedger`. Cheap,
+  and it catches rule erosion that prose can't (Session 9 found ~8 leaks
+  against a clearly-stated rule). The job is "no NEW violations."
+- **Pre-milestone audit.** At each "feature-complete" milestone — not just
+  before the very first release — do a read-only debt audit: layering,
+  duplication, test coverage of the *glue* (see `PRINCIPLES.md` #2), dead
+  code, rule leaks. File findings in `BACKLOG.md` → tech debt. Don't fix
+  during the audit; report, then decide together what's worth doing.
+  (Session 9 was the first such audit.)
+
+---
+
+## Parallel sessions
+
+If the user runs a second Claude session in parallel (e.g. a separate
+terminal via `/btw`), treat it as a coordination hazard: work done there is
+invisible to this session and can be lost or clobbered (it happened once —
+mock-data work went missing). When you learn a parallel session touched the
+repo, re-read the relevant files before assuming state.
+
+---
+
+## Context compaction
+
+Long sessions get compacted and the summary can drop a nuance. The durable
+defense is keeping the core docs (`CLAUDE.md`, `SPECIFICATION.md`,
+`PRINCIPLES.md`, `TOOLING.md`) short-but-complete, so a reload from disk
+restores what a compacted summary might miss.

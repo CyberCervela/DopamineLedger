@@ -95,6 +95,10 @@ catches structural issues before they compound. Re-order only with reason.
 
 ## Hard rules
 
+The canonical, greppable list now lives in **`HARD_RULES.md`**, paired with
+`scripts/lint-rules.sh` — run it before every `READY TO TEST`. The
+load-bearing ones, repeated here:
+
 - **Never put a hex color, font name, icon name, or sound asset name in a
   view file.** Always go through the theme.
 - **Never call `Image(systemName:)` outside `IconResolver`.** That was the
@@ -121,11 +125,14 @@ catches structural issues before they compound. Re-order only with reason.
 |--------------------------------------|--------------------------------------|
 | The product rules                    | `SPECIFICATION.md`                   |
 | How the code is laid out             | `ARCHITECTURE.md`                    |
+| The architecture principles + *why*  | `PRINCIPLES.md`                      |
+| The "never do X" rules + lint        | `HARD_RULES.md`, `scripts/lint-rules.sh` |
 | How theming works                    | `DESIGN_SYSTEM.md` + `Theme.swift`   |
 | How to collaborate with the user     | `WORKFLOW.md`                        |
+| Why a decision was made (locked)     | `DECISIONS.md` (project root)        |
 | Why `xcrun` won't run                | `TOOLING.md`                         |
 | Why round 1 wanted a rewrite         | `LESSONS_LEARNED.md`                 |
-| Post-MVP ideas                       | `BACKLOG.md`                         |
+| Post-MVP ideas + tech debt           | `BACKLOG.md`                         |
 | App Store text and process           | `APP_STORE_LISTING.md`, `SUBMISSION.md`, `PRIVACY.md` |
 
 If a question isn't answered in this kit, ask the user — they have the

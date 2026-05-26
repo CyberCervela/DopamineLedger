@@ -52,10 +52,17 @@ it end-to-end before writing any code.
 | `CLAUDE.md`         | Master operating instructions for the next Claude. |
 | `SPECIFICATION.md`  | Product spec — economy, debt, sessions, quests. |
 | `ARCHITECTURE.md`   | Code structure + theme protocol design. |
+| `PRINCIPLES.md`     | Architecture principles + the *why* (incl. Session 9 audit findings). |
+| `HARD_RULES.md`     | The "never do X" rules, paired with `scripts/lint-rules.sh`. |
 | `DESIGN_SYSTEM.md`  | Theming strategy: semantic roles vs concrete values. |
-| `WORKFLOW.md`       | How to collaborate with the user (plan first, screenshot-verify). |
+| `WORKFLOW.md`       | How to collaborate with the user (plan first, screenshot-verify, standing rituals). |
 | `TOOLING.md`        | macOS / Xcode / simulator gotchas the next Claude will hit. |
 | `LESSONS_LEARNED.md`| Honest retrospective from round 1. |
+
+> Living records at the **project root** (not in this folder): `JOURNAL.md`,
+> `FEATURES.md`, `BACKLOG.md`, and `DECISIONS.md` (the dated, greppable log
+> of locked decisions). Update these after every testing loop — see
+> `WORKFLOW.md` → "Closing a testing loop".
 
 ### Top-level docs (transplanted from round 1)
 
