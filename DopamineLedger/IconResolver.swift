@@ -64,6 +64,10 @@ enum IconResolver {
         case .spender:  return "hourglass"
         case .quest:    return "checkmark.seal.fill"
 
+        // navigation
+        case .home:     return "house"
+        case .stats:    return "chart.bar"
+
         // chrome
         case .add:      return "plus"
         case .edit:     return "pencil"
@@ -105,6 +109,9 @@ enum IconResolver {
         case .charger:  return "pixel.charger"
         case .spender:  return "pixel.spender"
         case .quest:    return "pixel.quest"
+
+        case .home:     return "pixel.home"
+        case .stats:    return "pixel.stats"
 
         case .add:      return "pixel.add"
         case .edit:     return "pixel.edit"
