@@ -5,6 +5,32 @@
 
 ---
 
+## Session 9 — 2026-05-26
+
+**Focus:** Whole-codebase technical-debt audit (read-only — no code changed). Triggered while waiting on Apple Developer Program approval.
+
+**What was done:**
+- Read all 34 Swift files (models, math, services, theme, every view), the test suite, and traced runtime usage of every theme role and service.
+- Produced a prioritized debt report and recorded the findings in `BACKLOG.md` under a new **"Technical debt / architecture improvements"** section.
+
+**Headline verdict:**
+- **No ship-blockers.** The math/persistence/view layering is clean, the pure-function layer is well-tested (33 cases), and the theme protocol is real architecture. The only thing between us and submission is the screenshot retake already in the backlog.
+- The debt that exists is mostly **one pattern repeated** (the neumorphic card chain, 15+ copies) plus **a dormant deferred-feature subsystem** (sound + PixelArt) that should be *kept*, not cleaned.
+
+**Top findings (full list in BACKLOG.md):**
+- High value: extract a `.neuCard()` view modifier (kills the biggest duplication); add integration tests for the two ledger-mutating flows (`SessionFinalizer.finalize` + the repay flows) — currently zero coverage on the SwiftData glue, only the pure math is tested.
+- Medium: consolidate `formatDuration`/`formatElapsed`, `IconCircle`, and the `FilterPicker`/`ScopePicker` pair; localize the hardcoded notification strings (`NotificationScheduler:95–123`) and the `mailFallback` alert.
+- Low: route the remaining hardcoded `Image(systemName:)`/`systemImage:` calls through `IconResolver`, and theme the hardcoded session-timer font (`SessionView:76`) — both tied to PixelArt readiness.
+
+**Deliberately flagged as "do NOT clean now":**
+- `SoundPlayer.swift` (zero callers), `theme.sound()`, `SemanticSound`/`SoundAsset`, `surfaceElevated`, `typography.mono`, and unused icon roles — all dead today but intentional scaffolding for the deferred PixelArt theme. ~100+ lines of safe deletion *if and only if* PixelArt is ever formally cancelled.
+- Denormalized `activityId` (documented `#Predicate` workaround), `ActivityListView` size (cohesive), `netDelta` overrun (already tracked).
+
+**What to pick up next:**
+- App Store submission once the Team ID arrives. Debt items are queued for after launch.
+
+---
+
 ## Session 8 — 2026-05-26
 
 **Focus:** BalanceCard animated balance update.
