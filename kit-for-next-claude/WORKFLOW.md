@@ -204,12 +204,35 @@ before moving to the next task:
      lesson learned this session (non-obvious things that should change how
      we work together or how the code is shaped).
 
-2. **Ask the user** in a single message:
-   > "Docs updated. Want me to commit and push to GitHub?"
+2. **Commit locally, but do not push yet.** Stage and commit the doc
+   updates with a descriptive message. Do not push to GitHub. Push is
+   reserved for the end of a feature chunk (see "When to push to GitHub"
+   below).
 
-   Wait for their answer before running any git commands. Do not bundle
-   the commit into the doc-update message — the user may want to review
-   the diff or add unstaged files first.
+---
+
+## When to push to GitHub
+
+**Push only at the end of a meaningful chunk** — not after every commit.
+The rule of thumb: push when you are about to `/clear` and hand off to a
+fresh session. That moment is the natural boundary.
+
+**Push when:**
+- A feature is fully built, tested, and the testing loop is closed (user
+  said "all good" or equivalent).
+- A substantial architectural decision has been locked and fully documented
+  — one that a future Claude session *must* find on disk to avoid
+  re-litigating it.
+- Getting ready to `/clear` for a new feature or chunk.
+
+**Do not push for:**
+- Journal entries, backlog tweaks, or decision log updates on their own.
+- Mid-session doc notes made during planning.
+- Small iterative commits made while a feature is still in progress.
+
+These accumulate locally and ride along with the next code push.
+The GitHub history should read as a sequence of meaningful milestones,
+not a stream of "update BACKLOG.md" commits.
 
 ---
 
