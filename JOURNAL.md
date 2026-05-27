@@ -5,6 +5,54 @@
 
 ---
 
+## Session 12 — 2026-05-27
+
+**Focus:** App Store submission — signing, device registration, screenshots, listing copy, upload.
+
+**Status: Submission in progress.** Build uploaded. App Store Connect listing ~95% complete. Stopped at filling in Support URL, Copyright, and App Review notes before hitting "Add for Review".
+
+**What was done:**
+
+- **Signing unblocked:** Registered user's iPhone 14 Pro Max as a developer device via Xcode → Signing & Capabilities → Try Again. This resolved the "no devices" provisioning profile error that was blocking Archive.
+- **App tested on real device:** Installed via Xcode Debug build. Confirmed smooth after first launch (initial lag was the debug seeder firing once on empty store — not a real bug, not present in Release builds).
+- **Archive succeeded:** Product → Archive completed cleanly. Build uploaded to App Store Connect via Distribute App → App Store Connect → Upload.
+- **Screenshots retaken** at correct dimensions (1284×2778, iPhone 13 Pro Max simulator — App Store Connect rejected 1320×2868 from iPhone 17 Pro Max simulator):
+  - `01-home.png` — home screen, balance 420, activities, quest with Done button
+  - `02-stats.png` — Stats tab, NET +640, breakdown, completed quest
+  - `03-settings.png` — Settings top (themes, languages, behaviour) — intentional choice to show language/theme options over Legal section
+  - `04-add-charger.png` — New Activity sheet, Charger selected, icon picker visible
+  - `05-session.png` — Reading session running, 00:39, 4.0 credits earned
+  - `06-lockscreen.png` — Lock screen with Gaming Live Activity + "Allow Live Activities" permission prompt (kept intentionally — shows user agency)
+  - All saved to `screenshots/appstore/`
+- **Listing copy finalised** in `APP_STORE_LISTING.md`:
+  - Pixel-art references removed (app ships neumorphic, not pixel-art)
+  - "COMING IN FUTURE UPDATES" section added: Siri/Shortcuts, HealthKit, tip jar
+  - Disclaimer paragraph added to description
+  - "What's New" rewritten to match what actually shipped
+- **Pricing:** Free (confirmed — no IAP, no subscriptions)
+- **Age rating:** 4+ (all questions No, including Health/Wellness)
+- **Build selected** in App Store Connect version page
+
+**What remains before "Add for Review":**
+1. Fill in **Support URL**: `https://github.com/CyberCervela/DopamineLedger`
+2. Fill in **Copyright**: `© 2026 Thibault Dubuis` (or preferred name)
+3. Paste **App Review notes** from `APP_STORE_LISTING.md` (the internal-only reviewer context paragraph)
+4. Hit **Add for Review** → **Submit for Review**
+
+**Known open question:** App icon showing as checkerboard/empty in App Store Connect listing header — likely resolves after build is fully processed or page refresh. The icon IS correctly set in the build (1024×1024 in `AppIcon.appiconset`).
+
+**Monetisation decision:** Launch free. Add tip jar in v1.1 if it gets traction. Pro tier (gating Siri/HealthKit features) when those ship. No decision needed before this submission.
+
+**Legal:** Disclaimer added to both the app (Legal section in Settings) and the App Store description. Privacy policy URL confirmed live: `https://cybercervela.github.io/DopamineLedger/privacy.html`.
+
+**What to pick up next:**
+- Complete the 3 remaining fields above → Submit for Review
+- Apple review: 24–72 hours
+- After approval: click "Release this version" in App Store Connect
+- Post-launch: update BACKLOG.md to reflect launched status; plan v1.1
+
+---
+
 ## Session 11 — 2026-05-27
 
 **Focus:** App Store submission prep — Legal disclaimer section + listing copy cleanup.

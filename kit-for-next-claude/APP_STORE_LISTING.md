@@ -77,7 +77,7 @@ EVERYTHING IN ONE GLANCE
 • Pinned balance card at the top of the home screen
 • Live elapsed time and projected credit change while a session runs
 • Section-grouped lists for Chargers, Spenders, and Quests
-• Per-activity icons from a curated pixel-art catalog
+• Per-activity icons from a curated SF Symbol catalog
 
 DESIGNED FOR THE BACKGROUND
 • Local notifications fire 5 minutes before you hit zero on a spender,
@@ -103,6 +103,14 @@ Dopamine Ledger is a personal productivity tool, not a medical or
 therapeutic application. It is not a substitute for professional advice.
 
 Built solo with SwiftUI, SwiftData, and Claude Code on iOS 17+.
+
+COMING IN FUTURE UPDATES
+  • Siri & Shortcuts — start a session with your voice,
+    no screen required
+  • HealthKit integration — auto-start a charger when
+    you begin a workout
+  • Tip jar — if Dopamine Ledger earns a place in your
+    day, buy the developer a coffee
 ```
 
 (~2,000 chars — under the limit, with room to expand.)
