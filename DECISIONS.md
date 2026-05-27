@@ -125,3 +125,20 @@ SwiftData lightweight migration safe for pre-existing rows.
 **Scope:** Stats/dashboard. Partial repayments are attributed to the
 session that zeroes the row (MVP-acceptable).
 **Supersedes:** none
+
+## D-012 — Three-tab navigation: Home / Stats / History   (2026-05-27)
+**Decision:** The app has three permanent tabs: Home (`house`), Stats
+(`chart.bar`), History (`clock`). Each tab has a single, non-overlapping
+purpose. The `QuestHistorySection` that previously lived inside the Stats
+tab migrates to History as part of the History screen build.
+**Why:** Stats and History answer different questions. Stats = "how am I
+doing?" (aggregates, scope picker, future streaks and graphs). History =
+"what happened?" (reverse-chronological log of sessions and completed
+quests, unified timeline). Mixing them in one tab made Stats cluttered and
+made the log hard to find. Three tabs is the right ceiling for this app —
+a fourth would need a strong reason.
+**Scope:** Root navigation (`ContentView`, `NeuTabBar`). Stats tab loses
+`QuestHistorySection`; History tab gains a unified timeline view
+(`HistoryView`). No changes to models or math layer.
+**Supersedes:** D-008 (extends it — D-008 established the ZStack/NeuTabBar
+pattern; D-012 adds the third tab within that same pattern).
