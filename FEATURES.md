@@ -67,6 +67,6 @@
 | Pixel-art theme (Step 7) | `planned` | Assets not generated; excluded from MVP submission |
 | Dashboard / stats | `done` | Steps 1–5 complete. `DashboardStats.swift` (pure model), `DashboardView.swift` (ScopePicker, SummaryCard, ActivityStatsSection, QuestHistorySection). See `JOURNAL.md` Sessions 6–7. |
 | Decimal display for sub-1 credit amounts | `planned` | See `BACKLOG.md` |
-| "How long can I keep going?" burn-down on spender rows | `planned` | See `BACKLOG.md` |
+| "How long can I keep going?" burn-down on spender rows | `done` | Shipped Session 5. See `JOURNAL.md`. |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
-| App Store submission | `planned` | App icon ✓; privacy policy ✓; TestFlight build needed |
+| App Store submission | `done` | Submitted 2026-05-27 22:52. Awaiting Apple review (24–72 h). |

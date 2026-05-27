@@ -33,23 +33,18 @@
 - **Age rating:** 4+ (all questions No, including Health/Wellness)
 - **Build selected** in App Store Connect version page
 
-**What remains before "Add for Review":**
-1. Fill in **Support URL**: `https://github.com/CyberCervela/DopamineLedger`
-2. Fill in **Copyright**: `© 2026 Thibault Dubuis` (or preferred name)
-3. Paste **App Review notes** from `APP_STORE_LISTING.md` (the internal-only reviewer context paragraph)
-4. Hit **Add for Review** → **Submit for Review**
+**Submission confirmed:**
+- Support URL: `https://github.com/CyberCervela/DopamineLedger`
+- Copyright field filled in
+- App Review notes pasted from `APP_STORE_LISTING.md`
+- **Submitted: 2026-05-27 at 22:52**
 
-**Known open question:** App icon showing as checkerboard/empty in App Store Connect listing header — likely resolves after build is fully processed or page refresh. The icon IS correctly set in the build (1024×1024 in `AppIcon.appiconset`).
-
-**Monetisation decision:** Launch free. Add tip jar in v1.1 if it gets traction. Pro tier (gating Siri/HealthKit features) when those ship. No decision needed before this submission.
-
-**Legal:** Disclaimer added to both the app (Legal section in Settings) and the App Store description. Privacy policy URL confirmed live: `https://cybercervela.github.io/DopamineLedger/privacy.html`.
+**Status: In Review.** Awaiting Apple review (24–72 hours).
 
 **What to pick up next:**
-- Complete the 3 remaining fields above → Submit for Review
-- Apple review: 24–72 hours
+- Wait for Apple review result (email notification + App Store Connect status change)
 - After approval: click "Release this version" in App Store Connect
-- Post-launch: update BACKLOG.md to reflect launched status; plan v1.1
+- Post-launch: plan v1.1 (tip jar, Siri/App Intents, History screen)
 
 ---
 

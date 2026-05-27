@@ -17,9 +17,10 @@ Items deferred from active development. Verify or ship when ready.
 
 | # | Item | Notes |
 |---|---|---|
-| 1 | **App Store screenshots — fix & retake** | `Settings.png` captured mid-scroll (top cut off). `Create quest.png` has large empty lower half. `Dashboard.png` is 1320×2868 (6.9") while all others are 1206×2622 (6.3") — needs a consistent set. Retake on the same simulator before submission. |
-| 2 | **App Store submission** | Blocked on Apple Developer Program approval (applied, awaiting email). Once Team ID is in hand: set `DEVELOPMENT_TEAM` in Xcode, archive, upload, screenshots, listing copy from `kit-for-next-claude/APP_STORE_LISTING.md`. |
-| 3 | **Decimal display for sub-1 credit amounts** | Show "0.4 cr" instead of "0 cr". Formatting-only change in one or two display sites. |
+| ✅ | **App Store screenshots** | Retaken Session 12 at 1284×2778 on iPhone 13 Pro Max simulator. All 6 saved to `screenshots/appstore/`. |
+| ✅ | **App Store submission** | Submitted 2026-05-27 22:52. Awaiting Apple review. |
+| 1 | **Release** | After Apple approval: click "Release this version" in App Store Connect. |
+| 2 | **Decimal display for sub-1 credit amounts** | Show "0.4 cr" instead of "0 cr". Formatting-only change in one or two display sites. |
 
 ---
 
