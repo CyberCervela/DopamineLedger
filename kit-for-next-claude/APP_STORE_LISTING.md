@@ -41,11 +41,11 @@ A ledger for your dopamine
 ## Promotional Text (max 170 chars, editable anytime without resubmission)
 
 ```
-A pixel-art credit economy for the time you spend on what matters.
+A credit economy for the time you spend on what matters.
 Charge by reading or exercising. Spend on scrolling. Don't go into debt.
 ```
 
-(149 chars)
+(131 chars)
 
 ---
 
@@ -93,12 +93,14 @@ WHAT MAKES IT DIFFERENT
   what you haven't earned
 • A satisfying repay loop with confirmation, haptics, and a clean
   ledger-page balance display
-• Pixel-art everywhere — fonts, icons, buttons, app icon — no SF Symbols
-  spoiling the vibe
+• Neumorphic design — soft shadows, dark surfaces, clean typography
 
 PRIVACY
 • 100% on-device. No accounts, no analytics, no servers.
 • No data ever leaves your iPhone.
+
+Dopamine Ledger is a personal productivity tool, not a medical or
+therapeutic application. It is not a substitute for professional advice.
 
 Built solo with SwiftUI, SwiftData, and Claude Code on iOS 17+.
 ```
@@ -114,15 +116,14 @@ The first release.
 
 — A complete credit-debt economy for time you spend on chargers,
   spenders, and quests.
-— Pixel-art design from the ground up: custom fonts (Monogram, Abaddon
-  Bold), an inventory-style icon catalog, painterly action buttons,
-  and a dark-navy theme.
+— Neumorphic design: soft shadows, dark surfaces, smooth digit
+  animations, and a curated SF Symbol icon catalog.
+— Live Activities: session timer on your Lock Screen and Dynamic Island.
+— Dashboard with Today / This Week / All Time stats for every activity.
 — Local notifications for the 5-minute warning and zero-balance alarm.
-— Manual repay flow with confirmation, haptics, and a smooth digit
-  animation.
-— Built-in Settings sheet for stopping a forgotten session, resetting
-  balance, or clearing accumulated debt.
-— Credits screen with full attribution to the asset and font creators.
+— Manual repay flow with confirmation, haptics, and animated balance.
+— Built-in Settings: stop a forgotten session, reset balance, or
+  clear accumulated debt. In-app language switcher (EN/FR/DE/ES).
 
 No accounts. No analytics. No servers. Everything stays on your phone.
 ```

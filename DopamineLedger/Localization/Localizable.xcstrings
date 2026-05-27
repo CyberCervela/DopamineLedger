@@ -4662,6 +4662,63 @@
         "ja":      { "stringUnit": { "state": "translated", "value": "%d回"          } },
         "ko":      { "stringUnit": { "state": "translated", "value": "%d회"          } }
       }
+    },
+    "settings.section.legal": {
+      "localizations": {
+        "en":      { "stringUnit": { "state": "translated", "value": "LEGAL"        } },
+        "fr":      { "stringUnit": { "state": "translated", "value": "LÉGAL"        } },
+        "de":      { "stringUnit": { "state": "translated", "value": "RECHTLICHES"  } },
+        "es":      { "stringUnit": { "state": "translated", "value": "LEGAL"        } },
+        "zh-Hans": { "stringUnit": { "state": "translated", "value": "法律"          } },
+        "ja":      { "stringUnit": { "state": "translated", "value": "法的情報"      } },
+        "ko":      { "stringUnit": { "state": "translated", "value": "법적 고지"     } }
+      }
+    },
+    "settings.legal.disclaimer": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger is a personal productivity tool, not a medical or therapeutic application. It is not a substitute for professional advice."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger est un outil de productivité personnelle, non une application médicale ou thérapeutique. Il ne se substitue pas à un avis professionnel."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger ist ein persönliches Produktivitätswerkzeug, keine medizinische oder therapeutische Anwendung. Es ersetzt keine professionelle Beratung."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger es una herramienta de productividad personal, no una aplicación médica o terapéutica. No sustituye el consejo profesional."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger 是一款个人生产力工具，并非医疗或治疗类应用程序。它不能替代专业建议。"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger は個人の生産性ツールであり、医療・治療アプリではありません。専門家のアドバイスの代わりにはなりません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopamine Ledger는 개인 생산성 도구이며, 의료 또는 치료 목적의 애플리케이션이 아닙니다. 전문가의 조언을 대체하지 않습니다."
+          }
+        }
+      }
     }
   }
 }

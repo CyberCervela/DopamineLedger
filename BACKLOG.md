@@ -32,8 +32,272 @@ Items deferred from active development. Verify or ship when ready.
 | **Consolidate `formatDuration`** | Duplicated in `ActivityListView.swift`, `SessionView.swift`, and `DashboardView.swift`. Extract to `DurationFormatter.swift` or a `TimeInterval` extension. Zero user-visible impact. |
 | **History screen** | Chronological log of completed sessions and — most importantly — completed quests. Quests are big rewarding life milestones (e.g. "Publish Dopamine Ledger") and deserve their own timeline view. Think: a scrollable journal of achievements, date-stamped, showing the quest name, payoff earned, and date completed. Could live inside the Dashboard or as its own tab. |
 | Decimal display for sub-1 credit amounts | e.g. show "0.4 cr" instead of "0 cr" |
-| Shortcut / HealthKit auto-session triggers | Start/stop sessions via Shortcuts app or HealthKit workout events |
+| Shortcut / HealthKit / Siri auto-session triggers | See research note below — three distinct paths, each at a different confidence level. No implementation agreed yet. |
 | Pixel-art theme (Step 7) | Assets not generated; fonts wired but no pixel-art icons yet |
+
+---
+
+## Research note — cross-app automation & voice control
+
+> **Status: research only. No implementation agreed.**
+> Written 2026-05-27. Re-read before any coding session that touches this area.
+> The goal is to let users start/stop sessions with minimal friction —
+> especially for purely offline activities (reading a book, cooking) where
+> tapping through the app is a context-breaker, and for digital spender
+> activities (YouTube, Instagram) where the phone itself is the "session."
+
+---
+
+### The hard platform constraint
+
+iOS does not expose a "what app is currently open" API. There is no way for
+DopamineLedger to passively detect that the user opened YouTube or Instagram.
+Apple locked this down entirely for privacy. Any approach that tries to
+auto-start a spender session when a distracting app opens must go through
+one of the two mechanisms below — there is no third path.
+
+---
+
+### Path A — App Intents + Siri voice (high confidence, build first)
+
+**Frameworks:** `AppIntents` (iOS 16+), `AppShortcutsProvider` (iOS 16.4+)
+
+The modern unified framework for exposing app actions to Siri, Shortcuts,
+Spotlight, the Action Button, and the Control Center. Implementing it once
+unlocks all of those surfaces simultaneously.
+
+**How it works:**
+A struct conforming to `AppIntent` declares a `perform()` method. Registering
+intents with `AppShortcutsProvider` pre-registers voice phrases in Siri so they
+work the moment the app is installed — no user setup, no shortcut to build.
+
+```swift
+// Sketch only — not production code
+struct StartSessionIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start Session"
+    @Parameter(title: "Activity") var activityName: String
+    func perform() async throws -> some IntentResult { ... }
+}
+```
+
+**What this enables for the user:**
+- "Hey Siri, start Reading in Dopamine Ledger" → session starts immediately,
+  Siri shows a compact confirmation. No screen tap required.
+- "Hey Siri, stop Dopamine Ledger" → stops active session.
+- "Hey Siri, what's my Dopamine Ledger balance?" → spoken answer, no app launch.
+- All of the above also appear automatically in the Shortcuts app, so users
+  can build personal automations (Focus mode starts → trigger an intent;
+  HomeKit sensor fires → trigger an intent).
+
+**Why this is the right first move:**
+This is the cleanest answer to the reading-a-book problem. The user picks up
+the book, says the phrase, done. The API is well-supported, stable, and
+Apple has actively invested in it across iOS 16–18 / iOS 26. Zero known
+regressions. Low implementation risk.
+
+**Phrases to pre-register (App Shortcuts):**
+| Intent | Suggested phrase |
+|---|---|
+| Start session | "Start \<activity name\> in \(.applicationName)" |
+| Stop session | "Stop \(.applicationName)" |
+| Pause session | "Pause \(.applicationName)" |
+| Check balance | "What's my \(.applicationName) balance?" |
+
+**Implementation size estimate:** 1 new Swift file (`AppIntentsProvider.swift`),
+no UI changes, no new capabilities required. Add to project.yml glob — no
+manual pbxproj edit needed.
+
+---
+
+### Path B — HealthKit workout observer (medium confidence, clean signal)
+
+**Framework:** `HealthKit` (iOS 8+, well-established)
+
+When the user starts a workout in the Fitness app or any third-party fitness
+app (Strava, Nike Run Club, etc.), HealthKit fires an observer query.
+DopamineLedger can listen for this and auto-start a designated charger.
+
+**How it works:**
+- User configures in DL Settings: "When a workout starts → auto-start [Exercise]."
+- A background `HKObserverQuery` on `HKWorkoutType` fires when a workout begins.
+- DL starts the session; optionally auto-stops when the workout ends.
+
+**Signal quality:** Clean and unambiguous — a workout start is a meaningful
+life event. No false positives from the user just unlocking their phone.
+
+**What it requires:**
+- `HealthKit` capability added to `project.yml` and entitlements.
+- A privacy usage description in `Info.plist`
+  (`NSHealthShareUsageDescription`, read-only — no write needed).
+- A new Settings toggle (opt-in, off by default).
+- Background delivery enabled (`enableBackgroundDelivery(for:frequency:)`).
+
+**Risk:** HealthKit requires a device (no simulator support for workout
+observation). Must be tested on physical hardware.
+
+---
+
+### Path C — Screen Time API / app-launch interception (low confidence, watch and wait)
+
+**Frameworks:** `FamilyControls`, `ManagedSettings`, `DeviceActivity` (iOS 16+)
+
+This is the mechanism used by One Sec, Opal, ScreenZen, and similar apps.
+It is the only way to detect that the user is about to open a specific app
+(YouTube, Instagram, etc.) and act on it — but it comes with significant
+fragility.
+
+**How it works:**
+The user authorises DL to "manage" a set of apps they choose (via the system
+`FamilyActivityPicker` UI — DL never sees the app names, only opaque tokens).
+DL marks those apps as "shielded" via `ManagedSettings`. When the user taps
+YouTube, iOS intercepts the launch and displays DL's custom shield view
+(`ShieldConfigurationDataSource` extension). DL can show a brief confirmation
+("Starting Doomscrolling — 2h balance remaining"), start the session, then
+dismiss the shield and let the app open.
+
+**What this would enable:**
+- Automatic spender session start the moment the user opens a designated app.
+- A brief "you're spending" moment of intentional friction (like One Sec) —
+  this actually aligns well with the anti-engagement philosophy.
+
+**The reliability problem (as of 2026):**
+The Screen Time API has well-documented, long-standing issues that are
+actively getting worse. Specifically:
+
+| Issue | Impact on DL |
+|---|---|
+| Random token regeneration (iOS re-issues opaque app tokens unpredictably) | The shield extension receives a token it has never seen; can't determine which activity to start |
+| 6 MB memory cap on the `DeviceActivityMonitor` extension | Extension crashes under normal load; One Sec's developer has filed this as a radar since iOS 15 — unfixed |
+| iOS 26 `eventDidReachThreshold` regression | Threshold fires immediately (seconds) instead of at the configured time; only workaround is re-requesting permissions, which resets every ~2 weeks |
+| No "app closed" signal | `DeviceActivityMonitor` fires on usage thresholds, not on individual app close events; stopping a session when the user exits YouTube has no clean trigger |
+| User can disable at any time | Settings → Screen Time → [App] toggle removes all restrictions instantly, with no callback to DL |
+| Requires special Apple entitlement | `com.apple.developer.family-controls` requires App Store review justification; not guaranteed to be approved |
+
+**Verdict:** Technically feasible and architecturally interesting, but the
+API is in active regression on iOS 26 (the OS our users will be running by
+the time post-MVP features ship). One Sec — the most sophisticated app
+built on this stack — has an entire support page dedicated to "Screen Time
+API issues" and asks users to grant permissions repeatedly because the
+system silently breaks them. Building on this today means inheriting their
+maintenance burden.
+
+**Recommendation:** Do not build. Monitor. Re-evaluate if Apple stabilises
+the API in a future iOS 26 point release, or if WWDC 2026 announces
+improvements.
+
+---
+
+### The Shortcuts bridge — detail
+
+#### Who "the user" is in this context
+
+"The user" throughout this section means the **DopamineLedger app user** —
+the person with DL on their iPhone. Not us, the developers.
+
+#### The hard boundary (what iOS will never allow)
+
+An app cannot create Shortcuts automations on the user's behalf. DL will
+never be able to silently write a rule into someone's Shortcuts app that
+says "when Instagram opens, start Doomscrolling." iOS treats that as a
+security boundary: automations have system-wide side effects and allowing
+any installed app to create them invisibly would be an attack surface.
+This is not a gap we can engineer around.
+
+#### What the app user would do manually (once)
+
+After we ship Path A:
+1. User opens the iOS **Shortcuts** app (pre-installed on every iPhone)
+2. Taps **Automation → New Automation**
+3. Picks a trigger: "App → Instagram → Is Opened"
+4. Adds action: searches "Dopamine Ledger" → picks "Start Session" → selects activity
+5. Saves. Done forever.
+
+From that point, every time they open Instagram, the automation fires
+silently and DL starts the session. No further interaction needed.
+
+Trigger examples the user can build for themselves once intents exist:
+
+| Trigger | Action |
+|---|---|
+| "When I open [app]" (iOS Automation) | Run `StartSessionIntent` |
+| "When Work Focus turns on" | Run `StartSessionIntent` for Work charger |
+| "When I arrive home" (location) | Run `StopSessionIntent` |
+| HomeKit sensor fires | Run any intent |
+| NFC tag tap (sticker on desk, book, etc.) | Run `StartSessionIntent` for Reading |
+
+#### What we can do to get close to automatic — three mechanisms
+
+The "open YouTube → start session" automation always needs a human to
+configure it once. But we can reduce that friction significantly, and for
+simpler patterns (time-based habits) we can get close to zero setup:
+
+**1. Intent donation + Siri Suggestions (closest to automatic)**
+When a user performs an action in DL — e.g. starts Reading every evening
+at 9pm — iOS watches that pattern. If we donate the intent each time it's
+performed (standard App Intents behaviour), iOS's on-device ML engine learns
+the habit and proactively surfaces a suggestion on the lock screen, in
+Spotlight, and in Siri Suggestions. No user setup required. We can
+additionally use `RelevantIntentManager` to explicitly hint "this intent is
+likely relevant right now" (e.g. at the user's habitual cooking time).
+The user sees: *"Start Reading" appears on their lock screen at 9pm.*
+One tap. No prior setup from them.
+
+**2. Shareable `.shortcut` files (one-tap import)**
+We can host pre-built Shortcuts as `.shortcut` files — on a web page or
+linked from inside the app. User taps the link, iOS opens Shortcuts with
+the workflow pre-loaded, user taps "Add." One tap.
+*Limitation:* this works for manual Shortcuts (voice, tap) but not for
+personal automations with automatic triggers (app-open, location, Focus).
+Those triggers always require the user to set them manually — Apple
+explicitly blocks sharing automation triggers via file.
+
+**3. `SiriTipView` — in-app contextual nudge**
+App Intents ships a ready-made `SiriTipView` component. Show it inside DL
+at the right moment (e.g. right after the user manually starts Reading for
+the first time) and it renders: *"Say 'Hey Siri, start Reading in Dopamine
+Ledger.'"* Not automation, but teaching the shortcut in context where it
+lands best.
+
+Summary:
+
+| Mechanism | Human action required? | What it achieves |
+|---|---|---|
+| Intent donation + Siri Suggestions | None after first natural use | iOS learns patterns; surfaces on lock screen |
+| `RelevantIntentManager` hints | None | We nudge iOS to surface the right intent |
+| Shareable `.shortcut` file | One tap to import | Pre-built voice shortcut; not for auto triggers |
+| `SiriTipView` in-app | One tap on the tip | Teaches Siri phrase in context |
+| Full automation (open YouTube → session) | One-time manual setup | Trigger must be set by a human |
+
+#### Philosophical note
+
+This framing — teach the user to set things up intentionally, rather than
+wiring their phone for them — is actually a good fit for DopamineLedger's
+anti-engagement design principles. Nudging someone to consciously configure
+a habit automation is itself a small act of intentionality. We should not
+over-engineer this into a "do it all for you" feature.
+
+---
+
+### Recommended implementation order
+
+| Priority | Path | Reason |
+|---|---|---|
+| 1 | **App Intents + Siri (Path A)** | Solves the reading-book problem immediately; stable API; unlocks Shortcuts bridge for free |
+| 2 | **HealthKit observer (Path B)** | Clean signal; meaningful for fitness chargers; self-contained |
+| 3 | **Shortcuts tip in Settings** | Documents the YouTube/Home automation pattern; zero code |
+| — | Screen Time API (Path C) | Watch only; do not build until API stabilises |
+
+---
+
+### Sources consulted (2026-05-27)
+
+- [One Sec — Screen Time API Issues (support page)](https://tutorials.one-sec.app/en/articles/3036354)
+- [State of the Screen Time API (riedel.wtf, 2024)](https://riedel.wtf/state-of-the-screen-time-api-2024/)
+- [Developer's Guide to Apple's Screen Time APIs (Medium / Julius Brussee)](https://medium.com/@juliusbrussee/a-developers-guide-to-apple-s-screen-time-apis-familycontrols-managedsettings-deviceactivity-e660147367d7)
+- [Apple's Screen Time API: How It Broke Me (Habit Doom)](https://habitdoom.com/blog/apple-screen-time-api-guide)
+- [ShieldConfigurationDataSource tutorial (Medium / John Baker)](https://medium.com/@B4k3R/creating-a-screentime-shieldconfigurationdatasource-for-ios-familycontrols-api-5ca1079d3188)
+- [App Intents + AppShortcutsProvider (createwithswift.com)](https://www.createwithswift.com/performing-your-app-actions-with-siri-through-app-shortcuts-provider/)
+- [WWDC22: Implement App Shortcuts with App Intents (Apple)](https://developer.apple.com/videos/play/wwdc2022/10170/)
 
 ---
 

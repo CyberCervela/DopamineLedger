@@ -66,6 +66,7 @@ struct SettingsView: View {
                             activeSessionSection
                         }
                         aboutSection
+                        legalSection
                         dangerZoneSection
                     }
                     .padding(theme.spacing.lg)
@@ -359,16 +360,31 @@ struct SettingsView: View {
 
                 Divider()
 
+                Link(destination: URL(string: "https://github.com/CyberCervela/DopamineLedger")!) {
+                    aboutLinkRow(lBundle.l("settings.about.repo"))
+                }
+            }
+        }
+    }
+
+    // Legal section: disclaimer notice + privacy policy link.
+    // Separated from About so the About card stays focused on version/contact/repo
+    // and the legal text has its own clearly-labelled home — easier for Apple review
+    // and users to find.
+    private var legalSection: some View {
+        sectionCard(title: lBundle.l("settings.section.legal")) {
+            VStack(alignment: .leading, spacing: theme.spacing.md) {
+                Text(lBundle.l("settings.legal.disclaimer"))
+                    .font(theme.typography.caption)
+                    .foregroundStyle(theme.colors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Divider()
+
                 Button { showPrivacyPolicy = true } label: {
                     aboutLinkRow(lBundle.l("settings.about.privacy"))
                 }
                 .buttonStyle(.plain)
-
-                Divider()
-
-                Link(destination: URL(string: "https://github.com/CyberCervela/DopamineLedger")!) {
-                    aboutLinkRow(lBundle.l("settings.about.repo"))
-                }
             }
         }
     }

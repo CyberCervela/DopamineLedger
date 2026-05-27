@@ -5,6 +5,65 @@
 
 ---
 
+## Session 11 — 2026-05-27
+
+**Focus:** App Store submission prep — Legal disclaimer section + listing copy cleanup.
+
+**What was done:**
+
+- `SettingsView.swift` — added new `legalSection` (between About and Danger Zone). Contains the disclaimer text block + Privacy Policy link (moved from About). About now holds only: Version · Contact · Source Code.
+- `Localizable.xcstrings` — 2 new keys × 7 languages: `settings.section.legal` ("LEGAL" / "LÉGAL" / "RECHTLICHES" / "LEGAL" + CJK), `settings.legal.disclaimer` (full disclaimer sentence in all 7 languages).
+- `APP_STORE_LISTING.md` — three fixes:
+  - Promotional text: removed "pixel-art" claim (app ships neumorphic, not pixel-art).
+  - Description: replaced "Pixel-art everywhere" bullet with "Neumorphic design — soft shadows, dark surfaces, clean typography"; added disclaimer paragraph before the "Built solo with…" line.
+  - "What's New": rewrote to accurately describe what shipped (Live Activities, Dashboard, animated balance, language switcher) — removed all pixel-art font/icon references.
+
+**Key decision:** Legal section as its own card rather than folding into About — keeps About clean and gives the disclaimer a clearly-labelled home that's easy for Apple reviewers to find.
+
+**Context:** Apple Developer Program approval received. Submission blocked pending signing setup in Xcode (team selected, no physical device registered — archive should still work via distribution signing). Bundle ID already correct: `com.cibercervela.DopamineLedger`.
+
+**What to pick up next:**
+- Product → Archive in Xcode → Distribute → App Store Connect (upload build).
+- Create App Store Connect record: `appstoreconnect.apple.com` → New App → paste from `APP_STORE_LISTING.md`.
+- Support URL still needed (GitHub repo page or Notion public page).
+- Copyright name decision (legal name for the listing).
+
+---
+
+## Session 10 — 2026-05-27
+
+**Focus:** Research — cross-app automation, voice control, and the Shortcuts bridge. No code written.
+
+**Context:** Waiting on App Store submission (Apple Developer Program approval arrived — TestFlight/App Store configuration is the next session's focus).
+
+**What was done:**
+- Researched how One Sec, Opal, ScreenZen, and Minimalist Phone approach cross-app session detection on iOS.
+- Mapped the full technical landscape across three paths and documented findings in `BACKLOG.md` as a clearly-labelled research note (not agreed implementation).
+- Replaced the one-liner "Shortcut / HealthKit auto-session triggers" backlog entry with a full structured note.
+
+**Three paths identified:**
+
+- **Path A — App Intents + Siri (high confidence, build first).** The `AppShortcutsProvider` pattern lets users say "Hey Siri, start Reading in Dopamine Ledger" with zero prior setup. The API is stable and well-supported across iOS 16–26. This directly solves the offline-activity use case (reading a book, cooking) without requiring any screen interaction.
+
+- **Path B — HealthKit workout observer (medium confidence).** Clean, unambiguous signal. Auto-start a charger when the user begins a workout in Fitness or any third-party fitness app. Requires `HealthKit` capability + one Settings toggle.
+
+- **Path C — Screen Time API / shield interception (low confidence, do not build yet).** The technique used by One Sec and Opal: temporarily "block" a distracting app, intercept the launch via a custom shield view, start a session, then lift the block. Technically the only way to auto-detect "user just opened YouTube." However, the API has severe and unresolved regressions on iOS 26 (threshold events firing immediately, random token regeneration, 6 MB extension memory cap causing crashes). Building on it now would mean inheriting One Sec's maintenance burden on a dependency Apple has neglected. Decision: watch and wait.
+
+**Key clarification made (Shortcuts bridge):**
+- "The user" in the Shortcuts bridge context = the DopamineLedger app user, not the developers.
+- iOS does not allow apps to create Shortcuts automations programmatically — this is a hard security boundary, not an engineering gap.
+- Three mechanisms can reduce the friction without crossing that boundary: (1) intent donation + Siri Suggestions — iOS learns usage patterns on-device and proactively surfaces shortcuts on the lock screen with zero user setup; (2) shareable `.shortcut` files for voice shortcuts (not automation triggers); (3) `SiriTipView` for in-context nudges inside the app.
+- The full "open YouTube → auto-start session" automation always requires one manual setup by the user in the Shortcuts app. Framed as intentional by design — consistent with anti-engagement principles.
+
+**Decisions locked:**
+- No implementation agreed for any of the three paths. All remain research/backlog.
+- Research note stamped with date and sources; designed so the next Claude session that picks this up can continue from real references rather than re-deriving the landscape.
+
+**What to pick up next:**
+- **Next session: App Store submission.** Apple Developer Program approval received. Configure TestFlight build: set `DEVELOPMENT_TEAM` in Xcode, archive, upload, wire screenshots and listing copy from `kit-for-next-claude/APP_STORE_LISTING.md`. See `BACKLOG.md` item #2 in the priority list.
+
+---
+
 ## Session 9 — 2026-05-26
 
 **Focus:** Whole-codebase technical-debt audit (read-only — no code changed). Triggered while waiting on Apple Developer Program approval.
