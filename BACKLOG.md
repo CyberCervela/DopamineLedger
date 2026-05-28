@@ -36,7 +36,9 @@ Items deferred from active development. Verify or ship when ready.
 | **Icon system overhaul** | Activities currently have 31 SF Symbols but users gravitate to the same 3–4. Quests have no icons at all. Needs a dedicated ideation + iteration session before coding: (1) audit which icons are actually used vs ignored, (2) expand and re-curate the activity icon set with better categories (productivity, wellness, leisure, social…), (3) add icon support to quests — likely a smaller curated set (trophy, star, checkmark variants, home, book…). Design question to answer first: should quests share the same picker as activities or have their own purpose-built set? No coding until the icon direction is agreed. |
 | **History screen** | Chronological log of completed sessions and — most importantly — completed quests. Quests are big rewarding life milestones (e.g. "Publish Dopamine Ledger") and deserve their own timeline view. Think: a scrollable journal of achievements, date-stamped, showing the quest name, payoff earned, and date completed. Could live inside the Dashboard or as its own tab. |
 | Decimal display for sub-1 credit amounts | e.g. show "0.4 cr" instead of "0 cr" |
-| Shortcut / HealthKit / Siri auto-session triggers | See research note below — three distinct paths, each at a different confidence level. No implementation agreed yet. |
+| Siri / App Intents (Path A) | "Hey Siri, start Reading in Dopamine Ledger." AppShortcutsProvider — stable, high confidence. Build first. |
+| HealthKit workout observer (Path B) | Auto-start a charger when a workout begins. Clean signal; requires HealthKit capability + one Settings toggle. Medium confidence. |
+| Screen Time API — app-launch interception (Path C) | ⛔ Blocked — API in active regression on iOS 26. See research note below. Re-evaluate after WWDC 2026/2027. |
 | Pixel-art theme (Step 7) | Assets not generated; fonts wired but no pixel-art icons yet |
 
 ---
@@ -141,7 +143,12 @@ observation). Must be tested on physical hardware.
 
 ---
 
-### Path C — Screen Time API / app-launch interception (low confidence, watch and wait)
+### Path C — Screen Time API / app-launch interception ⛔ BLOCKED
+
+> **Blocked as of 2026-05-28. Do not implement until unblocked.**
+> Unblock trigger: Apple stabilises the API in a future iOS 26 point release,
+> or WWDC 2026/2027 announces meaningful improvements. Re-evaluate then.
+> The research below is preserved so we don't repeat the investigation.
 
 **Frameworks:** `FamilyControls`, `ManagedSettings`, `DeviceActivity` (iOS 16+)
 
@@ -164,9 +171,16 @@ dismiss the shield and let the app open.
 - A brief "you're spending" moment of intentional friction (like One Sec) —
   this actually aligns well with the anti-engagement philosophy.
 
-**The reliability problem (as of 2026):**
+**Important clarification — no retroactive data:**
+`DeviceActivity` fires threshold callbacks (e.g. "user exceeded 30 min of
+YouTube today") but does not expose raw usage data. You cannot query "how long
+did the user spend on YouTube between 2pm and 3pm." That data is locked in
+Apple's system and inaccessible to third-party apps. Any auto-session trigger
+via this path is prospective (intercept the launch) — never retroactive.
+
+**Why it is blocked (as of 2026):**
 The Screen Time API has well-documented, long-standing issues that are
-actively getting worse. Specifically:
+actively getting worse on iOS 26. Specifically:
 
 | Issue | Impact on DL |
 |---|---|
@@ -177,17 +191,9 @@ actively getting worse. Specifically:
 | User can disable at any time | Settings → Screen Time → [App] toggle removes all restrictions instantly, with no callback to DL |
 | Requires special Apple entitlement | `com.apple.developer.family-controls` requires App Store review justification; not guaranteed to be approved |
 
-**Verdict:** Technically feasible and architecturally interesting, but the
-API is in active regression on iOS 26 (the OS our users will be running by
-the time post-MVP features ship). One Sec — the most sophisticated app
-built on this stack — has an entire support page dedicated to "Screen Time
-API issues" and asks users to grant permissions repeatedly because the
-system silently breaks them. Building on this today means inheriting their
-maintenance burden.
-
-**Recommendation:** Do not build. Monitor. Re-evaluate if Apple stabilises
-the API in a future iOS 26 point release, or if WWDC 2026 announces
-improvements.
+One Sec — the most sophisticated app built on this stack — has an entire
+support page dedicated to "Screen Time API issues" and asks users to grant
+permissions repeatedly because the system silently breaks them.
 
 ---
 
@@ -289,7 +295,7 @@ over-engineer this into a "do it all for you" feature.
 | 1 | **App Intents + Siri (Path A)** | Solves the reading-book problem immediately; stable API; unlocks Shortcuts bridge for free |
 | 2 | **HealthKit observer (Path B)** | Clean signal; meaningful for fitness chargers; self-contained |
 | 3 | **Shortcuts tip in Settings** | Documents the YouTube/Home automation pattern; zero code |
-| — | Screen Time API (Path C) | Watch only; do not build until API stabilises |
+| ⛔ | **Screen Time API (Path C)** | Blocked — API in active regression on iOS 26. Re-evaluate after WWDC 2026/2027 or a stabilising point release. |
 
 ---
 
