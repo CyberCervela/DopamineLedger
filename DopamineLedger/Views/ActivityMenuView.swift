@@ -87,7 +87,7 @@ struct ActivityMenuView: View {
                 .font(theme.typography.headline)
                 .foregroundStyle(theme.colors.textPrimary)
             Text(String(format: lBundle.l("session.rate"),
-                        (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(1)))))
+                        (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(0...1)))))
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
         }
@@ -99,7 +99,7 @@ struct ActivityMenuView: View {
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .kerning(2)
-            Text(totalDebt, format: .number.precision(.fractionLength(1)))
+            Text(totalDebt, format: .number.precision(.fractionLength(0...1)))
                 .font(theme.typography.display)
                 .foregroundStyle(theme.colors.negative)
                 .contentTransition(.numericText())
@@ -155,7 +155,7 @@ struct ActivityMenuView: View {
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .kerning(2)
-            Text(0, format: .number.precision(.fractionLength(1)))
+            Text(0, format: .number.precision(.fractionLength(0...1)))
                 .font(theme.typography.display)
                 .foregroundStyle(theme.colors.negative)
             Text(lBundle.l("activitymenu.zero_warning"))

@@ -431,7 +431,7 @@ private struct ActivityRow: View {
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
                 Text(String(format: lBundle.l("session.rate"),
-                            ratePerMinute.formatted(.number.precision(.fractionLength(1)))))
+                            ratePerMinute.formatted(.number.precision(.fractionLength(0...1)))))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
                 if let secs = burndownSeconds {
@@ -441,7 +441,7 @@ private struct ActivityRow: View {
                 }
                 if debtAmount > 0 {
                     Text(String(format: lBundle.l("row.activity.debt"),
-                                debtAmount.formatted(.number.precision(.fractionLength(1)))))
+                                debtAmount.formatted(.number.precision(.fractionLength(0...1)))))
                         .font(theme.typography.caption)
                         .foregroundStyle(.white)
                         .padding(.horizontal, theme.spacing.sm)
@@ -516,7 +516,7 @@ private struct QuestRow: View {
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
                 Text(String(format: lBundle.l("row.quest.payoff"),
-                            quest.payoffCredits.formatted(.number.precision(.fractionLength(0)))))
+                            quest.payoffCredits.formatted(.number.precision(.fractionLength(0...1)))))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.positive)
             }

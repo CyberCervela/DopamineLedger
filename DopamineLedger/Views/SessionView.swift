@@ -83,19 +83,19 @@ struct SessionView: View {
 
             VStack(spacing: theme.spacing.xs) {
                 Text(String(format: lBundle.l(creditsKey),
-                            creditsMoved.formatted(.number.precision(.fractionLength(1)))))
+                            creditsMoved.formatted(.number.precision(.fractionLength(0...1)))))
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : kindColor))
                 if activity.kind == .spender {
                     // Show remaining balance before zero, or live debt once overrun.
                     if isOverrun {
                         Text(String(format: lBundle.l("session.live_debt"),
-                                    spenderLiveDebt.formatted(.number.precision(.fractionLength(1)))))
+                                    spenderLiveDebt.formatted(.number.precision(.fractionLength(0...1)))))
                             .font(theme.typography.caption)
                             .foregroundStyle(theme.colors.negative)
                     } else {
                         Text(String(format: lBundle.l("session.balance_remaining"),
-                                    spenderRemaining.formatted(.number.precision(.fractionLength(1)))))
+                                    spenderRemaining.formatted(.number.precision(.fractionLength(0...1)))))
                             .font(theme.typography.caption)
                             .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
                                              ? theme.colors.negative
@@ -111,7 +111,7 @@ struct SessionView: View {
                     }
                 }
                 Text(String(format: lBundle.l("session.rate"),
-                            (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(1)))))
+                            (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(0...1)))))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }

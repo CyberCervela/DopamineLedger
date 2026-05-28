@@ -34,7 +34,7 @@ struct BalanceCard: View {
                     .kerning(2)
             }
 
-            Text(animatedBalance, format: .number.precision(.fractionLength(1)))
+            Text(animatedBalance, format: .number.precision(.fractionLength(0...1)))
                 .font(theme.typography.display)
                 .foregroundStyle(flashColor ?? theme.colors.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -50,7 +50,7 @@ struct BalanceCard: View {
                             .font(.system(size: 12))
                             .foregroundStyle(theme.colors.negative)
                         Text(String(format: lBundle.l("balance.in_debt"),
-                                    totalDebt.formatted(.number.precision(.fractionLength(1)))))
+                                    totalDebt.formatted(.number.precision(.fractionLength(0...1)))))
                             .font(theme.typography.caption)
                             .foregroundStyle(theme.colors.negative)
                         Spacer()

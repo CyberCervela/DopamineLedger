@@ -127,10 +127,10 @@ private struct SummaryCard: View {
     // 0.05 threshold avoids "+0.0" from floating-point noise.
     private var netDeltaText: String {
         let abs = Swift.abs(stats.netDelta)
-        let fmt = abs.formatted(.number.precision(.fractionLength(1)))
+        let fmt = abs.formatted(.number.precision(.fractionLength(0...1)))
         if stats.netDelta >  0.05 { return "+\(fmt)" }
         if stats.netDelta < -0.05 { return "−\(fmt)" }
-        return "0.0"
+        return "0"
     }
 
     var body: some View {
@@ -191,7 +191,7 @@ private struct SummaryCard: View {
                         .font(theme.typography.caption)
                         .foregroundStyle(theme.colors.negative)
                     Spacer()
-                    Text(stats.totalOutstandingDebt.formatted(.number.precision(.fractionLength(1))))
+                    Text(stats.totalOutstandingDebt.formatted(.number.precision(.fractionLength(0...1))))
                         .font(theme.typography.caption.weight(.semibold))
                         .foregroundStyle(theme.colors.negative)
                 }
@@ -226,7 +226,7 @@ private struct StatRow: View {
                 .foregroundStyle(theme.colors.textSecondary)
             Spacer()
             // Mute the colour when value is zero — no signal to convey.
-            Text("\(prefix)\(value.formatted(.number.precision(.fractionLength(1))))")
+            Text("\(prefix)\(value.formatted(.number.precision(.fractionLength(0...1))))")
                 .font(theme.typography.caption.weight(.semibold))
                 .foregroundStyle(value > 0.05 ? activeColor : theme.colors.textSecondary)
         }
@@ -293,7 +293,7 @@ private struct ActivitySummaryRow: View {
 
             Spacer()
 
-            Text("\(creditsPrefix)\(summary.totalCredits.formatted(.number.precision(.fractionLength(1))))")
+            Text("\(creditsPrefix)\(summary.totalCredits.formatted(.number.precision(.fractionLength(0...1))))")
                 .font(theme.typography.bodyStrong)
                 .foregroundStyle(creditsColor)
         }
@@ -336,7 +336,7 @@ private struct CompletedQuestRow: View {
 
             Spacer()
 
-            Text("+\(entry.payoffCredits.formatted(.number.precision(.fractionLength(0))))")
+            Text("+\(entry.payoffCredits.formatted(.number.precision(.fractionLength(0...1))))")
                 .font(theme.typography.bodyStrong)
                 .foregroundStyle(theme.colors.positive)
         }

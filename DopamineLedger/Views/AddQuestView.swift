@@ -30,7 +30,7 @@ struct AddQuestView: View {
             _category = State(initialValue: .other)
         case .edit(let q):
             _name     = State(initialValue: q.name)
-            _payoff   = State(initialValue: String(format: "%.0f", q.payoffCredits))
+            _payoff   = State(initialValue: q.payoffCredits.formatted(.number.precision(.fractionLength(0...1))))
             _category = State(initialValue: q.category ?? .other)
         }
     }
@@ -108,7 +108,7 @@ struct AddQuestView: View {
 
                     if let payoff = parsedPayoff {
                         Text(String(format: lBundle.l("quest.hint"),
-                                    payoff.formatted(.number.precision(.fractionLength(0)))))
+                                    payoff.formatted(.number.precision(.fractionLength(0...1)))))
                             .font(theme.typography.caption)
                             .foregroundStyle(theme.colors.positive)
                             .multilineTextAlignment(.center)
