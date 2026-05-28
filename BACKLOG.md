@@ -29,7 +29,7 @@ Items deferred from active development. Verify or ship when ready.
 
 | Item | Notes |
 |---|---|
-| **Template catalog curation** | Shipped with 13 presets (8 chargers, 5 spenders). User deferred naming, icon choices, and toggle defaults for a dedicated discussion. Pick up next session — ask the user to review each preset before any code changes. |
+| **Template catalog name review** | 16 presets shipped (11 chargers, 5 spenders). Names and toggle defaults curated Session 14. User gathering feedback from parents, kids, and friends on whether names like "Homework" vs "School Work" resonate. No code changes until feedback is in. |
 | **Dashboard / stats** | Done — Sessions 6–7. See JOURNAL.md. |
 | **`netDelta` accuracy for overrun sessions** | Currently uses base rate × elapsed for spenders; doesn't reflect the 2× debt penalty on overrun. Fix requires storing `balanceAtSessionStart` on `Session` and replaying `SessionMath.apply()` in `DashboardStats.compute()`. Low urgency (stats are directionally correct). Block on before any "weekly summary" notification or export feature. |
 | **Consolidate `formatDuration`** | Duplicated in `ActivityListView.swift`, `SessionView.swift`, and `DashboardView.swift`. Extract to `DurationFormatter.swift` or a `TimeInterval` extension. Zero user-visible impact. |

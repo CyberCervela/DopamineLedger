@@ -51,10 +51,24 @@ User rejected the system `.confirmationDialog` (floating in the middle of the sc
 - `63e15af` — Add Activity Guidance & Template System (D-013, D-014)
 - `f91ca09` — Replace system action sheet with neumorphic choice sheet
 
+**Template catalog curation (same session, continuation):**
+
+User identified a family / children use case (parents managing kids' screen time). Three new charger templates added to `ActivityTemplate.swift`:
+
+| Name | Category | Impact | Enjoyment | Rate | Icon |
+|---|---|---|---|---|---|
+| Homework | Focus & Learning | High | Low | 6.0 cr/min | `pencil.and.ruler.fill` |
+| Reading | Focus & Learning | High | High | 5.0 cr/min | `book.closed.fill` |
+| Chores | Movement | Low | Low | 3.0 cr/min | `house.fill` |
+
+Rationale for defaults: Chores kept at Low impact (vs High) deliberately — "if we put everything at high impact, nothing is high impact." Users can override. No new spenders added (Streaming / Gaming / Social Media already cover the family use case). No new categories added (Focus & Learning and Movement absorb all three). Final catalog: **16 presets** (10 chargers, 5 spenders → wait, 10 chargers + 5 spenders = 15... actually: 6 Focus, 3 Movement, 2 Rest = 11 chargers; 3 Leisure + 2 High-Risk = 5 spenders = 16 total).
+
+Feedback on catalog names (whether "Homework" vs "School Work" etc.) deferred — user will gather input from parents, kids, and friends before any renames.
+
 **What to pick up next:**
-- **Template catalog curation**: User explicitly deferred this until the choice-sheet UX was confirmed working. Now that it is, discuss and curate the 13 presets together (names, icons, toggle defaults, categories).
 - **Release**: App still in Apple review (submitted 2026-05-27). Click "Release this version" on approval.
 - **D-012 History tab** remains unbuilt — third tab exists in the locked decision but has no implementation yet.
+- **Template name review**: after gathering user feedback from parents/kids/friends.
 
 ---
 
