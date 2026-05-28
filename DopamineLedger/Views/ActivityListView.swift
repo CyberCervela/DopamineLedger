@@ -257,25 +257,52 @@ struct ActivityListView: View {
         if activities.isEmpty && quests.isEmpty {
             emptyState(icon: .balance, message: lBundle.l("home.empty.all"))
         } else {
-            LazyVStack(spacing: theme.spacing.md) {
-                ForEach(activities) { activity in
-                    ActivityRow(
-                        activity:   activity,
-                        isActive:   isActive(activity),
-                        debtAmount: debtAmount(for: activity),
-                        balance:    ledger?.balance ?? 0,
-                        onTap:      { openActivity(activity) },
-                        onEdit:     { activityToEdit = activity },
-                        onDelete:   { delete(activity) }
-                    )
-                }
-                ForEach(quests) { quest in
-                    QuestRow(
-                        quest:      quest,
-                        onComplete: { complete(quest) },
-                        onEdit:     { questToEdit = quest },
-                        onDelete:   { deleteQuest(quest) }
-                    )
+            LazyVStack(spacing: theme.spacing.xl) {
+                ForEach(ActivityCategory.allCases, id: \.self) { cat in
+                    let catQuests   = quests.filter     { ($0.category ?? .other) == cat }
+                    let catChargers = activities.filter { ($0.category ?? .other) == cat && $0.kind == .charger }
+                    let catSpenders = activities.filter { ($0.category ?? .other) == cat && $0.kind == .spender }
+                    if !catQuests.isEmpty || !catChargers.isEmpty || !catSpenders.isEmpty {
+                        VStack(alignment: .leading, spacing: theme.spacing.md) {
+                            Text(lBundle.l(cat.labelKey).uppercased())
+                                .font(theme.typography.caption)
+                                .foregroundStyle(theme.colors.textSecondary)
+                                .kerning(2)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            LazyVStack(spacing: theme.spacing.md) {
+                                ForEach(catQuests) { quest in
+                                    QuestRow(
+                                        quest:      quest,
+                                        onComplete: { complete(quest) },
+                                        onEdit:     { questToEdit = quest },
+                                        onDelete:   { deleteQuest(quest) }
+                                    )
+                                }
+                                ForEach(catChargers) { activity in
+                                    ActivityRow(
+                                        activity:   activity,
+                                        isActive:   isActive(activity),
+                                        debtAmount: debtAmount(for: activity),
+                                        balance:    ledger?.balance ?? 0,
+                                        onTap:      { openActivity(activity) },
+                                        onEdit:     { activityToEdit = activity },
+                                        onDelete:   { delete(activity) }
+                                    )
+                                }
+                                ForEach(catSpenders) { activity in
+                                    ActivityRow(
+                                        activity:   activity,
+                                        isActive:   isActive(activity),
+                                        debtAmount: debtAmount(for: activity),
+                                        balance:    ledger?.balance ?? 0,
+                                        onTap:      { openActivity(activity) },
+                                        onEdit:     { activityToEdit = activity },
+                                        onDelete:   { delete(activity) }
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

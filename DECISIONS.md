@@ -189,6 +189,22 @@ made are values-based, not numeric.
 `ActivityTemplate.swift` data model, new `TemplateGalleryView.swift`.
 **Supersedes:** none
 
+## D-015 — Dashboard grouped by category; quests → chargers → spenders within each group   (2026-05-28)
+**Decision:** `ActivityCategory` (renamed from `TemplateCategory`, plus an `.other` catch-all) is added
+as a field to both `Activity` and `Quest` SwiftData models. The Stats dashboard replaces its
+flat charger/spender lists with category-grouped sections. Within each category the order is:
+completed quests first, charger activities second, spender activities third. Empty sub-groups and
+empty category sections are hidden. Existing rows migrate safely with `= .other` as the SwiftData
+default. The category picker is added to `AddActivityView` (auto-filled from the template's category
+on the `.fromTemplate` path) and to `AddQuestView`.
+**Why:** Grouping by life area (Focus & Learning, Movement, Rest, Leisure, High-Risk, Other) gives the
+dashboard a meaningful structure — you see everything happening in one area of your life side-by-side,
+rather than scanning a flat list of all chargers followed by all spenders. The quest-first order inside
+each group matches the app's hierarchy: a quest is a one-off commitment inside the same life domain.
+**Scope:** `ActivityTemplate.swift` (rename), `Activity.swift`, `Quest.swift`, `AddActivityView.swift`,
+`AddQuestView.swift`, `DashboardStats.swift`, `DashboardView.swift`, `Localizable.xcstrings`.
+**Supersedes:** none (extends D-014's category concept from templates to live model objects)
+
 ## D-012 — Three-tab navigation: Home / Stats / History   (2026-05-27)
 **Decision:** The app has three permanent tabs: Home (`house`), Stats
 (`chart.bar`), History (`clock`). Each tab has a single, non-overlapping

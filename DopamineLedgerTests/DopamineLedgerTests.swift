@@ -256,8 +256,7 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(stats.debtRepaid, 0)
         XCTAssertEqual(stats.netDelta, 0)
         XCTAssertEqual(stats.totalOutstandingDebt, 0)
-        XCTAssertTrue(stats.activitySummaries.isEmpty)
-        XCTAssertTrue(stats.completedQuests.isEmpty)
+        XCTAssertTrue(stats.categoryGroups.isEmpty)
     }
 
     func testDashboardStatsChargerEarns() {
@@ -268,8 +267,9 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(stats.creditsEarned, 6.0, accuracy: 0.001)
         XCTAssertEqual(stats.creditsSpent, 0)
         XCTAssertEqual(stats.netDelta, 6.0, accuracy: 0.001)
-        XCTAssertEqual(stats.activitySummaries.count, 1)
-        XCTAssertEqual(stats.activitySummaries[0].sessionCount, 1)
+        let chargers = stats.categoryGroups.flatMap { $0.chargers }
+        XCTAssertEqual(chargers.count, 1)
+        XCTAssertEqual(chargers[0].sessionCount, 1)
     }
 
     func testDashboardStatsSpenderSpends() {
@@ -289,8 +289,9 @@ final class DopamineLedgerTests: XCTestCase {
         let stats = DashboardStats.compute(sessions: [], quests: [quest], activities: [], debts: [], scope: .allTime)
         XCTAssertEqual(stats.questPayoff, 100.0, accuracy: 0.001)
         XCTAssertEqual(stats.netDelta, 100.0, accuracy: 0.001)
-        XCTAssertEqual(stats.completedQuests.count, 1)
-        XCTAssertEqual(stats.completedQuests[0].name, "File taxes")
+        let quests = stats.categoryGroups.flatMap { $0.quests }
+        XCTAssertEqual(quests.count, 1)
+        XCTAssertEqual(quests[0].name, "File taxes")
     }
 
     // An active session (no endedAt) must not appear in stats — its credits
@@ -300,7 +301,7 @@ final class DopamineLedgerTests: XCTestCase {
         let session  = Session(activityId: activity.id) // endedAt stays nil
         let stats = DashboardStats.compute(sessions: [session], quests: [], activities: [activity], debts: [], scope: .allTime)
         XCTAssertEqual(stats.creditsEarned, 0)
-        XCTAssertTrue(stats.activitySummaries.isEmpty)
+        XCTAssertTrue(stats.categoryGroups.isEmpty)
     }
 
     // Sessions started before the scope window must not count.
@@ -389,9 +390,10 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(stats.questPayoff,   10.0, accuracy: 0.001)
         XCTAssertEqual(stats.debtRepaid,    8.0,  accuracy: 0.001)
         XCTAssertEqual(stats.netDelta,      8.0,  accuracy: 0.001)
-        // Charger appears before spender in summaries.
-        XCTAssertEqual(stats.activitySummaries[0].kind, ActivityKind.charger)
-        XCTAssertEqual(stats.activitySummaries[1].kind, ActivityKind.spender)
+        // Both activities default to .other category; chargers and spenders are separate arrays.
+        let group = stats.categoryGroups.first { $0.category == .other }
+        XCTAssertEqual(group?.chargers.count, 1)
+        XCTAssertEqual(group?.spenders.count, 1)
     }
 
     // MARK: - NotificationMath

@@ -5,6 +5,33 @@
 
 ---
 
+## Session 16 — 2026-05-28
+
+**Focus:** Category system — add `ActivityCategory` to `Activity` and `Quest` models; restructure the Dashboard to group by category with quests → chargers → spenders within each group.
+
+**Design locked (see D-015):** Dashboard replaces the flat charger/spender lists with category-grouped sections. Each non-empty category shows its completed quests first, then chargers, then spenders. Empty sub-groups and empty categories are hidden. Activities and quests default to `.other` for safe lightweight migration of existing rows.
+
+**Files changing:**
+- `Models/ActivityTemplate.swift` — rename `TemplateCategory` → `ActivityCategory`, add `.other`
+- `Models/Activity.swift` — add `var category: ActivityCategory = .other`
+- `Models/Quest.swift` — add `var category: ActivityCategory = .other`
+- `Views/AddActivityView.swift` — category picker; auto-filled from template on `.fromTemplate` path
+- `Views/AddQuestView.swift` — category picker
+- `Models/DashboardStats.swift` — new `CategoryGroup` struct; replace flat lists with `categoryGroups`
+- `Views/DashboardView.swift` — render category group sections
+- `Localizable.xcstrings` — `category.other` key × 7 languages
+
+**Key gotcha:** SwiftData's `@Model` macro requires fully qualified enum default values (`ActivityCategory.other`, not `.other`). Shorthand triggers *"A default value requires a fully qualified domain named value"*. Documented in `TOOLING.md`.
+
+**Tests:** All 33 tests pass. 4 DashboardStats tests updated to use `categoryGroups` / `flatMap { $0.chargers }` / `flatMap { $0.quests }` instead of the removed `activitySummaries` and `completedQuests` top-level arrays.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- History tab (D-012) — still unbuilt.
+- Template name review (after gathering parent/kid feedback).
+
+---
+
 ## Session 15 — 2026-05-28
 
 **Focus:** Bug fix — ghost pill button in top-right corner of choice sheet and template gallery header.

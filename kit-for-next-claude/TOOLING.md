@@ -130,6 +130,33 @@ withAnimation { quest.isCompleted = true }   // entity now filtered out
 presentToast(.questCompleted(name: name, payoff: payoff))
 ```
 
+### Adding a Codable enum field to an existing `@Model` crashes at runtime
+
+When you add a **non-optional** `Codable` enum property with a default value
+to an `@Model`, the compile step succeeds (shorthand `.value` needs to be
+fully qualified, e.g. `ActivityCategory.other`, to satisfy the macro) but
+the app crashes at runtime with `swift_dynamicCastFailure` when reading any
+pre-migration row. SwiftData's transformer-based storage for Codable types
+cannot fill the missing column for existing rows the same way primitive types
+can.
+
+**Fix — declare the property optional:**
+
+```swift
+// ✅ Safe for existing stores — old rows get nil, not a crash
+var category: ActivityCategory?
+```
+
+Read it with `?? .default` in the one or two places that need a concrete value:
+
+```swift
+activity.category ?? .other   // in DashboardStats.compute()
+a.category ?? .other           // in AddActivityView.init for edit mode
+```
+
+New rows created through `init()` always receive an explicit value, so `nil`
+only ever appears for rows that predate the schema change.
+
 ### Singleton `Ledger`
 
 `Ledger.fetchOrCreate(in:)` is `@MainActor` and handles the

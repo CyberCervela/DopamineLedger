@@ -45,8 +45,13 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
                     SummaryCard(stats: stats)
-                    ActivityStatsSection(summaries: stats.activitySummaries)
-                    QuestHistorySection(quests: stats.completedQuests)
+                    if stats.categoryGroups.isEmpty {
+                        SectionEmptyState(message: lBundle.l("stats.no_sessions"))
+                    } else {
+                        ForEach(stats.categoryGroups) { group in
+                            CategoryGroupSection(group: group)
+                        }
+                    }
                 }
                 .padding(.horizontal, theme.spacing.lg)
                 .padding(.bottom,     theme.spacing.xxl)
@@ -228,22 +233,22 @@ private struct StatRow: View {
     }
 }
 
-// MARK: - ActivityStatsSection
+// MARK: - CategoryGroupSection
 
-private struct ActivityStatsSection: View {
+// One card group per life-area category. Within the group: quests first,
+// then chargers, then spenders — all alphabetical within their sub-kind.
+private struct CategoryGroupSection: View {
     @Environment(\.theme)          private var theme
     @Environment(\.languageBundle) private var lBundle
-    let summaries: [ActivitySummary]
+    let group: CategoryGroup
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.md) {
-            SectionHeader(text: lBundle.l("stats.activities_header"))
-            if summaries.isEmpty {
-                SectionEmptyState(message: lBundle.l("stats.no_sessions"))
-            } else {
-                LazyVStack(spacing: theme.spacing.md) {
-                    ForEach(summaries) { ActivitySummaryRow(summary: $0) }
-                }
+            SectionHeader(text: lBundle.l(group.category.labelKey).uppercased())
+            LazyVStack(spacing: theme.spacing.md) {
+                ForEach(group.quests)   { CompletedQuestRow(entry: $0) }
+                ForEach(group.chargers) { ActivitySummaryRow(summary: $0) }
+                ForEach(group.spenders) { ActivitySummaryRow(summary: $0) }
             }
         }
     }
@@ -297,27 +302,6 @@ private struct ActivitySummaryRow: View {
         .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
         .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
         .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
-    }
-}
-
-// MARK: - QuestHistorySection
-
-private struct QuestHistorySection: View {
-    @Environment(\.theme)          private var theme
-    @Environment(\.languageBundle) private var lBundle
-    let quests: [CompletedQuestEntry]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.md) {
-            SectionHeader(text: lBundle.l("stats.quests_header"))
-            if quests.isEmpty {
-                SectionEmptyState(message: lBundle.l("stats.no_quests"))
-            } else {
-                LazyVStack(spacing: theme.spacing.md) {
-                    ForEach(quests) { CompletedQuestRow(entry: $0) }
-                }
-            }
-        }
     }
 }
 

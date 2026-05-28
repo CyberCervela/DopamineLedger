@@ -24,17 +24,21 @@ final class Quest {
     // so a tax declaration can pay out 500 while a single email might pay out 20.
     var payoffCredits: Double
     var iconName:      String
+    // Optional so SwiftData stores NULL for rows that predate this field.
+    // Read via ?? .other — see Activity.swift comment for the full reason.
+    var category:      ActivityCategory?
     var createdAt:     Date
     // false while the quest is active and shown in the list;
     // true once Done has been tapped — filtered out of the active list.
     var isCompleted:   Bool
     var completedAt:   Date?
 
-    init(name: String, payoffCredits: Double, iconName: String = "star") {
+    init(name: String, payoffCredits: Double, iconName: String = "star", category: ActivityCategory = .other) {
         self.id            = UUID()
         self.name          = name
         self.payoffCredits = payoffCredits
         self.iconName      = iconName
+        self.category      = category
         self.createdAt     = Date()
         self.isCompleted   = false
         self.completedAt   = nil

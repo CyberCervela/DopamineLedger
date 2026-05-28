@@ -26,6 +26,7 @@ struct AddActivityView: View {
 
     @State private var name:            String
     @State private var kind:            ActivityKind
+    @State private var category:        ActivityCategory
     @State private var ratePerMinute:   String
     @State private var iconName:        String
     // Guidance state — drives the rate field via applyGuidanceRate()
@@ -42,6 +43,7 @@ struct AddActivityView: View {
             let k = initialKind
             _name            = State(initialValue: "")
             _kind            = State(initialValue: k)
+            _category        = State(initialValue: .other)
             _isHighImpact    = State(initialValue: false)
             _isHighEnjoyment = State(initialValue: false)
             _toxicity        = State(initialValue: .medium)
@@ -54,6 +56,7 @@ struct AddActivityView: View {
             let ratePM = a.ratePerSecond * 60
             _name          = State(initialValue: a.name)
             _kind          = State(initialValue: a.kind)
+            _category      = State(initialValue: a.category ?? .other)
             _ratePerMinute = State(initialValue: String(format: "%.1f", ratePM))
             // Normalize old "circle" default icon on first edit.
             _iconName      = State(initialValue: a.iconName == "circle"
@@ -75,6 +78,7 @@ struct AddActivityView: View {
         case .fromTemplate(let t):
             _name            = State(initialValue: t.name)
             _kind            = State(initialValue: t.kind)
+            _category        = State(initialValue: t.category)
             _iconName        = State(initialValue: t.iconName)
             _isHighImpact    = State(initialValue: t.isHighImpact    ?? false)
             _isHighEnjoyment = State(initialValue: t.isHighEnjoyment ?? false)
@@ -178,6 +182,9 @@ struct AddActivityView: View {
                     // Guidance section — toggles or toxicity picker that auto-fill the rate below.
                     guidanceSection
 
+                    // Category picker — groups this activity on the dashboard.
+                    categorySection
+
                     neuField(label: lBundle.l("activity.field.rate").uppercased()) {
                         HStack {
                             TextField("3.0", text: $ratePerMinute)
@@ -213,6 +220,50 @@ struct AddActivityView: View {
         .onChange(of: isHighImpact)    { _, _ in applyGuidanceRate() }
         .onChange(of: isHighEnjoyment) { _, _ in applyGuidanceRate() }
         .onChange(of: toxicity)        { _, _ in applyGuidanceRate() }
+    }
+
+    // MARK: - Category section
+
+    @ViewBuilder
+    private var categorySection: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.sm) {
+            label(lBundle.l("activity.field.category").uppercased())
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.sm), count: 3),
+                spacing: theme.spacing.sm
+            ) {
+                ForEach(ActivityCategory.allCases, id: \.self) { cat in
+                    categoryButton(cat)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func categoryButton(_ cat: ActivityCategory) -> some View {
+        let selected = category == cat
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) { category = cat }
+        } label: {
+            Text(lBundle.l(cat.labelKey))
+                .font(theme.typography.caption.weight(.semibold))
+                .foregroundStyle(selected ? theme.colors.accent : theme.colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, theme.spacing.md)
+                .background(theme.colors.surface)
+                .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                .shadow(color: theme.colors.shadowLight, radius: selected ? 4 : 8,
+                        x: selected ? -3 : -5, y: selected ? -3 : -5)
+                .shadow(color: theme.colors.shadowDark,  radius: selected ? 4 : 8,
+                        x: selected ?  3 :  5, y: selected ?  3 :  5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
+                        .strokeBorder(selected ? theme.colors.accent.opacity(0.35) : Color.clear,
+                                      lineWidth: 1.5)
+                )
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Guidance section
@@ -430,12 +481,13 @@ struct AddActivityView: View {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         switch mode {
         case .create, .fromTemplate:
-            context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName))
+            context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category))
         case .edit(let activity):
             activity.name          = trimmed
             activity.kind          = kind
             activity.ratePerSecond = rate / 60.0
             activity.iconName      = iconName
+            activity.category      = category
         }
         if let onSaved { onSaved() } else { dismiss() }
     }

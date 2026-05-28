@@ -37,6 +37,7 @@ struct ActivitySummary: Identifiable {
     let id:           UUID          // matches Activity.id
     let name:         String
     let kind:         ActivityKind
+    let category:     ActivityCategory
     let iconName:     String
     let sessionCount: Int
     let totalElapsed: TimeInterval  // working seconds across closed sessions in scope
@@ -47,8 +48,20 @@ struct ActivitySummary: Identifiable {
 struct CompletedQuestEntry: Identifiable {
     let id:            UUID
     let name:          String
+    let category:      ActivityCategory
     let payoffCredits: Double
     let completedAt:   Date
+}
+
+// All activity and quest data for one life-area category, pre-split by kind.
+// The dashboard renders quests first, then chargers, then spenders within each group.
+// Empty groups are excluded from the categoryGroups array.
+struct CategoryGroup: Identifiable {
+    let category: ActivityCategory
+    let quests:   [CompletedQuestEntry]
+    let chargers: [ActivitySummary]
+    let spenders: [ActivitySummary]
+    var id: ActivityCategory { category }
 }
 
 // The full set of stats for one scope window.
@@ -81,17 +94,15 @@ struct DashboardStats {
     // how much they still owe.
     let totalOutstandingDebt: Double
 
-    // One entry per activity with at least one closed session in scope.
-    // Sorted: chargers first, then spenders; alphabetical within each group.
-    let activitySummaries: [ActivitySummary]
-
-    // Completed quests in scope, newest first.
-    let completedQuests: [CompletedQuestEntry]
+    // Activities and completed quests grouped by life-area category.
+    // Order follows ActivityCategory.allCases; empty categories are omitted.
+    // Within each group: quests (newest first), chargers (alpha), spenders (alpha).
+    let categoryGroups: [CategoryGroup]
 
     static let empty = DashboardStats(
         creditsEarned: 0, creditsSpent: 0, questPayoff: 0,
         debtRepaid: 0, netDelta: 0, totalOutstandingDebt: 0,
-        activitySummaries: [], completedQuests: []
+        categoryGroups: []
     )
 
     // Main entry point. Accepts plain arrays so it is callable from
@@ -160,18 +171,16 @@ struct DashboardStats {
             }
         }
 
-        // ActivitySummary list — only activities with sessions in scope.
+        // ActivitySummary list — only activities with sessions in scope, sorted alpha.
         let summaries: [ActivitySummary] = activities
             .filter { perSessionCount[$0.id] != nil }
-            .sorted {
-                if $0.kind != $1.kind { return $0.kind == .charger }
-                return $0.name < $1.name
-            }
+            .sorted { $0.name < $1.name }
             .map {
                 ActivitySummary(
                     id:           $0.id,
                     name:         $0.name,
                     kind:         $0.kind,
+                    category:     $0.category ?? .other,  // nil = pre-migration row
                     iconName:     $0.iconName,
                     sessionCount: perSessionCount[$0.id, default: 0],
                     totalElapsed: perElapsed[$0.id,      default: 0],
@@ -182,16 +191,27 @@ struct DashboardStats {
         let questPayoff = scopedQuests.reduce(0.0) { $0 + $1.payoffCredits }
         let debtRepaid  = scopedRepaidDebts.reduce(0.0) { $0 + $1.originalAmount }
 
-        let completedQuests: [CompletedQuestEntry] = scopedQuests
+        // Completed quest entries, newest first within each category.
+        let questEntries: [CompletedQuestEntry] = scopedQuests
             .sorted { ($0.completedAt ?? .distantPast) > ($1.completedAt ?? .distantPast) }
             .map {
                 CompletedQuestEntry(
                     id:            $0.id,
                     name:          $0.name,
+                    category:      $0.category ?? .other,  // nil = pre-migration row
                     payoffCredits: $0.payoffCredits,
                     completedAt:   $0.completedAt ?? .distantPast
                 )
             }
+
+        // Build CategoryGroups in allCases order; skip empty ones.
+        let groups: [CategoryGroup] = ActivityCategory.allCases.compactMap { cat in
+            let catQuests   = questEntries.filter { $0.category == cat }
+            let catChargers = summaries.filter    { $0.category == cat && $0.kind == .charger }
+            let catSpenders = summaries.filter    { $0.category == cat && $0.kind == .spender }
+            guard !catQuests.isEmpty || !catChargers.isEmpty || !catSpenders.isEmpty else { return nil }
+            return CategoryGroup(category: cat, quests: catQuests, chargers: catChargers, spenders: catSpenders)
+        }
 
         return DashboardStats(
             creditsEarned:        totalEarned,
@@ -200,8 +220,7 @@ struct DashboardStats {
             debtRepaid:           debtRepaid,
             netDelta:             totalEarned + questPayoff - totalSpent - debtRepaid,
             totalOutstandingDebt: totalOutstandingDebt,
-            activitySummaries:    summaries,
-            completedQuests:      completedQuests
+            categoryGroups:       groups
         )
     }
 }

@@ -17,7 +17,7 @@ struct TemplateGalleryView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: theme.spacing.xl) {
-                        ForEach(TemplateCategory.allCases, id: \.self) { category in
+                        ForEach(ActivityCategory.allCases, id: \.self) { category in
                             let templates = ActivityTemplate.catalog.filter { $0.category == category }
                             if !templates.isEmpty {
                                 categorySection(category: category, templates: templates)
@@ -64,7 +64,7 @@ struct TemplateGalleryView: View {
     // MARK: - Section
 
     @ViewBuilder
-    private func categorySection(category: TemplateCategory, templates: [ActivityTemplate]) -> some View {
+    private func categorySection(category: ActivityCategory, templates: [ActivityTemplate]) -> some View {
         VStack(alignment: .leading, spacing: theme.spacing.sm) {
             Text(lBundle.l(category.labelKey).uppercased())
                 .font(theme.typography.caption)

@@ -33,9 +33,15 @@ enum SpenderToxicity: String, CaseIterable {
     }
 }
 
-// Grouping used by TemplateGalleryView to section the catalogue.
-enum TemplateCategory: CaseIterable {
-    case focusLearning, movement, rest, leisure, highRisk
+// Life-area grouping shared by templates, Activity, and Quest.
+// String raw value required for SwiftData to persist the field.
+enum ActivityCategory: String, Codable, CaseIterable {
+    case focusLearning = "focusLearning"
+    case movement      = "movement"
+    case rest          = "rest"
+    case leisure       = "leisure"
+    case highRisk      = "highRisk"
+    case other         = "other"
 
     var labelKey: String {
         switch self {
@@ -44,6 +50,7 @@ enum TemplateCategory: CaseIterable {
         case .rest:          return "template.category.rest"
         case .leisure:       return "template.category.leisure"
         case .highRisk:      return "template.category.highrisk"
+        case .other:         return "category.other"
         }
     }
 }
@@ -56,7 +63,7 @@ struct ActivityTemplate: Identifiable, Hashable {
     let name:        String
     let kind:        ActivityKind
     let iconName:    String
-    let category:    TemplateCategory
+    let category:    ActivityCategory
 
     // Charger guidance (nil for spenders)
     let isHighImpact:    Bool?

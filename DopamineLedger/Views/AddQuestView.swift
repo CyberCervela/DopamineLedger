@@ -17,18 +17,21 @@ struct AddQuestView: View {
 
     let mode: QuestMode
 
-    @State private var name:   String
-    @State private var payoff: String
+    @State private var name:     String
+    @State private var payoff:   String
+    @State private var category: ActivityCategory
 
     init(mode: QuestMode = .create) {
         self.mode = mode
         switch mode {
         case .create:
-            _name   = State(initialValue: "")
-            _payoff = State(initialValue: "50")
+            _name     = State(initialValue: "")
+            _payoff   = State(initialValue: "50")
+            _category = State(initialValue: .other)
         case .edit(let q):
-            _name   = State(initialValue: q.name)
-            _payoff = State(initialValue: String(format: "%.0f", q.payoffCredits))
+            _name     = State(initialValue: q.name)
+            _payoff   = State(initialValue: String(format: "%.0f", q.payoffCredits))
+            _category = State(initialValue: q.category ?? .other)
         }
     }
 
@@ -90,6 +93,19 @@ struct AddQuestView: View {
                         }
                     }
 
+                    // Category picker — places this quest in a life area on the dashboard.
+                    VStack(alignment: .leading, spacing: theme.spacing.sm) {
+                        label(lBundle.l("quest.field.category").uppercased())
+                        LazyVGrid(
+                            columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.sm), count: 3),
+                            spacing: theme.spacing.sm
+                        ) {
+                            ForEach(ActivityCategory.allCases, id: \.self) { cat in
+                                categoryButton(cat)
+                            }
+                        }
+                    }
+
                     if let payoff = parsedPayoff {
                         Text(String(format: lBundle.l("quest.hint"),
                                     payoff.formatted(.number.precision(.fractionLength(0)))))
@@ -104,6 +120,33 @@ struct AddQuestView: View {
             }
         }
         .presentationBackground(theme.colors.background)
+    }
+
+    @ViewBuilder
+    private func categoryButton(_ cat: ActivityCategory) -> some View {
+        let selected = category == cat
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) { category = cat }
+        } label: {
+            Text(lBundle.l(cat.labelKey))
+                .font(theme.typography.caption.weight(.semibold))
+                .foregroundStyle(selected ? theme.colors.accent : theme.colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, theme.spacing.md)
+                .background(theme.colors.surface)
+                .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                .shadow(color: theme.colors.shadowLight, radius: selected ? 4 : 8,
+                        x: selected ? -3 : -5, y: selected ? -3 : -5)
+                .shadow(color: theme.colors.shadowDark,  radius: selected ? 4 : 8,
+                        x: selected ?  3 :  5, y: selected ?  3 :  5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
+                        .strokeBorder(selected ? theme.colors.accent.opacity(0.35) : Color.clear,
+                                      lineWidth: 1.5)
+                )
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -132,10 +175,11 @@ struct AddQuestView: View {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         switch mode {
         case .create:
-            context.insert(Quest(name: trimmed, payoffCredits: payoff))
+            context.insert(Quest(name: trimmed, payoffCredits: payoff, category: category))
         case .edit(let quest):
             quest.name          = trimmed
             quest.payoffCredits = payoff
+            quest.category      = category
         }
         dismiss()
     }

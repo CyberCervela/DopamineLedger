@@ -23,14 +23,19 @@ final class Activity {
     // Theme-agnostic semantic icon key; resolved via IconResolver against the
     // active Theme. NOT a raw asset path or SF Symbol name.
     var iconName:      String
+    // Optional so SwiftData stores NULL for rows that predate this field.
+    // Non-optional Codable enum defaults crash on migration for existing stores
+    // (SwiftData's transformer can't fill old rows). Read via ?? .other.
+    var category:      ActivityCategory?
     var createdAt:     Date
 
-    init(name: String, kind: ActivityKind, ratePerMinute: Double, iconName: String = "circle") {
+    init(name: String, kind: ActivityKind, ratePerMinute: Double, iconName: String = "circle", category: ActivityCategory = .other) {
         self.id            = UUID()
         self.name          = name
         self.kind          = kind
         self.ratePerSecond = ratePerMinute / 60.0
         self.iconName      = iconName
+        self.category      = category  // always set; nil only possible for pre-migration rows
         self.createdAt     = Date()
     }
 
