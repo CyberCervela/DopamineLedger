@@ -5,6 +5,36 @@
 
 ---
 
+## Session 19 — 2026-05-28
+
+**Focus:** Backlog triage + three polish items: Screen Time path killed, notification/alert localisation, decimal credit display.
+
+**Shipped:**
+
+### Screen Time API (Path C) — marked BLOCKED
+Confirmed via research that `DeviceActivity` exposes no retroactive usage data — only threshold callbacks, with no session start/stop signals. The API is also in active regression on iOS 26 (immediate threshold firing, 6 MB extension memory cap, random token regeneration). Path C removed from implementation queue; research note preserved in `BACKLOG.md` with ⛔ BLOCKED header and explicit unblock trigger (WWDC 2026/2027 or a stabilising point release).
+
+### Localise notification strings (`NotificationScheduler.swift`)
+The 5-minute warning and zero alarm were hardcoded English strings. `scheduleSpenderSession` now reads `UserDefaults.standard.string(forKey: "languageCode")`, resolves the bundle via the existing `languageBundle(for:)` helper, and uses `bundle.l()` for all four notification strings. Format strings use `String(format:)` for the `%@` activity name interpolation. 4 new keys × 7 languages in `Localizable.xcstrings`: `notification.alarm.title`, `notification.alarm.body`, `notification.warning.title`, `notification.warning.body`.
+
+### Localise feedback alert (`SettingsView.swift`)
+`mailFallback` alert had three hardcoded English literals ("Send feedback", the email address shown as message, "Copy address"). Title and button label replaced with `lBundle.l()` calls. Email address stays as a literal — same in every language. 2 new keys × 7 languages: `alert.feedback.title`, `alert.feedback.copy`.
+
+### Decimal display for sub-1 credit values (7 view files)
+All credit display sites used `.fractionLength(1)` (always 1 decimal) or `.fractionLength(0)` (always 0 decimals). Changed to `.fractionLength(0...1)` everywhere:
+- **Bug fix:** Quest payoffs in `ActivityListView`, `DashboardView`, and the `AddQuestView` hint text used `.fractionLength(0)` — a 0.8 cr payoff showed as "0". Now shows "0.8".
+- **Bug fix:** `AddQuestView` edit mode initialised the payoff text field with `"%.0f"`, silently truncating sub-1 values to "0" on re-edit. Fixed to use `.fractionLength(0...1)`.
+- **Polish:** Whole-number values drop the redundant trailing zero — "6.0 cr/min" → "6 cr/min", "42.0" → "42". Also fixed the hardcoded `"0.0"` fallback in `DashboardView.netDeltaText` to `"0"`.
+
+Files changed: `BalanceCard`, `ActivityListView`, `SessionView`, `DebtView`, `ActivityMenuView`, `DashboardView`, `AddQuestView`.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- History tab (D-012) — still unbuilt.
+- Siri / App Intents (Path A) — next automation feature.
+
+---
+
 ## Session 18 — 2026-05-28
 
 **Focus:** Bug fix — SessionView showed generic kind icon instead of activity's chosen icon.

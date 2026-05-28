@@ -67,7 +67,7 @@
 | **Activity Guidance & Template System** | `done` | Shipped Session 14. `Models/ActivityTemplate.swift`, `Views/TemplateGalleryView.swift`, `Views/ActivityAddChoiceView.swift`, `Views/AddActivityView.swift` (enriched), `Views/ActivityListView.swift`. See D-013, D-014. |
 | Pixel-art theme (Step 7) | `planned` | Assets not generated; excluded from MVP submission |
 | Dashboard / stats | `done` | Steps 1–5 complete. `DashboardStats.swift` (pure model), `DashboardView.swift` (ScopePicker, SummaryCard, ActivityStatsSection, QuestHistorySection). See `JOURNAL.md` Sessions 6–7. |
-| Decimal display for sub-1 credit amounts | `planned` | See `BACKLOG.md` |
+| Decimal display for sub-1 credit amounts | `done` | `.fractionLength(0...1)` across all 7 credit display views. Session 19. |
 | "How long can I keep going?" burn-down on spender rows | `done` | Shipped Session 5. See `JOURNAL.md`. |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
 | App Store submission | `done` | Submitted 2026-05-27 22:52. Awaiting Apple review (24–72 h). |

@@ -21,7 +21,7 @@ Items deferred from active development. Verify or ship when ready.
 | ✅ | **App Store screenshots** | Retaken Session 12 at 1284×2778 on iPhone 13 Pro Max simulator. All 6 saved to `screenshots/appstore/`. |
 | ✅ | **App Store submission** | Submitted 2026-05-27 22:52. Awaiting Apple review. |
 | 1 | **Release** | After Apple approval: click "Release this version" in App Store Connect. |
-| 2 | **Decimal display for sub-1 credit amounts** | Show "0.4 cr" instead of "0 cr". Formatting-only change in one or two display sites. |
+| ✅ | **Decimal display for sub-1 credit amounts** | Done Session 19. `.fractionLength(0...1)` across all 7 credit display views. |
 
 ---
 
@@ -35,7 +35,7 @@ Items deferred from active development. Verify or ship when ready.
 | **Consolidate `formatDuration`** | Duplicated in `ActivityListView.swift`, `SessionView.swift`, and `DashboardView.swift`. Extract to `DurationFormatter.swift` or a `TimeInterval` extension. Zero user-visible impact. |
 | **Icon system overhaul** | Activities currently have 31 SF Symbols but users gravitate to the same 3–4. Quests have no icons at all. Needs a dedicated ideation + iteration session before coding: (1) audit which icons are actually used vs ignored, (2) expand and re-curate the activity icon set with better categories (productivity, wellness, leisure, social…), (3) add icon support to quests — likely a smaller curated set (trophy, star, checkmark variants, home, book…). Design question to answer first: should quests share the same picker as activities or have their own purpose-built set? No coding until the icon direction is agreed. |
 | **History screen** | Chronological log of completed sessions and — most importantly — completed quests. Quests are big rewarding life milestones (e.g. "Publish Dopamine Ledger") and deserve their own timeline view. Think: a scrollable journal of achievements, date-stamped, showing the quest name, payoff earned, and date completed. Could live inside the Dashboard or as its own tab. |
-| Decimal display for sub-1 credit amounts | e.g. show "0.4 cr" instead of "0 cr" |
+| ~~Decimal display for sub-1 credit amounts~~ | ✅ Done Session 19 |
 | Siri / App Intents (Path A) | "Hey Siri, start Reading in Dopamine Ledger." AppShortcutsProvider — stable, high confidence. Build first. |
 | HealthKit workout observer (Path B) | Auto-start a charger when a workout begins. Clean signal; requires HealthKit capability + one Settings toggle. Medium confidence. |
 | Screen Time API — app-launch interception (Path C) | ⛔ Blocked — API in active regression on iOS 26. See research note below. Re-evaluate after WWDC 2026/2027. |
