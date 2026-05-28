@@ -25,15 +25,17 @@ struct ActivityListView: View {
     @Query(filter: #Predicate<Session> { $0.endedAt == nil })
                                       private var activeSessions: [Session]
 
-    @State private var filter:          ActivityFilter = .all
-    @State private var showAddActivity: Bool           = false
-    @State private var showAddQuest:    Bool           = false
-    @State private var showDebt:        Bool           = false
-    @State private var showSettings:    Bool           = false
-    @State private var activityToEdit:  Activity?      = nil
-    @State private var questToEdit:     Quest?         = nil
-    @State private var activityMenuFor: Activity?      = nil
-    @State private var activeSession:   Session?       = nil
+    @State private var filter:              ActivityFilter = .all
+    @State private var showAddActivity:     Bool           = false
+    @State private var showAddQuest:        Bool           = false
+    @State private var showDebt:            Bool           = false
+    @State private var showSettings:        Bool           = false
+    @State private var showTemplateGallery: Bool           = false
+    @State private var showAddChoiceDialog: Bool           = false
+    @State private var activityToEdit:      Activity?      = nil
+    @State private var questToEdit:         Quest?         = nil
+    @State private var activityMenuFor:     Activity?      = nil
+    @State private var activeSession:       Session?       = nil
 
     private var ledger: Ledger? { ledgers.first }
     private var totalDebt: Double { debts.reduce(0) { $0 + $1.amount } }
@@ -82,6 +84,15 @@ struct ActivityListView: View {
         }
         .sheet(isPresented: $showAddActivity) {
             AddActivityView(mode: .create, initialKind: defaultKindForCurrentFilter)
+        }
+        .sheet(isPresented: $showTemplateGallery) {
+            TemplateGalleryView()
+        }
+        .confirmationDialog(lBundle.l("activity.add.dialog.title"),
+                            isPresented: $showAddChoiceDialog,
+                            titleVisibility: .visible) {
+            Button(lBundle.l("activity.add.from.template")) { showTemplateGallery = true }
+            Button(lBundle.l("activity.add.create.own"))    { showAddActivity     = true }
         }
         .sheet(isPresented: $showAddQuest) {
             AddQuestView(mode: .create)
@@ -300,8 +311,8 @@ struct ActivityListView: View {
                 .foregroundStyle(theme.colors.textPrimary)
             Spacer()
             NeuIconButton(icon: .add, tint: theme.colors.accent) {
-                if filter == .quests { showAddQuest = true }
-                else                 { showAddActivity = true }
+                if filter == .quests { showAddQuest        = true }
+                else                 { showAddChoiceDialog = true }
             }
         }
     }

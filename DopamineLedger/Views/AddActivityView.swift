@@ -1,5 +1,6 @@
 // AddActivityView.swift
-// Sheet for creating or editing an Activity.
+// Sheet for creating or editing an Activity, with optional guidance toggles
+// that auto-suggest a rate based on the activity's qualitative properties.
 
 import SwiftUI
 import SwiftData
@@ -7,6 +8,8 @@ import SwiftData
 enum ActivityMode {
     case create
     case edit(Activity)
+    // Pre-fills the form from a template chosen in TemplateGalleryView.
+    case fromTemplate(ActivityTemplate)
 }
 
 struct AddActivityView: View {
@@ -15,29 +18,68 @@ struct AddActivityView: View {
     @Environment(\.dismiss)        private var dismiss
     @Environment(\.languageBundle) private var lBundle
 
-    let mode: ActivityMode
+    let mode:    ActivityMode
+    // Provided when this view is pushed inside TemplateGalleryView's
+    // NavigationStack — calling it dismisses the containing sheet.
+    // When nil (standalone sheet), dismiss() is called instead.
+    let onSaved: (() -> Void)?
 
-    @State private var name:          String
-    @State private var kind:          ActivityKind
-    @State private var ratePerMinute: String
-    @State private var iconName:      String
+    @State private var name:            String
+    @State private var kind:            ActivityKind
+    @State private var ratePerMinute:   String
+    @State private var iconName:        String
+    // Guidance state — drives the rate field via applyGuidanceRate()
+    @State private var isHighImpact:    Bool
+    @State private var isHighEnjoyment: Bool
+    @State private var toxicity:        SpenderToxicity
 
-    init(mode: ActivityMode = .create, initialKind: ActivityKind = .charger) {
-        self.mode = mode
+    init(mode: ActivityMode = .create, initialKind: ActivityKind = .charger, onSaved: (() -> Void)? = nil) {
+        self.mode    = mode
+        self.onSaved = onSaved
+
         switch mode {
         case .create:
-            _name          = State(initialValue: "")
-            _kind          = State(initialValue: initialKind)
-            _ratePerMinute = State(initialValue: "10")
-            _iconName      = State(initialValue: initialKind == .charger ? "bolt.fill" : "hourglass")
+            let k = initialKind
+            _name            = State(initialValue: "")
+            _kind            = State(initialValue: k)
+            _isHighImpact    = State(initialValue: false)
+            _isHighEnjoyment = State(initialValue: false)
+            _toxicity        = State(initialValue: .medium)
+            // Default rate matches guidance defaults: charger (false,false)→3.0, spender medium→2.0
+            let rate = k == .charger ? 3.0 : 2.0
+            _ratePerMinute   = State(initialValue: String(format: "%.1f", rate))
+            _iconName        = State(initialValue: k == .charger ? "bolt.fill" : "hourglass")
+
         case .edit(let a):
+            let ratePM = a.ratePerSecond * 60
             _name          = State(initialValue: a.name)
             _kind          = State(initialValue: a.kind)
-            _ratePerMinute = State(initialValue: String(format: "%.1f", a.ratePerSecond * 60))
-            // Normalize the old "circle" default to a kind-appropriate icon on first edit.
+            _ratePerMinute = State(initialValue: String(format: "%.1f", ratePM))
+            // Normalize old "circle" default icon on first edit.
             _iconName      = State(initialValue: a.iconName == "circle"
                                        ? (a.kind == .charger ? "bolt.fill" : "hourglass")
                                        : a.iconName)
+            // Reverse-map the stored rate to the nearest guidance position so
+            // the toggles are meaningful immediately. Falls back to neutral for custom rates.
+            if a.kind == .charger {
+                let (hi, he)     = Self.chargerToggles(from: ratePM)
+                _isHighImpact    = State(initialValue: hi)
+                _isHighEnjoyment = State(initialValue: he)
+                _toxicity        = State(initialValue: .medium)
+            } else {
+                _isHighImpact    = State(initialValue: false)
+                _isHighEnjoyment = State(initialValue: false)
+                _toxicity        = State(initialValue: Self.spenderToxicity(from: ratePM))
+            }
+
+        case .fromTemplate(let t):
+            _name            = State(initialValue: t.name)
+            _kind            = State(initialValue: t.kind)
+            _iconName        = State(initialValue: t.iconName)
+            _isHighImpact    = State(initialValue: t.isHighImpact    ?? false)
+            _isHighEnjoyment = State(initialValue: t.isHighEnjoyment ?? false)
+            _toxicity        = State(initialValue: t.toxicity        ?? .medium)
+            _ratePerMinute   = State(initialValue: String(format: "%.1f", t.ratePerMinute))
         }
     }
 
@@ -133,9 +175,12 @@ struct AddActivityView: View {
                         .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
                     }
 
+                    // Guidance section — toggles or toxicity picker that auto-fill the rate below.
+                    guidanceSection
+
                     neuField(label: lBundle.l("activity.field.rate").uppercased()) {
                         HStack {
-                            TextField("10", text: $ratePerMinute)
+                            TextField("3.0", text: $ratePerMinute)
                                 .font(theme.typography.body)
                                 .foregroundStyle(theme.colors.textPrimary)
                                 .keyboardType(.decimalPad)
@@ -158,10 +203,173 @@ struct AddActivityView: View {
                 }
                 .padding(theme.spacing.lg)
                 .animation(.easeInOut(duration: 0.2), value: parsedRate != nil)
+                .animation(.easeInOut(duration: 0.2), value: kind)
             }
         }
+        // Background covers both standalone-sheet and pushed-in-NavigationStack contexts.
+        .background(theme.colors.background.ignoresSafeArea())
         .presentationBackground(theme.colors.background)
+        .onChange(of: kind) { _, _ in resetGuidanceForKind(); applyGuidanceRate() }
+        .onChange(of: isHighImpact)    { _, _ in applyGuidanceRate() }
+        .onChange(of: isHighEnjoyment) { _, _ in applyGuidanceRate() }
+        .onChange(of: toxicity)        { _, _ in applyGuidanceRate() }
     }
+
+    // MARK: - Guidance section
+
+    @ViewBuilder
+    private var guidanceSection: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.sm) {
+            label(lBundle.l("activity.guidance.label").uppercased())
+            if kind == .charger {
+                chargerGuidanceCard
+            } else {
+                spenderGuidanceCard
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var chargerGuidanceCard: some View {
+        VStack(spacing: 0) {
+            guidanceToggleRow(
+                labelKey: "activity.guidance.charger.impact",
+                hintKey:  "activity.guidance.charger.impact.hint",
+                binding:  $isHighImpact
+            )
+            Rectangle()
+                .fill(theme.colors.divider)
+                .frame(height: 1)
+                .padding(.horizontal, theme.spacing.lg)
+            guidanceToggleRow(
+                labelKey: "activity.guidance.charger.enjoyment",
+                hintKey:  "activity.guidance.charger.enjoyment.hint",
+                binding:  $isHighEnjoyment
+            )
+        }
+        .background(theme.colors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
+        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+    }
+
+    @ViewBuilder
+    private func guidanceToggleRow(labelKey: String, hintKey: String, binding: Binding<Bool>) -> some View {
+        HStack(alignment: .top, spacing: theme.spacing.md) {
+            VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+                Text(lBundle.l(labelKey))
+                    .font(theme.typography.bodyStrong)
+                    .foregroundStyle(theme.colors.textPrimary)
+                Text(lBundle.l(hintKey))
+                    .font(theme.typography.caption)
+                    .foregroundStyle(theme.colors.textSecondary)
+            }
+            Spacer()
+            Toggle("", isOn: binding)
+                .labelsHidden()
+                .tint(theme.colors.accent)
+        }
+        .padding(theme.spacing.lg)
+    }
+
+    @ViewBuilder
+    private var spenderGuidanceCard: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.md) {
+            HStack(spacing: theme.spacing.sm) {
+                ForEach(SpenderToxicity.allCases, id: \.self) { level in
+                    toxicityButton(level)
+                }
+            }
+            Text(lBundle.l("activity.guidance.spender.toxicity.hint"))
+                .font(theme.typography.caption)
+                .foregroundStyle(theme.colors.textSecondary)
+        }
+    }
+
+    @ViewBuilder
+    private func toxicityButton(_ level: SpenderToxicity) -> some View {
+        let selected = toxicity == level
+        let tint: Color = {
+            switch level {
+            case .low:    return theme.colors.positive
+            case .medium: return theme.colors.neutral
+            case .high:   return theme.colors.negative
+            }
+        }()
+
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) { toxicity = level }
+        } label: {
+            Text(lBundle.l(level.labelKey))
+                .font(theme.typography.caption.weight(.semibold))
+                .foregroundStyle(selected ? tint : theme.colors.textSecondary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, theme.spacing.md)
+                .background(theme.colors.surface)
+                .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                .shadow(color: theme.colors.shadowLight, radius: selected ? 4 : 8,
+                        x: selected ? -3 : -5, y: selected ? -3 : -5)
+                .shadow(color: theme.colors.shadowDark,  radius: selected ? 4 : 8,
+                        x: selected ?  3 :  5, y: selected ?  3 :  5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
+                        .strokeBorder(selected ? tint.opacity(0.35) : Color.clear, lineWidth: 1.5)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Guidance logic
+
+    // Updates the rate field to match the current guidance toggle state.
+    // The rate field remains directly editable as an escape hatch — typing
+    // over the auto-filled value is always allowed.
+    private func applyGuidanceRate() {
+        let rate: Double
+        if kind == .charger {
+            switch (isHighImpact, isHighEnjoyment) {
+            case (true,  false): rate = 6.0
+            case (true,  true):  rate = 5.0
+            case (false, false): rate = 3.0
+            case (false, true):  rate = 2.0
+            }
+        } else {
+            rate = toxicity.ratePerMinute
+        }
+        ratePerMinute = String(format: "%.1f", rate)
+    }
+
+    // Resets guidance toggles to neutral defaults when the user switches kind.
+    private func resetGuidanceForKind() {
+        if kind == .charger {
+            isHighImpact    = false
+            isHighEnjoyment = false
+        } else {
+            toxicity = .medium
+        }
+    }
+
+    // Reverse-maps a stored rate to the nearest charger toggle combination.
+    // Falls back to (false, false) for custom rates that don't match any preset.
+    private static func chargerToggles(from ratePerMinute: Double) -> (Bool, Bool) {
+        switch ratePerMinute {
+        case 6.0: return (true,  false)
+        case 5.0: return (true,  true)
+        case 2.0: return (false, true)
+        default:  return (false, false)
+        }
+    }
+
+    // Reverse-maps a stored rate to the nearest SpenderToxicity level.
+    private static func spenderToxicity(from ratePerMinute: Double) -> SpenderToxicity {
+        switch ratePerMinute {
+        case 1.0:  return .low
+        case 10.0: return .high
+        default:   return .medium
+        }
+    }
+
+    // MARK: - Shared helpers (unchanged)
 
     @ViewBuilder
     private func label(_ text: String) -> some View {
@@ -221,7 +429,7 @@ struct AddActivityView: View {
         guard isValid, let rate = parsedRate else { return }
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         switch mode {
-        case .create:
+        case .create, .fromTemplate:
             context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName))
         case .edit(let activity):
             activity.name          = trimmed
@@ -229,7 +437,7 @@ struct AddActivityView: View {
             activity.ratePerSecond = rate / 60.0
             activity.iconName      = iconName
         }
-        dismiss()
+        if let onSaved { onSaved() } else { dismiss() }
     }
 }
 
