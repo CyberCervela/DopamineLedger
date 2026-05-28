@@ -90,10 +90,15 @@ enum NotificationScheduler {
 
         let center = UNUserNotificationCenter.current()
 
+        // Resolve the user's chosen in-app language so notifications arrive
+        // in the same language as the UI, regardless of the device locale.
+        let langCode = UserDefaults.standard.string(forKey: "languageCode") ?? "en"
+        let bundle   = languageBundle(for: langCode)
+
         // Zero alarm — always scheduled when we get past the math guard.
         let alarmContent = UNMutableNotificationContent()
-        alarmContent.title = "\(activityName) balance hit zero"
-        alarmContent.body  = "You're now spending at 2× the rate as debt."
+        alarmContent.title = String(format: bundle.l("notification.alarm.title"), activityName)
+        alarmContent.body  = bundle.l("notification.alarm.body")
         alarmContent.sound = .default
         // TODO: swap to a theme-aware sound when SoundPlayer lands.
 
@@ -110,8 +115,8 @@ enum NotificationScheduler {
         // 5-minute warning — only if there's room for it.
         if let warningTime = times.warningInSeconds {
             let warningContent = UNMutableNotificationContent()
-            warningContent.title = "\(activityName) — 5 minutes left"
-            warningContent.body  = "Wrap up soon or you'll start accruing debt."
+            warningContent.title = String(format: bundle.l("notification.warning.title"), activityName)
+            warningContent.body  = bundle.l("notification.warning.body")
             warningContent.sound = .default
 
             let warningRequest = UNNotificationRequest(

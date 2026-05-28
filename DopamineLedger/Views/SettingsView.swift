@@ -86,9 +86,9 @@ struct SettingsView: View {
             switch alert {
             case .mailFallback:
                 return Alert(
-                    title: Text("Send feedback"),
+                    title: Text(lBundle.l("alert.feedback.title")),
                     message: Text("cibercervela@pm.me"),
-                    primaryButton: .default(Text("Copy address")) {
+                    primaryButton: .default(Text(lBundle.l("alert.feedback.copy"))) {
                         UIPasteboard.general.string = "cibercervela@pm.me"
                     },
                     secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
