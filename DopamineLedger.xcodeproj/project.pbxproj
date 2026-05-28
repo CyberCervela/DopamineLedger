@@ -19,6 +19,7 @@
 		34213446B90829BA0DAA1E89 /* TemplateGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9925D265F14BEF0D74E7C98C /* TemplateGalleryView.swift */; };
 		431926C8E8C5E00F349F3AFE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F77C1A151E12479B7F913952 /* Theme.swift */; };
 		468D4DF6CAE0FBC15B357392 /* LanguageBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B293ACE821753303628DCE0 /* LanguageBundle.swift */; };
+		4770825B4E774144746590BB /* ActivityAddChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EAC97547B1E071723B7CBC9 /* ActivityAddChoiceView.swift */; };
 		55DD428459901EA8721E53C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D76FA4DE40F275F43E43BF6 /* ContentView.swift */; };
 		56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */; };
 		68BF0EC8341BC559D21A2991 /* DopamineLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */; };
@@ -104,6 +105,7 @@
 		66FCBBB164354D8763EAA67F /* NeuTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeuTheme.swift; sourceTree = "<group>"; };
 		75974194EFB58BCC1BE1D176 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		799737179C6FAA48A05E0539 /* NotificationMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMath.swift; sourceTree = "<group>"; };
+		7EAC97547B1E071723B7CBC9 /* ActivityAddChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAddChoiceView.swift; sourceTree = "<group>"; };
 		81157DE817A5C07419A4F7AF /* DopamineLedger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DopamineLedger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84FBDCE63D4A089A5776B180 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		932E84D7A113B126ACF1715F /* ActivityDebt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDebt.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 		5617FC0CB7823E5C8D77847E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				7EAC97547B1E071723B7CBC9 /* ActivityAddChoiceView.swift */,
 				B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */,
 				4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */,
 				84FBDCE63D4A089A5776B180 /* AddActivityView.swift */,
@@ -385,6 +388,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C2E312A784E27EBC690441AA /* Activity.swift in Sources */,
+				4770825B4E774144746590BB /* ActivityAddChoiceView.swift in Sources */,
 				C4919A873BA5635EF49D8E9E /* ActivityDebt.swift in Sources */,
 				EF39365336812E176767B6DD /* ActivityListView.swift in Sources */,
 				2597CCC8D7C78D522E81B5CC /* ActivityMenuView.swift in Sources */,
