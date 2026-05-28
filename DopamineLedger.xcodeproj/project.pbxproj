@@ -22,6 +22,7 @@
 		4770825B4E774144746590BB /* ActivityAddChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EAC97547B1E071723B7CBC9 /* ActivityAddChoiceView.swift */; };
 		55DD428459901EA8721E53C1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D76FA4DE40F275F43E43BF6 /* ContentView.swift */; };
 		56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */; };
+		59AC9E480C6750A8C8E908C0 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09ECCB27E9CC33061526EB79 /* HistoryView.swift */; };
 		68BF0EC8341BC559D21A2991 /* DopamineLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */; };
 		6B4C5264623427D17BE30144 /* SessionFinalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */; };
 		6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */; };
@@ -85,6 +86,7 @@
 /* Begin PBXFileReference section */
 		028AD865AF4F2F49AFF5C96B /* DashboardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStats.swift; sourceTree = "<group>"; };
 		04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionFinalizer.swift; sourceTree = "<group>"; };
+		09ECCB27E9CC33061526EB79 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		0A1F5D14F61CCE51BD730674 /* SessionMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionMath.swift; sourceTree = "<group>"; };
 		0D76FA4DE40F275F43E43BF6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		1120F990C6CA4EB8E4B62D3F /* DebugSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSeeder.swift; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				0D76FA4DE40F275F43E43BF6 /* ContentView.swift */,
 				BF29E10783F9F0EE030F19D6 /* DashboardView.swift */,
 				EF6D2A36D6125D8FCDD93DA1 /* DebtView.swift */,
+				09ECCB27E9CC33061526EB79 /* HistoryView.swift */,
 				6024ED70840D255EBCBE27AB /* NeuTextButton.swift */,
 				13F3B81B178D650B2AB4D444 /* PrivacyPolicyView.swift */,
 				C4544B842E7F43616765D9F7 /* SessionView.swift */,
@@ -399,6 +402,7 @@
 				6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */,
 				CA4B496394C4D54CE3032965 /* DebugSeeder.swift in Sources */,
 				C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */,
+				59AC9E480C6750A8C8E908C0 /* HistoryView.swift in Sources */,
 				0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */,
 				468D4DF6CAE0FBC15B357392 /* LanguageBundle.swift in Sources */,
 				8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */,

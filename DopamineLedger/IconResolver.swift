@@ -67,6 +67,7 @@ enum IconResolver {
         // navigation
         case .home:     return "house"
         case .stats:    return "chart.bar"
+        case .history:  return "clock"
         case .forward:  return "chevron.right"
 
         // chrome
@@ -113,6 +114,7 @@ enum IconResolver {
 
         case .home:     return "pixel.home"
         case .stats:    return "pixel.stats"
+        case .history:  return "pixel.history"
         case .forward:  return "pixel.forward"
 
         case .add:      return "pixel.add"

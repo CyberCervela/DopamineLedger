@@ -67,7 +67,7 @@ enum SemanticIcon {
     // activity kinds
     case charger, spender, quest
     // navigation
-    case home, stats, forward
+    case home, stats, history, forward
     // chrome
     case add, edit, delete, settings, back, close, info
     // economy

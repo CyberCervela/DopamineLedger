@@ -6633,6 +6633,66 @@
         }
       }
     },
+    "history.deleted_activity" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gelöschte Aktivität" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deleted activity" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Actividad eliminada" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Activité supprimée" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "削除済みの活動" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "삭제된 활동" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已删除的活动" } }
+      }
+    },
+    "history.empty" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Noch keine Sitzungen. Starte eine Aktivität, um deine Chronik zu beginnen." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "No sessions yet. Start an activity to begin your history." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aún no hay sesiones. Inicia una actividad para comenzar tu historial." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune session pour l'instant. Lance une activité pour commencer ton historique." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "セッションはまだありません。活動を開始して履歴を作りましょう。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "아직 세션이 없습니다. 활동을 시작하여 기록을 만들어 보세요." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "暂无记录。开始一个活动来建立你的历史。" } }
+      }
+    },
+    "history.quest.caption" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Quest" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quest" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Misión" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Quête" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "クエスト" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "퀘스트" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "任务" } }
+      }
+    },
+    "history.title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Chronik" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "History" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Historial" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Historique" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "履歴" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "기록" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "历史" } }
+      }
+    },
+    "tab.history" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Chronik" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "History" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Historial" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Historique" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "履歴" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "기록" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "历史" } }
+      }
+    },
     "template.category.focus" : {
       "extractionState" : "manual",
       "localizations" : {

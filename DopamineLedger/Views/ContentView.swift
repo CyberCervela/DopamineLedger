@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-enum AppTab { case home, stats }
+enum AppTab { case home, stats, history }
 
 struct ContentView: View {
     @State private var selectedTab: AppTab = .home
@@ -22,6 +22,8 @@ struct ContentView: View {
                 .opacity(selectedTab == .home ? 1 : 0)
             DashboardView()
                 .opacity(selectedTab == .stats ? 1 : 0)
+            HistoryView()
+                .opacity(selectedTab == .history ? 1 : 0)
         }
         .safeAreaInset(edge: .bottom) {
             NeuTabBar(selection: $selectedTab)
@@ -41,8 +43,9 @@ private struct NeuTabBar: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            tabButton(.home,  icon: .home,  labelKey: "tab.home")
-            tabButton(.stats, icon: .stats, labelKey: "tab.stats")
+            tabButton(.home,    icon: .home,    labelKey: "tab.home")
+            tabButton(.stats,   icon: .stats,   labelKey: "tab.stats")
+            tabButton(.history, icon: .history, labelKey: "tab.history")
         }
         .padding(.vertical, theme.spacing.sm)
         .background(theme.colors.surface)
