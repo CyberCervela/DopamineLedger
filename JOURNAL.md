@@ -5,6 +5,39 @@
 
 ---
 
+## Session 13 — 2026-05-28
+
+**Focus:** Live Activity bug fix — three bugs, all in `LiveActivityService.swift`.
+
+**Bugs fixed (confirmed on physical device):**
+
+1. **Live Activity keeps counting after session stops.** After tapping Stop, the Dynamic Island and lock screen timer continued to auto-tick indefinitely.
+2. **Live Activity keeps counting while paused.** Tapping Pause did not freeze the timer in the Dynamic Island or on the lock screen.
+3. **Lag between sessions on lock screen.** Stopping one activity and immediately starting another left the old activity visible for up to 30 seconds before the new one appeared.
+
+**Root cause — all three bugs shared one cause:**
+
+`update()` and `end()` both used `ActivityKit.Activity<SessionActivityAttributes>.activities.first` to find the current Live Activity. This is fragile in two ways:
+
+- **App-kill scenario:** If the app is force-killed mid-session, the in-memory activity reference is lost. On relaunch, `activities.first` can return nil, so `end()` silently no-ops and the Live Activity runs forever.
+- **Multiple activities scenario:** If a previous session's Live Activity wasn't ended cleanly (e.g., its async `Task` was delayed at the time), `request()` in `start()` creates a *second* activity. `activities.first` then targets the old one for `update()` and `end()`, while the new one keeps auto-ticking via `Text(state.adjustedStart, style: .timer)` — which the system drives autonomously without any app involvement.
+
+Bug 3 had an additional cause: `end()` used a 30-second dismissal window, and `start()` did nothing to clear old activities, so both the old and new sessions overlapped on the lock screen for up to 30 seconds.
+
+**Fix — `DopamineLedger/Services/LiveActivityService.swift`:**
+
+- Track the current Live Activity by its **ID stored in `UserDefaults`** (key: `LiveActivityService.currentID`). This survives app kills and relaunches.
+- `currentActivity` computed property finds the activity by that specific ID — never `.first`.
+- `start()` now **immediately ends all existing activities** (`.immediate` dismissal) before calling `request()`. This kills orphans and fixes Bug 3.
+- `end()` clears `currentID` **before** the async `Task` runs, so nothing can mistakenly target the ending activity during its 30-second dismissal window.
+- No changes to callers (`SessionFinalizer`, `SessionView`, `ActivityListView`).
+
+**What to pick up next:**
+- App is still in Apple review (submitted 2026-05-27). Wait for review result; click "Release" on approval.
+- Post-launch v1.1 planning: tip jar, Siri/App Intents, History screen.
+
+---
+
 ## Session 12 — 2026-05-27
 
 **Focus:** App Store submission — signing, device registration, screenshots, listing copy, upload.

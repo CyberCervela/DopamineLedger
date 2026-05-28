@@ -204,20 +204,33 @@ before moving to the next task:
      lesson learned this session (non-obvious things that should change how
      we work together or how the code is shaped).
 
-2. **Commit locally, but do not push yet.** Stage and commit the doc
-   updates with a descriptive message. Do not push to GitHub. Push is
-   reserved for the end of a feature chunk (see "When to push to GitHub"
-   below).
+2. **Commit and push.** Stage the code change and doc updates together in
+   one commit, then push immediately to GitHub. See the exception below for
+   bug fixes.
+
+---
+
+## Bug fixes — commit and push immediately after confirmation
+
+When the user confirms a bug fix worked ("fixed", "all good", or equivalent):
+
+1. Update `JOURNAL.md` with a brief session entry (what the bug was, root
+   cause, what changed, and the fix).
+2. Commit the code fix and the journal update together in one commit.
+3. **Push immediately.** Bug fixes are self-contained, already verified on
+   device, and should land on `main` right away — there is no reason to
+   hold them back waiting for a `/clear`.
 
 ---
 
 ## When to push to GitHub
 
-**Push only at the end of a meaningful chunk** — not after every commit.
-The rule of thumb: push when you are about to `/clear` and hand off to a
-fresh session. That moment is the natural boundary.
+**Push at the end of a meaningful chunk.** For features: when the testing
+loop is closed (user confirmed). For bug fixes: immediately after
+confirmation (see above).
 
 **Push when:**
+- A bug fix is confirmed by the user on device.
 - A feature is fully built, tested, and the testing loop is closed (user
   said "all good" or equivalent).
 - A substantial architectural decision has been locked and fully documented
