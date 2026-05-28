@@ -35,6 +35,57 @@ Bug 3 had an additional cause: `end()` used a 30-second dismissal window, and `s
 **What to pick up next:**
 - App is still in Apple review (submitted 2026-05-27). Wait for review result; click "Release" on approval.
 - Post-launch v1.1 planning: tip jar, Siri/App Intents, History screen.
+- **Next feature: Activity Guidance & Template System** (see below — full design locked this session).
+
+---
+
+### Session 13 continued — Activity Guidance & Template System (design phase)
+
+**No code written. Full design locked. Ready to implement next session.**
+
+**The problem being solved:** New users open the app and face a blank "0.0 cr/min" rate field with no intuition for what a sensible rate looks like, or what the right balance between charger and spender rates is. The philosophy is powerful but invisible.
+
+**The core design principle locked (see D-013):**
+
+The baseline rule: 1 minute of a charger activity should produce enough credits to cover 2 minutes of a typical spender. This is the 2:1 burn-down ratio. Charger rates are then modulated by two qualitative dimensions:
+- **Impact** (high/low): How much leverage does this activity have on your life? High-impact activities earn more credits — they're worth incentivising even if they're effortful.
+- **Enjoyment** (high/low): How naturally do you gravitate toward this? High-enjoyment activities earn *fewer* credits — you do them anyway and need less incentive.
+
+For spenders, a single **Toxicity** dimension replaces the two-toggle model: Low / Medium / High maps directly to how much friction you want to build in.
+
+**The UX design locked (see D-014):**
+
+1. **Tapping + opens a choice sheet**: "Choose from template" / "Create your own." Both paths lead to the same `AddActivityView` — templates just pre-fill it.
+2. **`AddActivityView` is enriched** for both paths, for both new and edited activities:
+   - Chargers get two binary toggles: High Impact (yes/no) + High Enjoyment (yes/no) → 4 combinations → auto-fills the rate field.
+   - Spenders get a three-way Toxicity selector: Low / Medium / High → auto-fills rate.
+   - Rate field stays directly editable as an escape hatch for precise control.
+   - Brief 1-line helper text per toggle explains the philosophy in context.
+3. **Template gallery**: ~12–15 curated presets grouped by category (Focus & Learning, Movement, Rest, Leisure, High-risk). Each template has a pre-set default position of the toggles (i.e., each template "knows" its own impact and enjoyment level).
+4. **Editing existing activities** also shows the toggles — users can reconsider whether an activity is "high impact" as their relationship with it evolves.
+5. **No onboarding walkthrough needed** — the template gallery + enriched AddActivityView covers the same ground organically. Onboarding is deferred indefinitely.
+
+**Rate table (base spender = 1.0 cr/min):**
+
+| Charger: Impact | Charger: Enjoyment | Rate |
+|---|---|---|
+| Low | High | 1.0 cr/min |
+| Low | Low | 1.5 cr/min |
+| High | High | 2.5 cr/min |
+| High | Low | 3.0 cr/min |
+
+| Spender: Toxicity | Rate |
+|---|---|
+| Low | 1.0 cr/min |
+| Medium | 2.0 cr/min |
+| High | 4.0 cr/min |
+
+**Files that will change:**
+- `Views/AddActivityView.swift` — toggles, helper text, rate auto-calculation
+- `ActivityListView.swift` — + button action sheet (two choices)
+- New: `Models/ActivityTemplate.swift` — static catalog of ~12–15 presets
+- New: `Views/TemplateGalleryView.swift` — browsable template picker sheet
+- `Localizable.xcstrings` — all new strings × 7 languages
 
 ---
 

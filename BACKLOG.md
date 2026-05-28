@@ -29,6 +29,7 @@ Items deferred from active development. Verify or ship when ready.
 
 | Item | Notes |
 |---|---|
+| **Activity Guidance & Template System** | Design fully locked 2026-05-28 — see D-013, D-014, and Session 13 journal. Ready to implement. Files: `AddActivityView.swift` (toggles + helper text), `ActivityListView.swift` (+ button action sheet), new `Models/ActivityTemplate.swift`, new `Views/TemplateGalleryView.swift`, `Localizable.xcstrings`. |
 | **Dashboard / stats** | Done — Sessions 6–7. See JOURNAL.md. |
 | **`netDelta` accuracy for overrun sessions** | Currently uses base rate × elapsed for spenders; doesn't reflect the 2× debt penalty on overrun. Fix requires storing `balanceAtSessionStart` on `Session` and replaying `SessionMath.apply()` in `DashboardStats.compute()`. Low urgency (stats are directionally correct). Block on before any "weekly summary" notification or export feature. |
 | **Consolidate `formatDuration`** | Duplicated in `ActivityListView.swift`, `SessionView.swift`, and `DashboardView.swift`. Extract to `DurationFormatter.swift` or a `TimeInterval` extension. Zero user-visible impact. |

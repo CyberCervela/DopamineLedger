@@ -64,6 +64,7 @@
 
 | Feature | Status | Notes |
 |---|---|---|
+| **Activity Guidance & Template System** | `planned` | Design locked 2026-05-28. + button → "From template" / "Create your own". AddActivityView enriched with Impact/Enjoyment toggles (chargers) and Toxicity selector (spenders) that auto-fill the rate. Template gallery of ~12–15 presets. Applies to new and edited activities. See D-013, D-014, `BACKLOG.md`. |
 | Pixel-art theme (Step 7) | `planned` | Assets not generated; excluded from MVP submission |
 | Dashboard / stats | `done` | Steps 1–5 complete. `DashboardStats.swift` (pure model), `DashboardView.swift` (ScopePicker, SummaryCard, ActivityStatsSection, QuestHistorySection). See `JOURNAL.md` Sessions 6–7. |
 | Decimal display for sub-1 credit amounts | `planned` | See `BACKLOG.md` |

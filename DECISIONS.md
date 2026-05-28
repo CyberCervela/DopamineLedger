@@ -126,6 +126,65 @@ SwiftData lightweight migration safe for pre-existing rows.
 session that zeroes the row (MVP-acceptable).
 **Supersedes:** none
 
+## D-013 — Credit rate design philosophy: the 2:1 burn-down rule   (2026-05-28)
+**Decision:** The baseline rate contract is: 1 minute of a charger activity
+produces enough credits to cover 2 minutes of the user's baseline spender
+(base spender = 1.0 cr/min → base charger = 2.0 cr/min). Charger rates are
+then modulated by two qualitative dimensions: **Impact** (high = more credits;
+the activity has real leverage on the user's life) and **Enjoyment** (high =
+fewer credits; the user does it naturally and needs less incentive). Spender
+rates are modulated by a single **Toxicity** dimension (Low/Medium/High →
+1.0 / 2.0 / 4.0 cr/min). The rate table is the canonical reference:
+
+Charger rates:
+- Low impact + High enjoyment: 1.0 cr/min
+- Low impact + Low enjoyment:  1.5 cr/min
+- High impact + High enjoyment: 2.5 cr/min
+- High impact + Low enjoyment:  3.0 cr/min
+
+Spender rates:
+- Low toxicity:    1.0 cr/min
+- Medium toxicity: 2.0 cr/min
+- High toxicity:   4.0 cr/min
+
+**Why:** The 2:1 ratio ensures the user's credit balance is structurally
+sustainable if they maintain a healthy mix of activities. The Impact dimension
+rewards effortful, high-leverage habits even when they're enjoyable. The
+Enjoyment discount reflects the reality that intrinsically rewarding
+activities need less external incentive. Toxicity for spenders expresses the
+user's own values — doomscrolling at 4.0 cr/min is a deliberate friction
+signal, not an accounting system.
+**Scope:** Activity rate defaults across the app — templates, AddActivityView
+toggles, and any future rate-suggestion feature.
+**Supersedes:** none
+
+## D-014 — Activity guidance UX: template gallery + enriched AddActivityView   (2026-05-28)
+**Decision:** The + button presents a choice sheet: "Choose from template" /
+"Create your own." Both paths lead to the same `AddActivityView`. Templates
+pre-fill it; "Create your own" starts blank. `AddActivityView` is enriched
+for both paths and for editing existing activities:
+- Chargers: two binary toggles (High Impact / High Enjoyment) auto-fill the
+  rate field based on the D-013 table.
+- Spenders: a three-way Toxicity selector (Low / Medium / High) auto-fills
+  the rate field.
+- The rate field remains directly editable at all times (escape hatch).
+- 1-line helper text per toggle explains the philosophy in context.
+The template gallery contains ~12–15 curated presets grouped by life category
+(Focus & Learning, Movement, Rest, Leisure, High-risk). Each preset carries
+its own default toggle positions. Editing an existing activity shows the
+toggles so the user can reconsider as their relationship with the activity
+evolves. No onboarding walkthrough is needed — this flow covers the same
+ground organically.
+**Why:** The problem is that new users face a blank rate field with no
+intuition for what a sensible number looks like. Embedding the philosophy
+directly into the creation flow means every activity created — from template
+or from scratch — is educated by the same principles. The binary toggle model
+is intentionally qualitative (not a 1–5 scale) because the decisions being
+made are values-based, not numeric.
+**Scope:** `AddActivityView`, `ActivityListView` (+ button), new
+`ActivityTemplate.swift` data model, new `TemplateGalleryView.swift`.
+**Supersedes:** none
+
 ## D-012 — Three-tab navigation: Home / Stats / History   (2026-05-27)
 **Decision:** The app has three permanent tabs: Home (`house`), Stats
 (`chart.bar`), History (`clock`). Each tab has a single, non-overlapping
