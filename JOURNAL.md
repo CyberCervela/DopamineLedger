@@ -5,6 +5,22 @@
 
 ---
 
+## Session 18 — 2026-05-28
+
+**Focus:** Bug fix — SessionView showed generic kind icon instead of activity's chosen icon.
+
+**Bug:** The icon circle in `SessionView` always called `theme.icon(.charger/.spender)`, which renders the semantic kind icon (`bolt.fill` / `hourglass`) regardless of what the user picked in the icon picker.
+
+**Fix:** `SessionView` now mirrors the `ActivityRow` fallback pattern — uses `IconResolver.activityIconImage(named: activity.iconName)` for any activity with a custom icon, and falls back to the semantic kind icon only for legacy `"circle"` default rows. One change: `SessionView.swift` line 61.
+
+**Note:** `AddActivityView` pre-selects `bolt.fill` / `hourglass` as the default icon for new activities (not `"circle"`), so the default case also renders correctly via the `IconResolver` path.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- History tab (D-012) — still unbuilt.
+
+---
+
 ## Session 17 — 2026-05-28
 
 **Focus:** Home screen category grouping, UI polish, template duplicate bug fix.

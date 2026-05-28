@@ -58,7 +58,11 @@ struct SessionView: View {
                         .frame(width: 72, height: 72)
                         .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
                         .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
-                    theme.icon(activity.kind == .charger ? .charger : .spender)
+                    // Mirror the ActivityRow fallback: use the chosen icon, or fall
+                    // back to the semantic kind icon for pre-icon-picker activities.
+                    (activity.iconName == "circle"
+                        ? theme.icon(activity.kind == .charger ? .charger : .spender)
+                        : IconResolver.activityIconImage(named: activity.iconName))
                         .font(.system(size: 28))
                         .foregroundStyle(isOverrun ? theme.colors.negative : kindColor)
                 }
