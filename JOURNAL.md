@@ -5,6 +5,40 @@
 
 ---
 
+## Session 20 — 2026-05-28
+
+**Focus:** History tab (D-012) + SessionView credits-as-hero layout.
+
+**Shipped:**
+
+### History tab — `HistoryView.swift` (D-012)
+Third tab added to the app. Unified reverse-chronological timeline of completed sessions and completed quests, grouped by calendar day. Day headers: "TODAY" / "YESTERDAY" / "MON 26 MAY".
+
+- `SemanticIcon.history` added (`clock` in SystemTheme / `pixel.history` in PixelArt).
+- `HistoryView.swift` (new file): `@Query` fetches all sessions, quests, and activities; joined client-side via an `activityMap` dictionary. `SessionHistoryRow` shows icon + name + "14:32 · 20 min" + credits; `QuestHistoryRow` shows icon + name + "14:32 · QUEST" + payoff. Deleted-activity sessions handled gracefully (fallback label). `HistoryIconCircle` is a private 44pt neumorphic circle.
+- `ContentView.swift`: `AppTab` extended with `.history`; `HistoryView()` added to ZStack; `NeuTabBar` extended to three buttons.
+- 5 new localization keys × 7 languages: `history.title`, `tab.history`, `history.empty`, `history.deleted_activity`, `history.quest.caption`.
+- `make generate` required to pick up the new file (XcodeGen project).
+
+**D-012 deviation:** D-012 was written before Session 16's category grouping in Stats. Quests are now embedded in `CategoryGroupSection` — removing them would break the category story. Decision: quests stay in Stats AND also appear in History. Both views serve different purposes (aggregates vs. log). DECISIONS.md updated.
+
+### SessionView — credits as hero
+Swapped the center block so the credit number is the 64pt focal point:
+1. **64pt credits value** — green for chargers, `textPrimary` for normal spenders, red on overrun, `textSecondary` when paused.
+2. **"CREDITS EARNED" / "CREDITS SPENT" caption** — uppercased, matches kind color.
+3. **Elapsed timer** — drops to `bodyStrong` + `textSecondary`; now human-readable ("< 1 min" / "20 min" / "1h 20 min").
+4. Supporting rows (remaining / debt / burn-down / rate) — unchanged, except "X remaining" → "X credits remaining" for clarity.
+
+Live Activity intentionally excluded — timer auto-ticks for free there; credits are a pushed value and would look stale.
+
+2 new localization keys × 7 languages: `session.credits_earned_caption`, `session.credits_spent_caption`.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- Siri / App Intents (Path A) — next automation feature.
+
+---
+
 ## Session 19 — 2026-05-28
 
 **Focus:** Backlog triage + three polish items: Screen Time path killed, notification/alert localisation, decimal credit display.

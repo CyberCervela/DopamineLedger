@@ -221,3 +221,10 @@ a fourth would need a strong reason.
 (`HistoryView`). No changes to models or math layer.
 **Supersedes:** D-008 (extends it — D-008 established the ZStack/NeuTabBar
 pattern; D-012 adds the third tab within that same pattern).
+
+**Implementation deviation (Session 20):** D-012 was written before D-015 introduced
+`CategoryGroupSection`, which embeds quests inside per-category groups in Stats. Removing
+`QuestHistorySection` from Stats would break the category story. Resolution: quests stay
+in Stats (integral to the category view) AND also appear in History as `QuestHistoryRow`
+entries. Both tabs serve different purposes — Stats shows aggregates, History shows the
+individual event log. No change to the `QuestHistorySection` in Stats.
