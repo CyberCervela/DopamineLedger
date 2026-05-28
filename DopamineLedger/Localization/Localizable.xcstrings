@@ -4007,43 +4007,43 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ verbleibend"
+            "value" : "%@ Credits verbleibend"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ remaining"
+            "value" : "%@ credits remaining"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ restantes"
+            "value" : "%@ créditos restantes"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ restants"
+            "value" : "%@ crédits restants"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "残り %@"
+            "value" : "残り %@ クレジット"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 남음"
+            "value" : "%@ 크레딧 남음"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "剩余 %@"
+            "value" : "剩余 %@ 积分"
           }
         }
       }
@@ -4186,6 +4186,58 @@
             "state" : "translated",
             "value" : "已消耗 %@ 积分"
           }
+        }
+      }
+    },
+    "session.credits_earned_caption" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : { "state" : "translated", "value" : "Credits verdient" }
+        },
+        "en" : {
+          "stringUnit" : { "state" : "translated", "value" : "credits earned" }
+        },
+        "es" : {
+          "stringUnit" : { "state" : "translated", "value" : "créditos ganados" }
+        },
+        "fr" : {
+          "stringUnit" : { "state" : "translated", "value" : "crédits gagnés" }
+        },
+        "ja" : {
+          "stringUnit" : { "state" : "translated", "value" : "クレジット獲得" }
+        },
+        "ko" : {
+          "stringUnit" : { "state" : "translated", "value" : "크레딧 획득" }
+        },
+        "zh-Hans" : {
+          "stringUnit" : { "state" : "translated", "value" : "获得积分" }
+        }
+      }
+    },
+    "session.credits_spent_caption" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : { "state" : "translated", "value" : "Credits ausgegeben" }
+        },
+        "en" : {
+          "stringUnit" : { "state" : "translated", "value" : "credits spent" }
+        },
+        "es" : {
+          "stringUnit" : { "state" : "translated", "value" : "créditos gastados" }
+        },
+        "fr" : {
+          "stringUnit" : { "state" : "translated", "value" : "crédits dépensés" }
+        },
+        "ja" : {
+          "stringUnit" : { "state" : "translated", "value" : "クレジット消費" }
+        },
+        "ko" : {
+          "stringUnit" : { "state" : "translated", "value" : "크레딧 소비" }
+        },
+        "zh-Hans" : {
+          "stringUnit" : { "state" : "translated", "value" : "消耗积分" }
         }
       }
     },

@@ -36,7 +36,8 @@ struct SessionView: View {
         let elapsed       = session.elapsed
         let creditsMoved  = activity.ratePerSecond * elapsed
         let paused        = session.isPaused
-        let creditsKey    = activity.kind == .charger ? "session.credits_earned" : "session.credits_spent"
+        let creditsKey        = activity.kind == .charger ? "session.credits_earned" : "session.credits_spent"
+        let creditsCaptionKey = activity.kind == .charger ? "session.credits_earned_caption" : "session.credits_spent_caption"
         let statusKey     = paused ? "session.paused" : (activity.kind == .charger ? "session.charging" : "session.spending")
 
         // Spender live balance: how much of the starting balance is left, and
@@ -76,16 +77,22 @@ struct SessionView: View {
                     .textCase(.uppercase)
             }
 
-            Text(formatElapsed(elapsed))
+            Text(creditsMoved.formatted(.number.precision(.fractionLength(0...1))))
                 .font(.system(size: 64, weight: .light, design: .rounded).monospacedDigit())
-                .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : theme.colors.textPrimary))
+                .foregroundStyle(paused ? theme.colors.textSecondary
+                                        : isOverrun ? theme.colors.negative
+                                        : activity.kind == .charger ? theme.colors.positive
+                                        : theme.colors.textPrimary)
                 .padding(.vertical, theme.spacing.md)
 
             VStack(spacing: theme.spacing.xs) {
-                Text(String(format: lBundle.l(creditsKey),
-                            creditsMoved.formatted(.number.precision(.fractionLength(0...1)))))
-                    .font(theme.typography.bodyStrong)
+                Text(lBundle.l(creditsCaptionKey).uppercased())
+                    .font(theme.typography.caption)
                     .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : kindColor))
+                    .kerning(2)
+                Text(formatElapsed(elapsed))
+                    .font(theme.typography.bodyStrong)
+                    .foregroundStyle(theme.colors.textSecondary)
                 if activity.kind == .spender {
                     // Show remaining balance before zero, or live debt once overrun.
                     if isOverrun {
@@ -213,9 +220,7 @@ struct SessionView: View {
         let total = Int(seconds)
         let h     = total / 3600
         let m     = (total % 3600) / 60
-        let s     = total % 60
-        return h > 0
-            ? String(format: "%d:%02d:%02d", h, m, s)
-            : String(format: "%02d:%02d", m, s)
+        if h > 0 { return m > 0 ? "\(h)h \(m) min" : "\(h)h" }
+        return m > 0 ? "\(m) min" : "< 1 min"
     }
 }
