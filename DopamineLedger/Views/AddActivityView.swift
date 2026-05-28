@@ -480,8 +480,23 @@ struct AddActivityView: View {
         guard isValid, let rate = parsedRate else { return }
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         switch mode {
-        case .create, .fromTemplate:
+        case .create:
             context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category))
+        case .fromTemplate:
+            // If the user already has an activity with this name, update it rather than
+            // creating a duplicate. Matching by name is intentional — templates have unique
+            // names and the user expects "re-apply" to behave like "edit".
+            let existing = (try? context.fetch(FetchDescriptor<Activity>()))?.first(where: {
+                $0.name.caseInsensitiveCompare(trimmed) == .orderedSame
+            })
+            if let existing {
+                existing.kind          = kind
+                existing.ratePerSecond = rate / 60.0
+                existing.iconName      = iconName
+                existing.category      = category
+            } else {
+                context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category))
+            }
         case .edit(let activity):
             activity.name          = trimmed
             activity.kind          = kind
