@@ -44,6 +44,8 @@ struct ActivityAddChoiceView: View {
     // MARK: - Header
 
     private var header: some View {
+        // Title is an overlay so it centres across the full header width
+        // without a mirror button on the trailing side.
         HStack {
             NeuTextButton(
                 title:      lBundle.l("common.cancel"),
@@ -52,19 +54,12 @@ struct ActivityAddChoiceView: View {
                 action:     { dismiss() }
             )
             Spacer()
+        }
+        .overlay(
             Text(lBundle.l("activity.add.dialog.title"))
                 .font(theme.typography.headline)
                 .foregroundStyle(theme.colors.textPrimary)
-            Spacer()
-            // Invisible mirror keeps the title centred.
-            NeuTextButton(
-                title:      lBundle.l("common.cancel"),
-                font:       theme.typography.body,
-                foreground: .clear,
-                action:     {}
-            )
-            .disabled(true)
-        }
+        )
         .padding(.horizontal, theme.spacing.lg)
         .padding(.top,        theme.spacing.md)
         .padding(.bottom,     theme.spacing.sm)

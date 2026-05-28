@@ -50,19 +50,12 @@ struct TemplateGalleryView: View {
                 action:     { dismiss() }
             )
             Spacer()
+        }
+        .overlay(
             Text(lBundle.l("template.gallery.title"))
                 .font(theme.typography.headline)
                 .foregroundStyle(theme.colors.textPrimary)
-            Spacer()
-            // Invisible mirror of the Cancel button to keep the title centred.
-            NeuTextButton(
-                title:      lBundle.l("common.cancel"),
-                font:       theme.typography.body,
-                foreground: .clear,
-                action:     {}
-            )
-            .disabled(true)
-        }
+        )
         .padding(.horizontal, theme.spacing.lg)
         .padding(.top,        theme.spacing.md)
         .padding(.bottom,     theme.spacing.sm)

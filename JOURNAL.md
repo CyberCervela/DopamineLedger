@@ -5,6 +5,20 @@
 
 ---
 
+## Session 15 — 2026-05-28
+
+**Focus:** Bug fix — ghost pill button in top-right corner of choice sheet and template gallery header.
+
+**Bug:** `ActivityAddChoiceView` and `TemplateGalleryView` both used an invisible `NeuTextButton` on the trailing side of their header `HStack` as a centering mirror. `NeuTextButton` renders a neumorphic pill (surface fill + bilateral shadows) regardless of text color, so `.foreground: .clear` hid the label but left a fully visible ghost button in the corner.
+
+**Fix:** Replaced the mirror trick with `.overlay()` on the header `HStack`. The title centers itself across the full header width via the overlay; nothing is rendered on the trailing side.
+
+**Files changed:** `Views/ActivityAddChoiceView.swift`, `Views/TemplateGalleryView.swift`.
+
+**What to pick up next:** Same as Session 14 — awaiting Apple review result; History tab (D-012) is the next feature.
+
+---
+
 ## Session 14 — 2026-05-28
 
 **Focus:** Activity Guidance & Template System (D-013, D-014) — full implementation. Then replaced the system iOS confirmationDialog with a custom neumorphic choice sheet.
