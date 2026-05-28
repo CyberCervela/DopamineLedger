@@ -97,8 +97,8 @@ struct AddQuestView: View {
                     VStack(alignment: .leading, spacing: theme.spacing.sm) {
                         label(lBundle.l("quest.field.category").uppercased())
                         LazyVGrid(
-                            columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.sm), count: 3),
-                            spacing: theme.spacing.sm
+                            columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.md), count: 3),
+                            spacing: theme.spacing.md
                         ) {
                             ForEach(ActivityCategory.allCases, id: \.self) { cat in
                                 categoryButton(cat)
