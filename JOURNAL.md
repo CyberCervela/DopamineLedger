@@ -5,6 +5,24 @@
 
 ---
 
+## Session 17 — 2026-05-28
+
+**Focus:** Apply category grouping to the home screen (All tab) + shadow-overlap spacing fix in quest creation.
+
+**Shipped:**
+- `ActivityListView.combinedList` replaced: the flat list of all activities then all quests is now grouped by `ActivityCategory.allCases` order, with quests → chargers → spenders within each non-empty category. Category header uses the same caption/kerning style as `DashboardView`. Empty categories are omitted via `let` filter inside the `ForEach` body.
+- **Bug fix — category grid shadow bleed in `AddQuestView`:** Column and row spacing was `theme.spacing.sm` (8 pt); increased to `theme.spacing.md` (12 pt) so neumorphic shadows on adjacent tiles don't overlap. `AddActivityView` already used `md` — the two forms are now consistent.
+
+**Key note:** `SectionHeader` in `DashboardView` is `private`, so the home screen inlines the same three-modifier style (`caption`, `textSecondary`, `kerning(2)`) rather than promoting the struct — no abstraction needed for two use sites.
+
+**Pre-migration rows:** Activities/quests created before D-015 read `category` as `nil` and land in the "Other" bucket via `?? .other`. Correct behaviour; users can re-categorise via Edit.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- History tab (D-012) — still unbuilt.
+
+---
+
 ## Session 16 — 2026-05-28
 
 **Focus:** Category system — add `ActivityCategory` to `Activity` and `Quest` models; restructure the Dashboard to group by category with quests → chargers → spenders within each group.
