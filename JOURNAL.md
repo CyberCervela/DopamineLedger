@@ -5,6 +5,59 @@
 
 ---
 
+## Session 14 — 2026-05-28
+
+**Focus:** Activity Guidance & Template System (D-013, D-014) — full implementation. Then replaced the system iOS confirmationDialog with a custom neumorphic choice sheet.
+
+**What shipped:**
+
+### Activity Guidance & Template System
+
+- **`Models/ActivityTemplate.swift`** (new): `SpenderToxicity` enum (low/medium/high → 1.0/2.0/10.0 cr/min), `TemplateCategory` enum (focusLearning, movement, rest, leisure, highRisk), `ActivityTemplate` struct (static catalog of 13 presets: 8 chargers + 5 spenders). All pure value types — no SwiftData involvement.
+- **`Views/AddActivityView.swift`** (enriched): Added `ActivityMode.fromTemplate(_:)` case; `onSaved: (() -> Void)?` callback for NavigationStack dismissal; Impact and Enjoyment toggles for chargers; Toxicity three-way selector for spenders; `applyGuidanceRate()` wires toggles → rate field automatically. Edit mode reverse-maps existing rate back to toggle state. Default charger rate now 3.0 (low impact + low enjoyment); default spender rate 2.0 (medium toxicity).
+- **`Views/TemplateGalleryView.swift`** (new): Sheet with a NavigationStack; categories and template rows; tapping a template pushes `AddActivityView(mode: .fromTemplate(…), onSaved: { dismiss() })` inside the same sheet surface. `TemplateRow` shows 44pt icon circle + name/rate + forward chevron.
+- **`Localizable.xcstrings`**: 20 new keys × 7 languages (EN/FR/DE/ES + ZH/JA/KO) covering all guidance labels, toggle hints, toxicity levels, category names, and gallery title.
+
+### Neumorphic choice sheet
+
+User rejected the system `.confirmationDialog` (floating in the middle of the screen, breaks neumorphic aesthetic).
+
+- **`Views/ActivityAddChoiceView.swift`** (new): Full neumorphic modal sheet with header (Cancel / "Add Activity" / invisible mirror for centring) and two descriptive `choiceCard` rows — "Choose from Template" (star icon, accent colour, hint text) and "Create Your Own" (pencil icon, secondary colour, hint text). Fires an `onSelect: (AddActivityPath) -> Void` callback.
+- **`Views/ActivityListView.swift`** (modified): `AddActivityPath` enum (`createOwn` / `fromTemplate`) added at file level; `showAddChoiceDialog` state replaced with `showAddChoice: Bool` + `pendingAddPath: AddActivityPath?`; `.confirmationDialog` replaced with `.sheet` presenting `ActivityAddChoiceView`.
+
+**Final rate table (implemented):**
+
+| Charger: Impact | Charger: Enjoyment | Rate |
+|---|---|---|
+| Low | High | 2.0 cr/min |
+| Low | Low | 3.0 cr/min |
+| High | High | 5.0 cr/min |
+| High | Low | 6.0 cr/min |
+
+| Spender: Toxicity | Rate |
+|---|---|
+| Low | 1.0 cr/min |
+| Medium | 2.0 cr/min |
+| High | 10.0 cr/min |
+
+**Key patterns / gotchas:**
+
+- **Sheet chaining via `onDismiss`**: SwiftUI won't present two sheets simultaneously. Pattern: set `pendingAddPath` before calling `showAddChoice = false`; read it in the sheet's `onDismiss` callback to open the correct next sheet. Trying to open the second sheet inside the first sheet's button action silently fails.
+- **NavigationStack inside a sheet**: `TemplateGalleryView` wraps a `NavigationStack` so templates push to `AddActivityView` inside the same sheet surface (no double-modal). The `onSaved` callback lets `AddActivityView` (deep in the nav stack) dismiss the entire outer sheet by calling the gallery's `dismiss()`.
+- **SourceKit false positives**: Throughout development, SourceKit reported cross-file type errors (`Cannot find ActivityKind in scope`, etc.). All were false positives — `make build` succeeded with zero errors every time.
+- **Rate table doubled from design-phase sketch**: The Session 13 design document showed chargers 1.0/1.5/2.5/3.0 and spenders 1.0/2.0/4.0. After review the user adjusted the baseline so the lowest charger earns 2.0 cr/min (2× the lowest spender 1.0) and bumped high toxicity to 10.0 for genuine friction without causing rage-quits. D-013 updated to reflect the final implemented values.
+
+**Commits:**
+- `63e15af` — Add Activity Guidance & Template System (D-013, D-014)
+- `f91ca09` — Replace system action sheet with neumorphic choice sheet
+
+**What to pick up next:**
+- **Template catalog curation**: User explicitly deferred this until the choice-sheet UX was confirmed working. Now that it is, discuss and curate the 13 presets together (names, icons, toggle defaults, categories).
+- **Release**: App still in Apple review (submitted 2026-05-27). Click "Release this version" on approval.
+- **D-012 History tab** remains unbuilt — third tab exists in the locked decision but has no implementation yet.
+
+---
+
 ## Session 13 — 2026-05-28
 
 **Focus:** Live Activity bug fix — three bugs, all in `LiveActivityService.swift`.

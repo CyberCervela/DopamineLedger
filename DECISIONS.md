@@ -134,26 +134,30 @@ then modulated by two qualitative dimensions: **Impact** (high = more credits;
 the activity has real leverage on the user's life) and **Enjoyment** (high =
 fewer credits; the user does it naturally and needs less incentive). Spender
 rates are modulated by a single **Toxicity** dimension (Low/Medium/High →
-1.0 / 2.0 / 4.0 cr/min). The rate table is the canonical reference:
+1.0 / 2.0 / 10.0 cr/min). The rate table is the canonical reference:
 
 Charger rates:
-- Low impact + High enjoyment: 1.0 cr/min
-- Low impact + Low enjoyment:  1.5 cr/min
-- High impact + High enjoyment: 2.5 cr/min
-- High impact + Low enjoyment:  3.0 cr/min
+- Low impact + High enjoyment: 2.0 cr/min
+- Low impact + Low enjoyment:  3.0 cr/min
+- High impact + High enjoyment: 5.0 cr/min
+- High impact + Low enjoyment:  6.0 cr/min
 
 Spender rates:
 - Low toxicity:    1.0 cr/min
 - Medium toxicity: 2.0 cr/min
-- High toxicity:   4.0 cr/min
+- High toxicity:   10.0 cr/min
 
 **Why:** The 2:1 ratio ensures the user's credit balance is structurally
 sustainable if they maintain a healthy mix of activities. The Impact dimension
 rewards effortful, high-leverage habits even when they're enjoyable. The
 Enjoyment discount reflects the reality that intrinsically rewarding
 activities need less external incentive. Toxicity for spenders expresses the
-user's own values — doomscrolling at 4.0 cr/min is a deliberate friction
-signal, not an accounting system.
+user's own values — doomscrolling at 10.0 cr/min is a deliberate friction
+signal, not an accounting system. High toxicity at 10× the base rate (vs the
+original design's 4×) provides meaningful friction without being so punishing
+that users stop tracking or start cheating; medium toxicity at 2× sits exactly
+at the 1:1 parity point with the lowest charger, which reflects that a low-key
+charger and a moderate spender should feel roughly balanced.
 **Scope:** Activity rate defaults across the app — templates, AddActivityView
 toggles, and any future rate-suggestion feature.
 **Supersedes:** none
