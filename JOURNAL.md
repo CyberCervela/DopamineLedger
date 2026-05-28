@@ -7,15 +7,17 @@
 
 ## Session 17 — 2026-05-28
 
-**Focus:** Apply category grouping to the home screen (All tab) + shadow-overlap spacing fix in quest creation.
+**Focus:** Home screen category grouping, UI polish, template duplicate bug fix.
 
 **Shipped:**
 - `ActivityListView.combinedList` replaced: the flat list of all activities then all quests is now grouped by `ActivityCategory.allCases` order, with quests → chargers → spenders within each non-empty category. Category header uses the same caption/kerning style as `DashboardView`. Empty categories are omitted via `let` filter inside the `ForEach` body.
 - **Bug fix — category grid shadow bleed in `AddQuestView`:** Column and row spacing was `theme.spacing.sm` (8 pt); increased to `theme.spacing.md` (12 pt) so neumorphic shadows on adjacent tiles don't overlap. `AddActivityView` already used `md` — the two forms are now consistent.
+- **Bug fix — template gallery created duplicate activities:** `AddActivityView.save()` grouped `.create` and `.fromTemplate` together, always calling `context.insert()`. Re-applying a template for an existing activity (e.g. to adjust guidance) silently created a second copy. Fixed by splitting the cases: `.fromTemplate` now fetches all activities, checks for a case-insensitive name match, and updates the existing activity in-place if found. Only inserts if no match exists.
 
-**Key note:** `SectionHeader` in `DashboardView` is `private`, so the home screen inlines the same three-modifier style (`caption`, `textSecondary`, `kerning(2)`) rather than promoting the struct — no abstraction needed for two use sites.
-
-**Pre-migration rows:** Activities/quests created before D-015 read `category` as `nil` and land in the "Other" bucket via `?? .other`. Correct behaviour; users can re-categorise via Edit.
+**Key notes:**
+- `SectionHeader` in `DashboardView` is `private`, so the home screen inlines the same three-modifier style (`caption`, `textSecondary`, `kerning(2)`) — no abstraction needed for two use sites.
+- Pre-migration rows read `category` as `nil` and land in "Other" via `?? .other`. Users can re-categorise via context menu → Edit.
+- Template upsert matches by name (case-insensitive). Limitation: if the user renames an activity away from its template name, re-applying creates a new one. Long-term fix (link via `templateId: UUID?`) tracked in `BACKLOG.md`.
 
 **What to pick up next:**
 - Await Apple review result; click "Release" on approval.
