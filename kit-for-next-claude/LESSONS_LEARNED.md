@@ -159,6 +159,24 @@ day one, but explicit, not "later."
 5. **Educational comments are not overhead.** The user explicitly said
    they read them and learn from them. Round 2 should keep the bar.
 
+6. **Confirm the task by name, not by number.** Numbered backlogs shift between sessions — "item 1" in one session is a different item the next. Always echo back the task name before planning or coding. If the user says "let's do number 3," restate it: "Got it — that's the X feature, here's my plan." One line of confirmation avoids the wrong feature getting half-built.
+
+---
+
+### 12. NavigationStack + ToolbarItem kills neumorphic styling
+
+UIKit takes over toolbar rendering the moment a `NavigationStack` is present. `ToolbarItem(.navigationBarTrailing)` produces a system-styled pill regardless of any SwiftUI modifiers applied to the button — background, shadow, font, foreground color all get ignored.
+
+**Fix:** Remove `NavigationStack` from the sheet entirely. Use a plain `HStack` with a `NeuTextButton` on the trailing side. Centre the title via `.overlay()` on the `HStack` rather than a mirror element on the leading side (a mirror element renders a ghost button — see Session 15). This pattern is now used in `ActivityAddChoiceView`, `TemplateGalleryView`, `ActivityMenuView`, and `DebtView`.
+
+---
+
+### 13. AppIntents requires an explicit `sdk: AppIntents.framework` in project.yml
+
+Auto-linking makes the Swift compiler happy, but the `appintentsmetadataprocessor` build tool looks for an explicit framework dependency — it won't find it through auto-link alone. Without the explicit entry it silently skips phrase extraction with the warning *"Metadata extraction skipped. No AppIntents.framework dependency found."* The build succeeds, the intents work in Shortcuts, but Siri voice phrases are never registered.
+
+**Fix:** Add `- sdk: AppIntents.framework` to the main target's `dependencies` in `project.yml`, then run `make generate`.
+
 ---
 
 ### 11. ActivityKit `Activity` conflicts with the app's `Activity` SwiftData model
