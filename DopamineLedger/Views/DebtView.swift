@@ -28,7 +28,8 @@ struct DebtView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            sheetHeader
             ScrollView {
                 VStack(spacing: theme.spacing.xl) {
                     balanceHeader
@@ -44,21 +45,29 @@ struct DebtView: View {
                 }
                 .padding(theme.spacing.lg)
             }
-            .background(theme.colors.background.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(lBundle.l("debt.title"))
-                        .font(theme.typography.headline)
-                        .foregroundStyle(theme.colors.textPrimary)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(lBundle.l("common.done")) { dismiss() }
-                        .font(theme.typography.bodyStrong)
-                        .foregroundStyle(theme.colors.accent)
-                }
-            }
         }
+        .background(theme.colors.background.ignoresSafeArea())
+        .presentationBackground(theme.colors.background)
+    }
+
+    private var sheetHeader: some View {
+        HStack {
+            Spacer()
+            NeuTextButton(
+                title:      lBundle.l("common.done"),
+                font:       theme.typography.body,
+                foreground: theme.colors.accent,
+                action:     { dismiss() }
+            )
+        }
+        .overlay(
+            Text(lBundle.l("debt.title"))
+                .font(theme.typography.headline)
+                .foregroundStyle(theme.colors.textPrimary)
+        )
+        .padding(.horizontal, theme.spacing.lg)
+        .padding(.top,        theme.spacing.md)
+        .padding(.bottom,     theme.spacing.sm)
     }
 
     private var balanceHeader: some View {
@@ -91,7 +100,9 @@ struct DebtView: View {
                     .frame(width: 44, height: 44)
                     .shadow(color: theme.colors.shadowLight, radius: 6, x: -3, y: -3)
                     .shadow(color: theme.colors.shadowDark,  radius: 6, x:  3, y:  3)
-                theme.icon(activity.kind == .charger ? .charger : .spender)
+                (activity.iconName == "circle"
+                    ? theme.icon(activity.kind == .charger ? .charger : .spender)
+                    : IconResolver.activityIconImage(named: activity.iconName))
                     .font(.system(size: 16))
                     .foregroundStyle(theme.colors.negative)
             }
@@ -116,6 +127,12 @@ struct DebtView: View {
                     .padding(.vertical,   theme.spacing.sm)
                     .background(canRepay ? theme.colors.accent : theme.colors.surface)
                     .clipShape(Capsule())
+                    // Inset shadows when disabled: reversed light/dark positions
+                    // give a pressed-in look that signals "unavailable" clearly.
+                    .shadow(color: canRepay ? .clear                  : theme.colors.shadowDark,
+                            radius: 4, x: -3, y: -3)
+                    .shadow(color: canRepay ? .clear                  : theme.colors.shadowLight,
+                            radius: 4, x:  3, y:  3)
             }
             .buttonStyle(.plain)
             .disabled(!canRepay)

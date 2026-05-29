@@ -123,6 +123,7 @@ load-bearing ones, repeated here:
 
 | You need...                          | Read...                              |
 |--------------------------------------|--------------------------------------|
+| The *why* behind every feature       | `PHILOSOPHY.md` (project root)       |
 | The product rules                    | `SPECIFICATION.md`                   |
 | How the code is laid out             | `ARCHITECTURE.md`                    |
 | The architecture principles + *why*  | `PRINCIPLES.md`                      |

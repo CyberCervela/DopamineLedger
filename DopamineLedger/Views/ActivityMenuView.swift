@@ -36,7 +36,8 @@ struct ActivityMenuView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            sheetHeader
             ScrollView {
                 VStack(spacing: theme.spacing.xxl) {
                     header
@@ -54,21 +55,31 @@ struct ActivityMenuView: View {
                 }
                 .padding(theme.spacing.lg)
             }
-            .background(theme.colors.background.ignoresSafeArea())
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(lBundle.l("activitymenu.title"))
-                        .font(theme.typography.headline)
-                        .foregroundStyle(theme.colors.textPrimary)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(lBundle.l("common.done")) { dismiss() }
-                        .font(theme.typography.bodyStrong)
-                        .foregroundStyle(theme.colors.accent)
-                }
-            }
         }
+        .background(theme.colors.background.ignoresSafeArea())
+        .presentationBackground(theme.colors.background)
+    }
+
+    // Title centred via overlay so the Done pill sits on the trailing side
+    // without needing a mirror element on the leading side.
+    private var sheetHeader: some View {
+        HStack {
+            Spacer()
+            NeuTextButton(
+                title:      lBundle.l("common.done"),
+                font:       theme.typography.body,
+                foreground: theme.colors.accent,
+                action:     { dismiss() }
+            )
+        }
+        .overlay(
+            Text(lBundle.l("activitymenu.title"))
+                .font(theme.typography.headline)
+                .foregroundStyle(theme.colors.textPrimary)
+        )
+        .padding(.horizontal, theme.spacing.lg)
+        .padding(.top,        theme.spacing.md)
+        .padding(.bottom,     theme.spacing.sm)
     }
 
     private var header: some View {
@@ -79,7 +90,11 @@ struct ActivityMenuView: View {
                     .frame(width: 72, height: 72)
                     .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
                     .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
-                theme.icon(.spender)
+                // Mirror the SessionView pattern: use the chosen icon, fall back
+                // to the semantic spender icon only for pre-icon-picker rows.
+                (activity.iconName == "circle"
+                    ? theme.icon(.spender)
+                    : IconResolver.activityIconImage(named: activity.iconName))
                     .font(.system(size: 28))
                     .foregroundStyle(theme.colors.negative)
             }
@@ -123,8 +138,13 @@ struct ActivityMenuView: View {
                     .padding(.vertical, theme.spacing.lg)
                     .background(canRepay ? theme.colors.accent : theme.colors.surface)
                     .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                    .shadow(color: theme.colors.shadowDark.opacity(canRepay ? 1 : 0),
-                            radius: 8, x: 4, y: 4)
+                    // Enabled: single drop-shadow (raised/tappable).
+                    // Disabled: inset shadows reversed — pressed-in look signals
+                    // the button is unavailable without looking tappable.
+                    .shadow(color: canRepay ? .clear              : theme.colors.shadowDark,
+                            radius: 6, x: -4, y: -4)
+                    .shadow(color: canRepay ? theme.colors.shadowDark : theme.colors.shadowLight,
+                            radius: 6, x:  4, y:  4)
             }
             .buttonStyle(.plain)
             .disabled(!canRepay)

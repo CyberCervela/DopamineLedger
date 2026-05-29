@@ -5,6 +5,33 @@
 
 ---
 
+## Session 21 — 2026-05-29
+
+**Focus:** Backlog additions + three neumorphic bugs in `ActivityMenuView` and `DebtView`.
+
+**Backlog additions (no code):**
+- `BACKLOG.md` — added "Explicit start confirmation before beginning a session" (prevent false-positive taps, modelled on debt repayment confirmation).
+- `BACKLOG.md` — added "Recurring quests — needs design" (completion-rewarded tasks that reappear on a cadence; multiple open design questions flagged, design-first before any code).
+- `PHILOSOPHY.md` (new file at project root) — captures the three product pillars: **Extreme unitasking** (one thing at a time, full attention); **Create more than you consume** (chargers build/create, spenders consume; deep conversation with close friends is unambiguously a charger; the distinction vs. shallow talk is noted but the app never imposes it — user privacy); **The app should make itself unnecessary** (no streaks, no engagement traps, success = user no longer needs the app). Open questions section covers rest, recurring obligations, and the transition-off-app moment. Wired into `kit-for-next-claude/CLAUDE.md` reference table.
+
+**Bugs fixed:**
+
+### `ActivityMenuView` + `DebtView` — Done button not neumorphic
+Both sheets used `NavigationStack` + `ToolbarItem(.navigationBarTrailing)` for the Done/Terminé button. UIKit takes over toolbar rendering and produces a system-styled pill regardless of SwiftUI styling. Fix: removed `NavigationStack` from both views; added a custom `sheetHeader` using `NeuTextButton` (the existing bilateral-shadow pill component) with `.overlay()` centering — the same pattern used to fix `ActivityAddChoiceView` and `TemplateGalleryView` in Session 15. Added `.presentationBackground(theme.colors.background)` to both.
+
+### `ActivityMenuView` + `DebtView` — Wrong activity icon
+Both views hardcoded the semantic kind icon (`theme.icon(.spender)` / `theme.icon(.charger)`), ignoring the icon the user picked in the icon picker. Fix: applied the `IconResolver.activityIconImage(named:)` fallback pattern (same fix applied to `SessionView` in Session 18). `"circle"` legacy rows fall back to the semantic icon; all others use the chosen icon. Spender-only for `ActivityMenuView` (by design — chargers don't reach that view).
+
+### `ActivityMenuView` + `DebtView` — Disabled repay button flat
+When balance is zero, the repay button had no shadows (just a flat surface card), which is visually ambiguous — could look like an untapped raised element. Fix: inset shadow treatment when disabled (light/dark shadow positions reversed) to give a pressed-in appearance that clearly signals "unavailable" without looking tappable.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- Icon system overhaul (see BACKLOG.md) — Gaming shows correct icon in ActivityMenuView now, but the broader icon set and quest icons need a dedicated design session.
+- Siri / App Intents (Path A).
+
+---
+
 ## Session 20 — 2026-05-28
 
 **Focus:** History tab (D-012) + SessionView credits-as-hero layout.
