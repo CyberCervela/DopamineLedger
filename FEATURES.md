@@ -34,6 +34,7 @@
 | Foreground notification delivery | `done` | `Services/NotificationScheduler.swift`, `DopamineLedgerApp.swift` | `NotificationCenterDelegate` wired at app init |
 | Live balance / debt display in SessionView | `done` | `Views/SessionView.swift` | Shows "X remaining" → turns red → "X in debt · 2× rate" |
 | Chill mode (allow spender start with debt) | `done` | `Views/SettingsView.swift`, `Views/ActivityMenuView.swift` | `@AppStorage("chillMode")` |
+| Explicit start confirmation (no bare-tap session start) | `done` | `Views/ActivityListView.swift`, `Views/ActivityMenuView.swift` | All taps route through ActivityMenuView; charger gets `.charger` Centre case (green icon, accent Start button) |
 
 ## Infrastructure
 

@@ -28,8 +28,10 @@ struct ActivityMenuView: View {
     private var totalDebt: Double { rows.reduce(0) { $0 + $1.amount } }
     private var balance:   Double { ledger?.balance ?? 0 }
 
-    private enum Centre { case debt, zeroBalanceWarning, cleared }
+    private enum Centre { case charger, debt, zeroBalanceWarning, cleared }
     private var centre: Centre {
+        // Chargers earn credits — no debt or balance check applies.
+        if activity.kind == .charger { return .charger }
         if totalDebt > 0 { return .debt }
         if balance   <= 0 { return .zeroBalanceWarning }
         return .cleared
@@ -42,6 +44,8 @@ struct ActivityMenuView: View {
                 VStack(spacing: theme.spacing.xxl) {
                     header
                     switch centre {
+                    case .charger:
+                        startSessionButton
                     case .debt:
                         debtCard
                         actionRow
@@ -91,12 +95,12 @@ struct ActivityMenuView: View {
                     .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
                     .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
                 // Mirror the SessionView pattern: use the chosen icon, fall back
-                // to the semantic spender icon only for pre-icon-picker rows.
+                // to the semantic kind icon only for pre-icon-picker ("circle") rows.
                 (activity.iconName == "circle"
-                    ? theme.icon(.spender)
+                    ? theme.icon(activity.kind == .charger ? .charger : .spender)
                     : IconResolver.activityIconImage(named: activity.iconName))
                     .font(.system(size: 28))
-                    .foregroundStyle(theme.colors.negative)
+                    .foregroundStyle(activity.kind == .charger ? theme.colors.positive : theme.colors.negative)
             }
             Text(activity.name)
                 .font(theme.typography.headline)
@@ -206,7 +210,7 @@ struct ActivityMenuView: View {
     }
 
     private var startSessionButton: some View {
-        let filled = (centre == .cleared)
+        let filled = (centre == .cleared || centre == .charger)
         return Button {
             dismiss()
             onStartSession()

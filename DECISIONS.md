@@ -228,3 +228,10 @@ pattern; D-012 adds the third tab within that same pattern).
 in Stats (integral to the category view) AND also appear in History as `QuestHistoryRow`
 entries. Both tabs serve different purposes — Stats shows aggregates, History shows the
 individual event log. No change to the `QuestHistorySection` in Stats.
+
+## D-016 — All taps route through ActivityMenuView (2026-05-29)
+**Decision:** Every activity tap opens `ActivityMenuView` before any session starts. No session is ever triggered by a single bare tap.
+**Why:** Users were accidentally starting sessions by tapping activity rows without intent — especially chargers, which previously started immediately. A confirmed explicit "Start" tap is the only path into `startSession(for:)`.
+**How:** `openActivity()` in `ActivityListView` now always sets `activityMenuFor = activity`. `ActivityMenuView` extended with a `.charger` Centre case (green icon, accent-filled Start button, no debt/balance UI) so chargers get a clean confirmation without the spender-debt machinery.
+**Alternative considered:** A separate lightweight `StartConfirmationView` for chargers and clean spenders. Rejected — extending `ActivityMenuView` keeps one code path and one sheet pattern, and the charger case is genuinely simple (4 lines in the switch).
+**Scope:** `ActivityListView.openActivity()`, `ActivityMenuView.Centre` enum + `body` switch + icon rendering + `startSessionButton` fill logic.

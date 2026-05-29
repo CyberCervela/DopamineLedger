@@ -5,6 +5,35 @@
 
 ---
 
+## Session 22 — 2026-05-29
+
+**Focus:** Explicit start confirmation — prevent accidental session starts on a bare tap.
+
+**Shipped:**
+
+### Explicit start confirmation
+
+All activity taps now require an explicit "Start" tap before a session begins. Previously, tapping a charger or a spender with positive balance + no debt called `startSession(for:)` directly, bypassing any confirmation.
+
+**`ActivityListView.swift` — `openActivity()` simplified:**
+Removed the two direct-to-start paths (charger early-return and the clean-spender `balance > 0 && !hasDebt` path). Function now always sets `activityMenuFor = activity`, routing every tap through `ActivityMenuView`. The re-open and "another session running" guards are unchanged.
+
+**`ActivityMenuView.swift` — extended for chargers:**
+- Added `.charger` to the `Centre` enum. Evaluated first in `centre`, before the debt/balance checks, so chargers always land here regardless of ledger state.
+- `body` switch: `.charger` case shows only `startSessionButton` — no debt card, no balance warning, no "cleared" message.
+- Icon fallback for pre-icon-picker ("circle") rows updated: chargers fall back to `theme.icon(.charger)` instead of `.spender`.
+- Icon color: `theme.colors.positive` (green) for chargers, `theme.colors.negative` (red) for spenders.
+- `startSessionButton` filled treatment (accent color, bold, kerning 4): now applies to both `.cleared` and `.charger`. Chargers always get the prominent button — there's no state to resolve first.
+
+No new localization strings. No `project.yml` changes. No model changes.
+
+**What to pick up next:**
+- Await Apple review result; click "Release" on approval.
+- Icon system overhaul (see BACKLOG.md) — design session before any code.
+- Siri / App Intents (Path A) — implementation notes ready in BACKLOG.md.
+
+---
+
 ## Session 21 — 2026-05-29
 
 **Focus:** Backlog additions + three neumorphic bugs in `ActivityMenuView` and `DebtView`.

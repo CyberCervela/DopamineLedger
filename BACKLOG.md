@@ -18,9 +18,11 @@ Items deferred from active development. Verify or ship when ready.
 
 | # | Item | Notes |
 |---|---|---|
+| ✅ | **Explicit start confirmation** | Done Session 22. All taps route through ActivityMenuView. |
+| 2 | **Verify icon fix** | Session 21 fixed ActivityMenuView + DebtView to show the user's chosen icon. Confirm Gaming shows `gamecontroller.fill` (not hourglass) in both sheets on device/simulator. |
 | ✅ | **App Store screenshots** | Retaken Session 12 at 1284×2778 on iPhone 13 Pro Max simulator. All 6 saved to `screenshots/appstore/`. |
 | ✅ | **App Store submission** | Submitted 2026-05-27 22:52. Awaiting Apple review. |
-| 1 | **Release** | After Apple approval: click "Release this version" in App Store Connect. |
+| 3 | **Release** | After Apple approval: click "Release this version" in App Store Connect. |
 | ✅ | **Decimal display for sub-1 credit amounts** | Done Session 19. `.fractionLength(0...1)` across all 7 credit display views. |
 
 ---
@@ -29,7 +31,7 @@ Items deferred from active development. Verify or ship when ready.
 
 | Item | Notes |
 |---|---|
-| **Explicit start confirmation before beginning a session** | Currently tapping an activity row opens `ActivityMenuView`, and the start action fires immediately from there. Users are hitting false positives — an accidental tap launches a session. Fix: add a confirmation step before the session actually starts, modelled on the debt repayment confirmation in `DebtView`/`ActivityMenuView` (e.g. a neumorphic bottom sheet or inline confirm/cancel pair). The "Start" action should never be a single unguarded tap. |
+| ~~**Explicit start confirmation before beginning a session**~~ | ✅ Done Session 22. All activity taps route through `ActivityMenuView`. `openActivity()` simplified to always set `activityMenuFor`. `ActivityMenuView` extended with a `.charger` Centre case (green icon, accent Start button, no debt/balance UI). |
 | **Recurring quests — needs design** | Some tasks (chores, weekly habits) are completion-rewarded rather than time-rewarded, and they repeat on a schedule. The current quest model is a one-tap bounty — it disappears once completed. Recurring quests would reappear automatically after a defined cadence (daily, weekly, etc.). Open design questions before any code: What cadence options make sense? Does the quest re-appear immediately at midnight / start of week, or after a cooldown? What happens if the user skips a cycle — does it stack, expire silently, or flag? How does this interact with the existing Quest model and `isCompleted` flag? Does it need a new model or can we extend `Quest`? Needs a dedicated design session before implementation. |
 | **Template catalog name review** | 16 presets shipped (11 chargers, 5 spenders). Names and toggle defaults curated Session 14. User gathering feedback from parents, kids, and friends on whether names like "Homework" vs "School Work" resonate. No code changes until feedback is in. |
 | **Dashboard / stats** | Done — Sessions 6–7. See JOURNAL.md. |
@@ -39,7 +41,7 @@ Items deferred from active development. Verify or ship when ready.
 | ~~**History screen**~~ | ✅ Done Session 20 — `HistoryView.swift`, unified timeline, D-012. |
 | ~~**SessionView — credits as hero**~~ | ✅ Done Session 20 — 64pt credits hero, human-readable elapsed, "X credits remaining". |
 | ~~Decimal display for sub-1 credit amounts~~ | ✅ Done Session 19 |
-| Siri / App Intents (Path A) | "Hey Siri, start Reading in Dopamine Ledger." AppShortcutsProvider — stable, high confidence. Build first. |
+| Siri / App Intents (Path A) | "Hey Siri, start Reading in Dopamine Ledger." AppShortcutsProvider — stable, high confidence. Build first. See implementation notes appended to Path A research section below. |
 | HealthKit workout observer (Path B) | Auto-start a charger when a workout begins. Clean signal; requires HealthKit capability + one Settings toggle. Medium confidence. |
 | Screen Time API — app-launch interception (Path C) | ⛔ Blocked — API in active regression on iOS 26. See research note below. Re-evaluate after WWDC 2026/2027. |
 | Pixel-art theme (Step 7) | Assets not generated; fonts wired but no pixel-art icons yet |
@@ -112,9 +114,23 @@ regressions. Low implementation risk.
 | Pause session | "Pause \(.applicationName)" |
 | Check balance | "What's my \(.applicationName) balance?" |
 
-**Implementation size estimate:** 1 new Swift file (`AppIntentsProvider.swift`),
-no UI changes, no new capabilities required. Add to project.yml glob — no
-manual pbxproj edit needed.
+**Implementation size estimate:** 1 new Swift file (`DopamineLedger/AppIntents/DopamineLedgerIntents.swift`),
+no UI changes, no new capabilities required. `project.yml` glob already covers new subdirectories — no manual pbxproj edit needed.
+
+**Implementation notes (ready to build — 2026-05-29):**
+
+*Structs needed in the one new file:*
+- `ActivityAppEntity` — makes `Activity` discoverable as an App Intents entity; Siri uses it to resolve "Reading" → the user's actual activity via fuzzy name matching
+- `ActivityAppEntityQuery` — `entities(matching:)` does case-insensitive substring search on activity names; `suggestedEntities()` returns all activities for disambiguation UI
+- `StartSessionIntent` — `@Parameter var activity: ActivityAppEntity`; starts session; returns spoken confirmation
+- `StopSessionIntent` — stops active session (if any)
+- `PauseSessionIntent` + `ResumeSessionIntent` — pause / resume active session
+- `CheckBalanceIntent` — returns spoken balance (no parameter)
+- `DopamineLedgerShortcuts: AppShortcutsProvider` — registers the 5 phrases; Siri phrases work on install, zero user setup
+
+*SwiftData from AppIntent:* App Intents can run outside the SwiftUI lifecycle (Siri from lock screen, app not open). Cannot use `@Environment(\.modelContext)`. Create a `ModelContainer` directly inside `perform()` — same 5 models as `DopamineLedgerApp`, points at the same on-disk store.
+
+*Debt check in `StartSessionIntent`:* When the user says "Start Gaming" and Gaming has debt (or zero balance, chill mode off) — **block with spoken explanation**: *"You have debt on Gaming. Open Dopamine Ledger to resolve it first."* Read `UserDefaults.standard.bool(forKey: "chillMode")` — if chill mode is on, start anyway. This matches the in-app philosophy; voice commands should respect the same rules as taps.
 
 ---
 

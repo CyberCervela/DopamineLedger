@@ -143,25 +143,16 @@ struct ActivityListView: View {
     // MARK: - Session lifecycle
 
     private func openActivity(_ activity: Activity) {
-        // If this activity already has a running session (e.g., user swiped
-        // down the sheet), re-open it instead of trying to start a new one.
+        // Re-open an already-running session (e.g. user swiped down the sheet).
         if let running = activeSessions.first(where: { $0.activityId == activity.id }) {
             activeSession = running
             return
         }
-        // Block starting any new session while another is already running.
+        // Block starting any new session while one is already running.
         guard activeSessions.isEmpty else { return }
-
-        guard activity.kind == .spender else {
-            startSession(for: activity)
-            return
-        }
-        let balance = ledger?.balance ?? 0
-        if hasDebt(for: activity) || balance <= 0 {
-            activityMenuFor = activity
-        } else {
-            startSession(for: activity)
-        }
+        // Always route through ActivityMenuView — no session starts on a bare tap.
+        // The explicit Start button there is the only path to startSession(for:).
+        activityMenuFor = activity
     }
 
     private func hasDebt(for activity: Activity) -> Bool {
