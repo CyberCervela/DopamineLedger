@@ -53,6 +53,7 @@ targets:
     dependencies:
       - target: DopamineLedgerWidgets         # embeds the .appex inside the main .app
         embed: true
+      - sdk: AppIntents.framework             # explicit link required for Siri phrase metadata extraction
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cibercervela.DopamineLedger

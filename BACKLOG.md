@@ -41,7 +41,7 @@ Items deferred from active development. Verify or ship when ready.
 | ~~**History screen**~~ | ✅ Done Session 20 — `HistoryView.swift`, unified timeline, D-012. |
 | ~~**SessionView — credits as hero**~~ | ✅ Done Session 20 — 64pt credits hero, human-readable elapsed, "X credits remaining". |
 | ~~Decimal display for sub-1 credit amounts~~ | ✅ Done Session 19 |
-| Siri / App Intents (Path A) | "Hey Siri, start Reading in Dopamine Ledger." AppShortcutsProvider — stable, high confidence. Build first. See implementation notes appended to Path A research section below. |
+| ~~Siri / App Intents (Path A)~~ | ✅ Done Session 23. `AppIntents/DopamineLedgerIntents.swift`. 5 intents + AppShortcutsProvider. |
 | HealthKit workout observer (Path B) | Auto-start a charger when a workout begins. Clean signal; requires HealthKit capability + one Settings toggle. Medium confidence. |
 | Screen Time API — app-launch interception (Path C) | ⛔ Blocked — API in active regression on iOS 26. See research note below. Re-evaluate after WWDC 2026/2027. |
 | Pixel-art theme (Step 7) | Assets not generated; fonts wired but no pixel-art icons yet |

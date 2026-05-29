@@ -5,6 +5,40 @@
 
 ---
 
+## Session 23 — 2026-05-29
+
+**Focus:** Siri / App Intents (Path A) — five voice actions pre-registered at install.
+
+**Shipped:**
+
+### `DopamineLedger/AppIntents/DopamineLedgerIntents.swift` (new file)
+
+**`ActivityAppEntity` + `ActivityAppEntityQuery`**
+Bridges `Activity` into App Intents. Siri resolves a spoken name ("Reading") to the user's actual row via `ActivityAppEntityQuery`, which implements `EntityStringQuery` — case-insensitive substring match so partial names work. `suggestedEntities()` feeds the Shortcuts picker and Siri disambiguation list.
+
+**Five intents:**
+- `StartSessionIntent` — `@Parameter var activity: ActivityAppEntity`; enforces the same debt/balance/chill-mode rules as the in-app flow; starts session, fires Live Activity and notifications.
+- `StopSessionIntent` — delegates entirely to `SessionFinalizer.finalize()` (math, ledger, debt row, Live Activity end).
+- `PauseSessionIntent` / `ResumeSessionIntent` — call `session.pause()` / `session.resume()`, then push an updated `LiveActivityService.update()` with correct `adjustedStart`, `isPaused`, and `creditsMoved`.
+- `CheckBalanceIntent` — reads `Ledger.fetchOrCreate(in:)`, returns spoken formatted balance.
+
+All `perform()` marked `@MainActor` — `LiveActivityService`, `Ledger.fetchOrCreate`, and `SessionFinalizer.finalize` are all `@MainActor`-isolated; marking the caller is cleaner than scattering `MainActor.run{}` blocks.
+
+**`DopamineLedgerShortcuts: AppShortcutsProvider`**
+Registers 5 × 1–2 phrases with Siri at install time. No user setup. Works immediately in the Shortcuts app; voice ("Hey Siri, start Reading in Dopamine Ledger") is available after Siri indexes the new phrases (may take a minute on device, or require a device restart on first install).
+
+**`project.yml`** — added `sdk: AppIntents.framework` to the main target dependencies. Without an explicit link the `appintentsmetadataprocessor` build tool skips phrase extraction (warning: "No AppIntents.framework dependency found"), meaning Siri phrases aren't registered. `make generate` run to rebuild the pbxproj.
+
+**Why a fresh `ModelContainer` per intent:**
+Intents run outside the SwiftUI lifecycle (Siri from lock screen, app backgrounded). No `@Environment(\.modelContext)` available. `ModelContainer(for:)` opens the same on-disk SQLite store; SwiftData's WAL handles concurrent access.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- Test Siri voice phrases on physical device (simulator Siri is limited).
+- HealthKit workout observer (Path B) — next automation feature.
+
+---
+
 ## Session 22 — 2026-05-29
 
 **Focus:** Explicit start confirmation — prevent accidental session starts on a bare tap.
