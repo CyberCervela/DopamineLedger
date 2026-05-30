@@ -5,6 +5,36 @@
 
 ---
 
+## Session 27 — 2026-05-30
+
+**Focus:** Launch screen — replace blank green screen with branded text.
+
+**Shipped:** `DopamineLedger/LaunchScreen.storyboard` (new), `DopamineLedger/Info.plist` (switched from `UILaunchScreen` dict to `UILaunchStoryboardName`), `project.yml` + regenerated `project.pbxproj`.
+
+### What changed
+
+The old launch screen was a plain `AccentColor` (neon green) background with nothing on it — looked like a rendering bug on first install when SwiftData takes a moment to initialize.
+
+`LaunchScreen.storyboard` now shows:
+- Green background (same AccentColor — user likes the punch)
+- **"Dopamine Ledger"** — bold white, 22pt, centered
+- **"Setting things up…"** — white/70%, 14pt, 6pt below the name
+
+Key: switched `Info.plist` from `UILaunchScreen` (plist dict) to `UILaunchStoryboardName: LaunchScreen`. The dict approach cannot render text labels; a storyboard is required.
+
+### What didn't ship — logo
+
+`LaunchImage.imageset` and `LaunchImage.png` (copy of the Gemini app icon) are in the repo and correctly bundled. The storyboard references them by name. However, imageView rendering in hand-written launch screen storyboard XML is unreliable without Xcode's visual editor to validate the constraint graph — every XML variant tried rendered the labels but not the image. Adding the logo is a 5-minute task in Xcode's storyboard editor; logged in `BACKLOG.md`.
+
+### Lesson learned
+
+Hand-writing launch screen storyboard XML is fragile. The IB parser is strict about version strings (`toolsVersion`, `targetRuntime`), and imageView constraints that look correct in XML silently fail to render. For anything beyond a background color and labels, use Xcode's storyboard editor directly.
+
+**What to pick up next:**
+- Empty state for `ActivityListView` (priority #1 from Session 25)
+
+---
+
 ## Session 26 — 2026-05-30
 
 **Focus:** History tab — consecutive session bundling + sub-2-min blip filtering.

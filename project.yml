@@ -48,6 +48,8 @@ targets:
       - path: DopamineLedger
     resources:
       - path: DopamineLedger/Assets.xcassets
+      - path: DopamineLedger/LaunchImage.png  # Direct bundle resource — asset catalog images
+                                              # are unreliable in launch screen storyboards
       - path: DopamineLedger/Fonts            # Monogram.ttf, AbaddonBold.ttf live here
         optional: true                        # OK if you haven't dropped fonts in yet
     dependencies:
