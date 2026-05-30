@@ -5,6 +5,130 @@
 
 ---
 
+## Session 26 — 2026-05-30
+
+**Focus:** History tab — consecutive session bundling + sub-2-min blip filtering.
+
+**Shipped:** `Views/HistoryView.swift`, `Localization/Localizable.xcstrings` (1 new key).
+
+### Design decisions locked
+
+**Bundling rule — consecutive only, not per-day.** Earlier design considered collapsing all same-activity sessions within a calendar day, but this would destroy the day narrative (and created an unsolvable sort-position ambiguity for interleaved activities). Final rule: consecutive runs only — the same activity must appear back-to-back in the sorted timeline with no quest or different-activity session between them. This preserves the "what did I actually do, in order" readout that makes History useful.
+
+**Blips (sub-2-min sessions) are filtered from History entirely.** Cosmetic only — they still exist in the DB and still count toward the balance. A sub-2-min session is either accidental (fat-finger before the explicit start confirmation existed) or too short to be meaningful. Filtering rather than soft-delete means no user action required and no undo complexity. Blips between same-activity sessions do NOT break a consecutive run.
+
+**Time-range subtitle.** Bundle header shows `19:45 → 20:54 · 5 sessions · 1h 6m` — possible only because the sessions are consecutive and their combined time range is meaningful. This would not be a useful display for scattered same-day sessions.
+
+**Expandable, not flat.** Tap the bundle header to reveal compact detail rows (time · duration · credits each). No nested card styling — plain indented rows under a thin separator. This keeps the card visually clean when collapsed and gives the full picture on demand.
+
+### Implementation
+
+**`HistoryView.swift`** — full rewrite of the file (all logic remains private; no API surface changes).
+
+- `HistoryEntry` enum — added `.sessionBundle([Session], Activity?)` case (sessions newest-first).
+- `dayGroups` — new algorithm: filter blips first (`elapsed >= 120`), sort unified list newest-first, walk the list detecting consecutive same-`activityId` runs, flush each run as `.sessionBundle` (≥ 2) or `.session` (1), then group by calendar day.
+- `BundledSessionHistoryRow` (new private struct) — neumorphic card with always-visible summary header (icon + name + time-range subtitle + total credits + rotating chevron); `@State private var isExpanded`; conditional `BundleDetailRow` list below a thin separator on expand; animated with `withAnimation(.easeInOut(duration: 0.25))`.
+- `BundleDetailRow` (new private struct) — compact row indented to align with the text column in the bundle header (`leading: lg + 44 + md`); caption-sized text; no card styling.
+- `formatHistoryDuration` extracted to file-private free function (was duplicated in `SessionHistoryRow` and would have been triplicated).
+
+**`Localizable.xcstrings`** — added `history.bundle.sessions` (`"%d sessions"`) × 7 languages.
+
+**Confirmed on device:** Deep Work bundle (5 sessions, 1h 6m, +397.8) and Gaming bundle (2 sessions, 4h 19m, −259.4) both rendered and expanded correctly.
+
+**Backlog:** Detail-row visual polish added to `BACKLOG.md` as a v1.1 item.
+
+**What to pick up next:**
+- Empty state for `ActivityListView` (priority #1 from Session 25)
+- Await Apple review result; click Release on approval.
+
+---
+
+## Session 25 — 2026-05-30
+
+**Focus:** Product direction — 7 ideas discussed, priorities agreed.
+
+**No code written. Decisions and direction locked below.**
+
+---
+
+### 1. App as digital gatekeeper (new feature — needs design first)
+
+Link a spender activity to a third-party app (e.g. YouTube). Starting the session in DL also offers to launch that app. DL becomes the intentional entry point for digital consumption.
+
+**Technical path:** `UIApplication.shared.open(URL(string: "youtube://")!)` — URL schemes, no entitlements. Not Screen Time API.
+
+**Design locked:** Auto-launching the linked app on session start was considered and rejected. If the app opens automatically, DL stops being a gate and becomes a launcher — the intentional moment disappears. The right pattern is a "Launch YouTube →" button visible inside the session, requiring a conscious tap. The gate must have friction.
+
+**Open design questions before code:** Where does the user link the URL scheme (activity editor?)? What happens if the linked app isn't installed? Does the button live in ActivityMenuView, SessionView, or both?
+
+---
+
+### 2. Chained Siri → auto-launch linked app
+
+Technically possible (URL scheme can be opened from foreground after a Siri intent brings the app up). **Rejected on philosophy grounds** — same reasoning as above. Siri starts the session; opening the linked app stays a conscious tap inside DL.
+
+---
+
+### 3. Screen Time as credit output
+
+Idea: use credit balance to set the Screen Time daily limit (100 credits at 1 cr/min → 100 min limit). Different from Path C (which used Screen Time as *input* to detect app launches). This is Screen Time as *output* — pushing a limit.
+
+**Still too risky for v1.x:** requires `com.apple.developer.family-controls` entitlement (Apple can reject in review), and the API is still flaky on iOS 26. Backlog note to be updated to distinguish input vs. output use cases. Revisit when API stabilises.
+
+---
+
+### 4. Monetisation
+
+**Premium features that fit the philosophy (one-time purchase, no subscription):**
+- Pixel-art theme — already built as a stub; natural first premium unlock
+- Tip jar — already in backlog
+- CSV/JSON export — privacy-safe, user owns their data
+
+**Avoid:** anything that increases daily opens, streak rewards, social comparison, recurring subscriptions.
+
+**On solo dev → company:** IP ownership, contributor agreements, and incorporation deferred to a lawyer. Out of scope for Claude.
+
+---
+
+### 5. History — soft delete
+
+Swipe-to-delete on History rows. Cosmetic only — no balance recalculation (balance lives in the Ledger row, set at finalize time; removing the Session record doesn't touch it). Stats will shift slightly — acceptable.
+
+**Design question:** Undo? Standard iOS swipe-to-delete with a brief undo toast is the right pattern.
+
+Ready to build — no design session needed.
+
+---
+
+### 6. Philosophy refinement — long-term trend view
+
+**Line agreed:** daily checking = engagement bait (avoid); weekly/monthly glance = self-knowledge (valid).
+
+**Right form factor:** opt-in weekly notification — one sentence, not a reason to open the app daily. In-app: a monthly summary page (discoverable, not promoted — not a new tab). PHILOSOPHY.md update needed before the code.
+
+---
+
+### 7. Loading screen / empty state
+
+Two separate problems:
+- **Empty state** (high priority): detect `activities.isEmpty` in `ActivityListView`, show a neumorphic placeholder prompting to add an activity or browse templates. Small change, high first-impression value.
+- **Launch screen** (low priority): currently `AccentColor` background from `Info.plist`. A neumorphic skeleton requires a UIKit storyboard — more work for less payoff.
+
+---
+
+### Agreed priority order
+
+1. **#7 — Empty state** — small, visible, helps new users immediately
+2. **#5 — History soft delete** — well-scoped, clear UX
+3. **#1 — Digital gatekeeper** — design session first, then build
+4. **#6 — Philosophy doc update** — low effort, good hygiene before any marketing push
+5. **#4 — Tip jar** — already in backlog, straightforward
+6. **#3 / #2** — defer until iOS 26 Screen Time API stabilises
+
+**What to pick up next:** Empty state for the home screen when no activities exist.
+
+---
+
 ## Session 24 — 2026-05-30
 
 **Focus:** Siri Live Activity recovery + Siri confirmation message tweak.
@@ -26,6 +150,10 @@ UX result: Siri starts the session → user opens the app → Dynamic Island app
 Changed `"Started \(fullActivity.name)."` → `"Started \(fullActivity.name). Open the app to see the timer."` so users aren't confused by the missing Dynamic Island.
 
 **Backlog:** Siri phrases are English-only. Multilingual phrases require `AppShortcuts.stringsdict`; response dialogs need `LocalizedStringResource`. Logged in `BACKLOG.md` for v1.1.
+
+### Process fix — never commit before user confirmation (`kit-for-next-claude/WORKFLOW.md`)
+
+Claude committed the Live Activity fix before the user had confirmed it worked on device. Added an explicit rule to `WORKFLOW.md`: the sequence is always implement → `✅ READY TO TEST` → wait for confirmation → then docs + commit + push. Also updated the persistent memory file so this rule survives a `/clear`.
 
 **What to pick up next:**
 - Await Apple review; click Release on approval.

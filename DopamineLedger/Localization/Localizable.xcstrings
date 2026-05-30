@@ -6697,6 +6697,18 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已删除的活动" } }
       }
     },
+    "history.bundle.sessions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%d Sitzungen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%d sessions" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%d sesiones" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%d séances" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%d セッション" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%d 세션" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%d 次" } }
+      }
+    },
     "history.empty" : {
       "extractionState" : "stale",
       "localizations" : {

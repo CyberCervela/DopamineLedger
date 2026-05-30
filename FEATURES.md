@@ -70,7 +70,7 @@
 | Pixel-art theme (Step 7) | `planned` | Assets not generated; excluded from MVP submission |
 | Dashboard / stats | `done` | Steps 1–5 complete. `DashboardStats.swift` (pure model), `DashboardView.swift` (ScopePicker, SummaryCard, ActivityStatsSection, QuestHistorySection). See `JOURNAL.md` Sessions 6–7. |
 | Decimal display for sub-1 credit amounts | `done` | `.fractionLength(0...1)` across all 7 credit display views. Session 19. |
-| **History tab** | `done` | Unified reverse-chrono timeline of sessions + quests, grouped by day. `HistoryView.swift`. Session 20. D-012. |
+| **History tab** | `done` | Unified reverse-chrono timeline of sessions + quests, grouped by day. `HistoryView.swift`. Session 20. D-012. Consecutive same-activity runs bundled; sub-2-min blips hidden. Session 26. |
 | **SessionView — credits as hero** | `done` | Credits value is the 64pt focal point; elapsed time drops to secondary. Human-readable elapsed. "X credits remaining" label on spender. Session 20. |
 | "How long can I keep going?" burn-down on spender rows | `done` | Shipped Session 5. See `JOURNAL.md`. |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
