@@ -42,6 +42,13 @@ enum LiveActivityService {
         return ActivityKit.Activity<SessionActivityAttributes>.activities.first { $0.id == id }
     }
 
+    // True when we currently own a Live Activity that is still running.
+    // Used by the recovery path in ActivityListView: if a session was started
+    // via Siri while the app was backgrounded, Activity.request() fails silently
+    // (platform restriction — foreground only). On next foreground transition
+    // ActivityListView checks this flag and calls start() again.
+    static var hasActiveActivity: Bool { currentActivity != nil }
+
     // MARK: - Start
 
     // Called when a new session begins. Immediately ends any orphaned Live

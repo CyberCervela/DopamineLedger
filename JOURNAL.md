@@ -5,6 +5,34 @@
 
 ---
 
+## Session 24 — 2026-05-30
+
+**Focus:** Siri Live Activity recovery + Siri confirmation message tweak.
+
+**Shipped:**
+
+### Live Activity recovery on foreground (`ActivityListView.swift`, `LiveActivityService.swift`)
+
+`ActivityKit.Activity.request()` is a foreground-only API — it silently fails when called from an App Intent while the app is backgrounded. The existing `StartSessionIntent` called `LiveActivityService.start()`, which internally calls `request()`, so the session was saved to SwiftData correctly but no Dynamic Island appeared.
+
+**Fix:** Recovery path in `ActivityListView` that fires when the app comes to the foreground:
+- `LiveActivityService` — added `static var hasActiveActivity: Bool` (checks `currentActivity != nil`) so the recovery code can guard against starting a duplicate.
+- `ActivityListView` — added `@Environment(\.scenePhase)`, a `recoverLiveActivityIfNeeded()` function, and two call sites: in `.task` (covers the app-was-killed case) and in `.onChange(of: scenePhase)` for `.active` (covers the app-was-backgrounded case). If an active session exists with no Live Activity, the function looks up the activity, computes the correct `adjustedStart` (accounting for pauses), calls `LiveActivityService.start()`, and immediately calls `update()` if the session is currently paused.
+
+UX result: Siri starts the session → user opens the app → Dynamic Island appears instantly. The session is running from the moment Siri confirms; the Live Activity catches up on first foreground.
+
+### Siri start confirmation message (`DopamineLedgerIntents.swift`)
+
+Changed `"Started \(fullActivity.name)."` → `"Started \(fullActivity.name). Open the app to see the timer."` so users aren't confused by the missing Dynamic Island.
+
+**Backlog:** Siri phrases are English-only. Multilingual phrases require `AppShortcuts.stringsdict`; response dialogs need `LocalizedStringResource`. Logged in `BACKLOG.md` for v1.1.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- HealthKit workout observer (Path B) — next automation feature.
+
+---
+
 ## Session 23 — 2026-05-29
 
 **Focus:** Siri / App Intents (Path A) — five voice actions pre-registered at install.

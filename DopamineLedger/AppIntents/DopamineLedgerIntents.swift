@@ -140,7 +140,7 @@ struct StartSessionIntent: AppIntent {
             )
         }
 
-        return .result(dialog: "Started \(fullActivity.name).")
+        return .result(dialog: "Started \(fullActivity.name). Open the app to see the timer.")
     }
 }
 

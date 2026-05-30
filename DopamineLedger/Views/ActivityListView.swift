@@ -19,6 +19,7 @@ struct ActivityListView: View {
     @Environment(\.theme)          private var theme
     @Environment(\.modelContext)   private var context
     @Environment(\.languageBundle) private var lBundle
+    @Environment(\.scenePhase)     private var scenePhase
 
     @Query(sort: \Activity.createdAt) private var activities:    [Activity]
     @Query                            private var ledgers:        [Ledger]
@@ -86,6 +87,14 @@ struct ActivityListView: View {
             if activeSession == nil, let leftover = activeSessions.first {
                 activeSession = leftover
             }
+            recoverLiveActivityIfNeeded()
+        }
+        // When the app comes to the foreground (e.g. after a Siri intent ran while
+        // backgrounded), re-check whether a Live Activity needs to be started.
+        // Activity.request() is foreground-only, so the intent's call silently
+        // failed; we start it here instead.
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active { recoverLiveActivityIfNeeded() }
         }
         .sheet(isPresented: $showAddActivity) {
             AddActivityView(mode: .create, initialKind: defaultKindForCurrentFilter)
@@ -141,6 +150,32 @@ struct ActivityListView: View {
     }
 
     // MARK: - Session lifecycle
+
+    // Starts a Live Activity for any session that is running but has no Live
+    // Activity visible. This covers the Siri-start case: Activity.request() is
+    // foreground-only, so the intent's attempt silently no-ops; we retry here
+    // as soon as the app becomes active.
+    private func recoverLiveActivityIfNeeded() {
+        guard !LiveActivityService.hasActiveActivity,
+              let session = activeSessions.first else { return }
+        guard let act = activities.first(where: { $0.id == session.activityId }) else { return }
+        // adjustedStart accounts for any pauses so the timer shows correct elapsed.
+        let adjustedStart = session.startedAt.addingTimeInterval(session.totalPausedSeconds)
+        LiveActivityService.start(
+            activityName:  act.name,
+            activityKind:  act.kind,
+            ratePerSecond: act.ratePerSecond,
+            startedAt:     adjustedStart
+        )
+        if session.isPaused {
+            LiveActivityService.update(
+                adjustedStart: adjustedStart,
+                isPaused:      true,
+                pausedElapsed: session.elapsed,
+                creditsMoved:  act.ratePerSecond * session.elapsed
+            )
+        }
+    }
 
     private func openActivity(_ activity: Activity) {
         // Re-open an already-running session (e.g. user swiped down the sheet).
