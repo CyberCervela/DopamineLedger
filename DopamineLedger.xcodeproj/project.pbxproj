@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		011FFC02E6C417F0895570AE /* SessionMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A1F5D14F61CCE51BD730674 /* SessionMath.swift */; };
+		02FD6082DA2A64126D2CE43E /* PeakHoursService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C287E54C5633627752C58610 /* PeakHoursService.swift */; };
 		0A6E971D4643B0127FED2F50 /* SessionLiveActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2395C755095E2803B843A85D /* SessionLiveActivity.swift */; };
 		0AA8A47673A83C8FE42F38CB /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9816851CE5705216CB08F8CD /* AppIntents.framework */; };
 		0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BEB5036A2BAC59081047C29 /* IconResolver.swift */; };
@@ -100,7 +101,7 @@
 		211E81845C8E9C8FE90C87D4 /* LaunchImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchImage.png; sourceTree = "<group>"; };
 		2395C755095E2803B843A85D /* SessionLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLiveActivity.swift; sourceTree = "<group>"; };
 		24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerApp.swift; sourceTree = "<group>"; };
-		413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DopamineLedgerWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DopamineLedgerWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepayMath.swift; sourceTree = "<group>"; };
 		4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityMenuView.swift; sourceTree = "<group>"; };
 		5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityAttributes.swift; sourceTree = "<group>"; };
@@ -113,7 +114,7 @@
 		75974194EFB58BCC1BE1D176 /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
 		799737179C6FAA48A05E0539 /* NotificationMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationMath.swift; sourceTree = "<group>"; };
 		7EAC97547B1E071723B7CBC9 /* ActivityAddChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAddChoiceView.swift; sourceTree = "<group>"; };
-		81157DE817A5C07419A4F7AF /* DopamineLedger.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DopamineLedger.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		81157DE817A5C07419A4F7AF /* DopamineLedger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DopamineLedger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84FBDCE63D4A089A5776B180 /* AddActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddActivityView.swift; sourceTree = "<group>"; };
 		932E84D7A113B126ACF1715F /* ActivityDebt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDebt.swift; sourceTree = "<group>"; };
 		9816851CE5705216CB08F8CD /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
@@ -127,8 +128,9 @@
 		BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BB278EAC2CE14CE56E68910D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BF29E10783F9F0EE030F19D6 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		C287E54C5633627752C58610 /* PeakHoursService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeakHoursService.swift; sourceTree = "<group>"; };
 		C4544B842E7F43616765D9F7 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
-		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBD984D0688E7C0DB14E351E /* DopamineLedgerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerIntents.swift; sourceTree = "<group>"; };
 		DBF76D2986481330C1C13C83 /* DopamineLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerTests.swift; sourceTree = "<group>"; };
 		DD2250D301CE1869E52D82EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 			children = (
 				6599E0272A30BC468CA04713 /* LiveActivityService.swift */,
 				1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */,
+				C287E54C5633627752C58610 /* PeakHoursService.swift */,
 				04CB30017E393EDFF66B7B43 /* SessionFinalizer.swift */,
 			);
 			path = Services;
@@ -365,15 +368,12 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					1039CB380E1D9F9882B477ED = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					74E54054CB17E55A294ECBE0 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					E69120AD4ADE44BF6D36ACA0 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -457,6 +457,7 @@
 				D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */,
 				E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */,
 				A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */,
+				02FD6082DA2A64126D2CE43E /* PeakHoursService.swift in Sources */,
 				C576944FF0904AB4D44E66EB /* PrivacyPolicyView.swift in Sources */,
 				B9B71A9BC1B51B7C00D86762 /* Quest.swift in Sources */,
 				56AC9B932A927F6EAEA7CB65 /* RepayMath.swift in Sources */,
@@ -504,6 +505,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2QAGD8384Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DopamineLedger/Info.plist;
@@ -524,6 +526,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2QAGD8384Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DopamineLedger/Info.plist;
@@ -610,6 +613,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 2QAGD8384Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -688,6 +692,7 @@
 		825F62FE36D07E2173CA5D4E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 2QAGD8384Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DopamineLedgerWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -707,6 +712,7 @@
 		ADCB4FB8380DFE6629B5C94E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 2QAGD8384Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DopamineLedgerWidgets/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -727,6 +733,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 2QAGD8384Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

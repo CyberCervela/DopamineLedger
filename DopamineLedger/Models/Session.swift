@@ -25,6 +25,13 @@ final class Session {
     // (if pausedAt != nil) is added on the fly in `elapsed`. Default 0 so
     // SwiftData additive migration leaves pre-existing rows correct.
     var totalPausedSeconds: TimeInterval = 0
+    // Frozen at session-start time. 1.5 when the session begins inside the
+    // user's peak window; 1.0 otherwise. Never changes after creation — the
+    // "lock at start time" rule means pausing and resuming don't affect it,
+    // and stopping then restarting creates a fresh session that re-checks the
+    // window. Default 1.0 keeps SwiftData lightweight migration safe for all
+    // pre-existing session rows.
+    var timeMultiplier: Double = 1.0
 
     init(activityId: UUID) {
         self.id                 = UUID()
@@ -33,6 +40,7 @@ final class Session {
         self.endedAt            = nil
         self.pausedAt           = nil
         self.totalPausedSeconds = 0
+        self.timeMultiplier     = 1.0
     }
 
     // Elapsed *working* seconds — wall-clock since startedAt minus all time

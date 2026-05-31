@@ -66,7 +66,8 @@ enum SessionFinalizer {
             kind:           activity.kind,
             ratePerSecond:  activity.ratePerSecond,
             elapsed:        elapsed,
-            currentBalance: balanceBefore
+            currentBalance: balanceBefore,
+            multiplier:     session.timeMultiplier
         )
 
         ledger.balance   = outcome.newBalance
@@ -83,7 +84,7 @@ enum SessionFinalizer {
         // tick forward past the session's actual stop time.
         LiveActivityService.end(
             finalElapsed: elapsed,
-            creditsMoved: activity.ratePerSecond * elapsed
+            creditsMoved: activity.ratePerSecond * elapsed * session.timeMultiplier
         )
 
         return FinalizedSession(

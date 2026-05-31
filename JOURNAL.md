@@ -5,6 +5,58 @@
 
 ---
 
+## Session 28 — 2026-05-31
+
+**Focus:** Peak Hours multiplier — design locked, docs updated, implementation starting.
+
+**Shipped.** All decisions locked below. See D-017 in `DECISIONS.md`.
+
+---
+
+### Feature: Peak Hours multiplier
+
+Credits and debits during a user-defined time window are amplified by 1.5×. The window is a fixed 6-hour block whose start time the user sets in Settings. The multiplier is stamped on the session at start time and never changes — a session started in-peak keeps the bonus for its full duration (even through pauses); a session started off-peak never gains one.
+
+Applies to: charger sessions (earn 1.5× credits), spender sessions (cost 1.5× credits), and one-tap quest payoffs.
+
+Does NOT apply to: sessions started outside the window, regardless of when they end.
+
+### Design decisions locked (see D-017 for full rationale)
+
+- **Lock at start time** — removes the "need to rush to start before the window closes" dynamic. Once started, the bonus is yours.
+- **1.5× fixed multiplier** — meaningful alongside the existing 2× debt rate without being so strong it creates perverse urgency.
+- **6-hour fixed window** — roughly a third of a waking day; not user-adjustable in v1.
+- **User-defined start time, not named profiles** — a time picker covers every chronotype without forcing users into "early bird / night owl" boxes.
+- **Midnight-wrap handled** — a night owl setting start to 22:00 gets a 22:00–04:00 window; `PeakHoursService.isCurrentlyPeak` handles the wrap correctly.
+- **Sleep-protection copy nudge** — *"Set this to when you naturally wake up, not when you wish you would."* No minimum start-time cap.
+- **Quests get the multiplier** — a quest completed at 8am is a peak-hours win, consistent with the rest of the feature.
+
+### Implementation plan (7 files)
+
+1. **`Services/PeakHoursService.swift`** (new) — pure enum, no state. `isCurrentlyPeak(at:)` reads `@AppStorage` values and handles midnight wrap. `peakEndHour` computed for display.
+2. **`Models/Session.swift`** — add `var timeMultiplier: Double = 1.0`. Stored at creation, never mutated. SwiftData lightweight migration is safe with default 1.0.
+3. **`Models/SessionMath.swift`** — add `multiplier: Double = 1.0` param to `creditsEarned` and `debtAccrued`. All existing call sites pass nothing → 1.0, no breakage. New unit tests cover the 1.5× case.
+4. **`Services/SessionFinalizer.swift`** — pass `session.timeMultiplier` into `SessionMath` calls and into the quest-payoff path.
+5. **`Views/ActivityListView.swift`** — at session creation, call `PeakHoursService.isCurrentlyPeak()` and stamp `session.timeMultiplier`.
+6. **`Views/SessionView.swift`** — show "1.5× peak bonus" badge (in `theme.colors.positive`) when `session.timeMultiplier > 1.0`.
+7. **`Views/SettingsView.swift`** — new Peak Hours section: toggle (enable/disable), start-time picker (when enabled), computed end-time display, copy nudge.
+8. **`Localizable.xcstrings`** — ~8 new keys × 7 languages.
+
+### What's out of scope (v1)
+
+- Multiplier as a user-adjustable setting
+- Window length as a user-adjustable setting
+- Named profile presets (Early Bird / Night Owl) as quick-start shortcuts
+- Chronobiology research links (logged in BACKLOG as v1.1)
+
+**Confirmed on simulator/device:** PEAK HOURS section renders between Behaviour and Notifications; time picker shows correctly with green "Your peak: HH:MM → HH:MM" label; Deep Work session shows "1.5× PEAK BONUS" badge in session view. Math feels correct.
+
+**Gotcha caught during implementation:** `SessionView` was computing `creditsMoved = ratePerSecond * elapsed` without the multiplier — the live display would have shown the wrong (lower) credit number while the finalizer applied the correct 1.5× at stop time. Fixed before handoff by using `ratePerSecond * elapsed * session.timeMultiplier` in the display and both `LiveActivityService.update` calls.
+
+**What to pick up next:** Empty state for `ActivityListView` (priority #1 from Session 25, still unbuilt).
+
+---
+
 ## Session 27 — 2026-05-30
 
 **Focus:** Launch screen — replace blank green screen with branded text.

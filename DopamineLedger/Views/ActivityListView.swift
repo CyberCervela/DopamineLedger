@@ -197,6 +197,10 @@ struct ActivityListView: View {
     private func startSession(for activity: Activity) {
         guard activeSessions.isEmpty else { return }
         let session = Session(activityId: activity.id)
+        // Freeze the peak-hours multiplier at start time. A session that begins
+        // during peak keeps its 1.5× bonus for its full lifetime (even through
+        // pauses); stopping and restarting creates a fresh session that re-checks.
+        session.timeMultiplier = PeakHoursService.isCurrentlyPeak() ? PeakHoursService.multiplier : 1.0
         context.insert(session)
         activeSession = session
 
@@ -268,7 +272,10 @@ struct ActivityListView: View {
 
     private func complete(_ quest: Quest) {
         let ledger        = Ledger.fetchOrCreate(in: context)
-        ledger.balance   += quest.payoffCredits
+        // A quest completed during peak hours earns the same bonus as a
+        // charger session — making your bed at 07:00 is worth more than at 22:00.
+        let multiplier    = PeakHoursService.isCurrentlyPeak() ? PeakHoursService.multiplier : 1.0
+        ledger.balance   += quest.payoffCredits * multiplier
         ledger.updatedAt  = Date()
         quest.isCompleted = true
         quest.completedAt = Date()

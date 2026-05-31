@@ -67,6 +67,7 @@
 | Feature | Status | Notes |
 |---|---|---|
 | **Activity Guidance & Template System** | `done` | Shipped Session 14. `Models/ActivityTemplate.swift`, `Views/TemplateGalleryView.swift`, `Views/ActivityAddChoiceView.swift`, `Views/AddActivityView.swift` (enriched), `Views/ActivityListView.swift`. See D-013, D-014. |
+| **Peak Hours multiplier** | `done` | 1.5× on charger/spender/quest during user-defined 6h window. Lock at start time. D-017. Session 28. `PeakHoursService.swift`, `Session.timeMultiplier`, `SettingsView` peak section, `SessionView` badge. |
 | Pixel-art theme (Step 7) | `planned` | Assets not generated; excluded from MVP submission |
 | Dashboard / stats | `done` | Steps 1–5 complete. `DashboardStats.swift` (pure model), `DashboardView.swift` (ScopePicker, SummaryCard, ActivityStatsSection, QuestHistorySection). See `JOURNAL.md` Sessions 6–7. |
 | Decimal display for sub-1 credit amounts | `done` | `.fractionLength(0...1)` across all 7 credit display views. Session 19. |

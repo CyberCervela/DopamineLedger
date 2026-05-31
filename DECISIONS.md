@@ -229,6 +229,25 @@ in Stats (integral to the category view) AND also appear in History as `QuestHis
 entries. Both tabs serve different purposes — Stats shows aggregates, History shows the
 individual event log. No change to the `QuestHistorySection` in Stats.
 
+## D-017 — Peak Hours multiplier: 1.5× on chargers and spenders during user-defined window   (2026-05-31)
+**Decision:** An opt-in "Peak Hours" feature applies a 1.5× multiplier to both charger credits earned and spender credits spent during a user-defined time window. The multiplier is locked at session start time — if a session starts in-peak and runs past the window end, the full session keeps the bonus (and conversely, a session started off-peak never gains the bonus mid-session). Pausing during peak preserves the bonus. Stopping and restarting after the window ends starts a fresh session with no bonus. Quests completed during peak also receive the 1.5× multiplier.
+
+**Why:** Biological peak hours are real — a morning person doing deep work at 6am is categorically more effective than at 9pm. The multiplier makes that reality legible in the credit system. The 1.5× figure is meaningful (50% more credits for a charger, 50% more cost for a spender) but not so strong that users feel compelled to rush or cut sleep to capture the bonus. Lock-at-start specifically removes the "need to hurry" dynamic: once you've started an activity, there is nothing to chase.
+
+**Philosophy guard — sleep:** The self-defined window is the natural protection against users cutting sleep to get the buff. If your window starts at 06:00, there is no incentive to wake at 04:00 because you would simply move the window — not the sleep. A copy nudge in Settings reinforces this: *"Set this to when you naturally wake up, not when you wish you would."* No minimum start-time cap (paternalistic); trust the user's self-knowledge.
+
+**Why 1.5× not 1.25×:** 25% is noticeable but feels marginal alongside the 2× debt rate and the spender/charger rate spread (1–10 cr/min). 50% feels meaningfully different on screen without creating perverse incentives. The value is a constant in `PeakHoursService` and easy to tune post-launch if the figure proves too strong or too weak.
+
+**Why no named profiles (Early Bird / Night Owl):** Labels are cosmetic once the window is user-defined. Any chronotype — early bird, night owl, mid-afternoon peak — is covered by a start time + fixed duration. Named presets can be added as quick-start shortcuts in a v1.1 polish pass.
+
+**Window length — fixed at 6 hours:** One third of a waking day. Long enough to fit a full morning block (exercise + focused work + reading); short enough that the multiplier feels special rather than default. Not user-adjustable in v1 — reduces settings complexity and prevents users from setting an implausibly long "peak" that defeats the purpose.
+
+**Scope:** New `PeakHoursService.swift`, one new field on `Session` (`timeMultiplier: Double = 1.0`), `SessionMath` gets a multiplier param, `SessionFinalizer` passes it through, `ActivityListView` stamps it at session start, `SessionView` shows a badge, `SettingsView` gains a Peak Hours section, `Localizable.xcstrings` gets ~8 new keys.
+
+**Future upgrade (not in scope now):** Links to research on chronobiology and how to identify your own chronotype, surfaced from the same Settings section.
+
+**Supersedes:** none
+
 ## D-016 — All taps route through ActivityMenuView (2026-05-29)
 **Decision:** Every activity tap opens `ActivityMenuView` before any session starts. No session is ever triggered by a single bare tap.
 **Why:** Users were accidentally starting sessions by tapping activity rows without intent — especially chargers, which previously started immediately. A confirmed explicit "Start" tap is the only path into `startSession(for:)`.

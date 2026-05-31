@@ -18,11 +18,14 @@ struct SettingsView: View {
     @Environment(\.dismiss)        private var dismiss
     @Environment(\.languageBundle) private var lBundle
 
-    @AppStorage("chillMode")    private var chillMode:    Bool   = false
-    @AppStorage("themeId")      private var themeId:      String = "neu"
+    @AppStorage("chillMode")       private var chillMode:       Bool   = false
+    @AppStorage("themeId")         private var themeId:         String = "neu"
     // Writing languageCode here re-injects the bundle in DopamineLedgerApp,
     // so the whole view hierarchy re-renders in the new language immediately.
-    @AppStorage("languageCode") private var languageCode: String = "en"
+    @AppStorage("languageCode")    private var languageCode:    String = "en"
+    @AppStorage("peakEnabled")     private var peakEnabled:     Bool   = false
+    @AppStorage("peakStartHour")   private var peakStartHour:   Int    = 6
+    @AppStorage("peakStartMinute") private var peakStartMinute: Int    = 0
 
     @Query(filter: #Predicate<Session> { $0.endedAt == nil })
                                       private var activeSessions: [Session]
@@ -61,6 +64,7 @@ struct SettingsView: View {
                         appearanceSection
                         languageSection
                         behaviourSection
+                        peakHoursSection
                         notificationsSection
                         if !activeSessions.isEmpty {
                             activeSessionSection
@@ -208,6 +212,58 @@ struct SettingsView: View {
                 Text(lBundle.l(chillMode ? "settings.chill.on" : "settings.chill.off"))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
+            }
+        }
+    }
+
+    // Maps the two integer @AppStorage keys (peakStartHour, peakStartMinute)
+    // to a single Date for DatePicker, then unpacks on write. Using a Binding
+    // avoids a separate @State mirror that could drift out of sync.
+    private var peakStartBinding: Binding<Date> {
+        Binding(
+            get: {
+                var comps        = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+                comps.hour       = peakStartHour
+                comps.minute     = peakStartMinute
+                comps.second     = 0
+                return Calendar.current.date(from: comps) ?? Date()
+            },
+            set: { date in
+                peakStartHour   = Calendar.current.component(.hour,   from: date)
+                peakStartMinute = Calendar.current.component(.minute, from: date)
+            }
+        )
+    }
+
+    private var peakHoursSection: some View {
+        let end = PeakHoursService.peakEnd(startHour: peakStartHour, startMinute: peakStartMinute)
+        let endStr   = String(format: "%02d:%02d", end.hour, end.minute)
+        let startStr = String(format: "%02d:%02d", peakStartHour, peakStartMinute)
+        return sectionCard(title: lBundle.l("settings.section.peak_hours")) {
+            VStack(alignment: .leading, spacing: theme.spacing.md) {
+                Toggle(isOn: $peakEnabled) {
+                    Text(lBundle.l("settings.peak.title"))
+                        .font(theme.typography.bodyStrong)
+                        .foregroundStyle(theme.colors.textPrimary)
+                }
+                .tint(theme.colors.accent)
+
+                if peakEnabled {
+                    Divider()
+                    // Compact hour-and-minute picker. The wheel style would take
+                    // too much vertical space inside the card.
+                    DatePicker("", selection: peakStartBinding, displayedComponents: .hourAndMinute)
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
+                    Text(String(format: lBundle.l("settings.peak.window"), startStr, endStr))
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.positive)
+                }
+
+                Text(lBundle.l("settings.peak.nudge"))
+                    .font(theme.typography.caption)
+                    .foregroundStyle(theme.colors.textSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

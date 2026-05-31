@@ -34,7 +34,9 @@ struct SessionView: View {
 
     private var content: some View {
         let elapsed       = session.elapsed
-        let creditsMoved  = activity.ratePerSecond * elapsed
+        // Use the session's frozen multiplier so the live display matches what
+        // SessionFinalizer will compute at stop time.
+        let creditsMoved  = activity.ratePerSecond * elapsed * session.timeMultiplier
         let paused        = session.isPaused
         let creditsKey        = activity.kind == .charger ? "session.credits_earned" : "session.credits_spent"
         let creditsCaptionKey = activity.kind == .charger ? "session.credits_earned_caption" : "session.credits_spent_caption"
@@ -90,6 +92,12 @@ struct SessionView: View {
                     .font(theme.typography.caption)
                     .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : kindColor))
                     .kerning(2)
+                if session.timeMultiplier > 1.0 {
+                    Text(lBundle.l("session.peak_bonus").uppercased())
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.positive)
+                        .kerning(2)
+                }
                 Text(formatElapsed(elapsed))
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textSecondary)
@@ -185,7 +193,7 @@ struct SessionView: View {
                 adjustedStart: session.startedAt.addingTimeInterval(session.totalPausedSeconds),
                 isPaused:      false,
                 pausedElapsed: 0,
-                creditsMoved:  activity.ratePerSecond * session.elapsed
+                creditsMoved:  activity.ratePerSecond * session.elapsed * session.timeMultiplier
             )
         } else {
             let elapsedNow    = session.elapsed
@@ -196,7 +204,7 @@ struct SessionView: View {
                 adjustedStart: adjustedStart,
                 isPaused:      true,
                 pausedElapsed: elapsedNow,
-                creditsMoved:  activity.ratePerSecond * elapsedNow
+                creditsMoved:  activity.ratePerSecond * elapsedNow * session.timeMultiplier
             )
         }
     }

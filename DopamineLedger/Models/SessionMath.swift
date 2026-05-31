@@ -30,12 +30,16 @@ enum SessionMath {
     //
     // - For chargers: credits add to the balance, no debt possible.
     // - For spenders: the session first depletes the balance; any remaining
-    //   time (the overrun) accrues debt at TWICE the activity's rate.
+    //   time (the overrun) accrues debt at TWICE the effective rate.
+    // - multiplier: the peak-hours bonus stamped on the session at start time
+    //   (1.0 = normal, 1.5 = peak). Scales the effective rate so both the
+    //   credits moved and any debt penalty reflect the same multiplier.
     static func apply(
-        kind:          ActivityKind,
-        ratePerSecond: Double,
-        elapsed:       TimeInterval,
-        currentBalance: Double
+        kind:           ActivityKind,
+        ratePerSecond:  Double,
+        elapsed:        TimeInterval,
+        currentBalance: Double,
+        multiplier:     Double = 1.0
     ) -> SessionOutcome {
 
         // Safety: a zero or negative rate would mean infinite-time-until-zero
@@ -44,7 +48,10 @@ enum SessionMath {
             return SessionOutcome(newBalance: currentBalance, debtAccrued: 0)
         }
 
-        let credits = ratePerSecond * elapsed
+        // The effective rate already bakes in the peak multiplier, so all
+        // downstream math (credits, debt threshold, debt amount) is consistent.
+        let effectiveRate = ratePerSecond * multiplier
+        let credits       = effectiveRate * elapsed
 
         switch kind {
         case .charger:
@@ -63,11 +70,11 @@ enum SessionMath {
             }
 
             // Otherwise: balance drains to zero, the remaining time creates
-            // debt at the 2× penalty rate.
-            // Clamp to zero in case currentBalance was already 0 or negative.
-            let timeUntilZero = max(0, currentBalance / ratePerSecond)
+            // debt at the 2× penalty rate (applied to the effective rate so
+            // the penalty is proportional to the peak bonus the user received).
+            let timeUntilZero = max(0, currentBalance / effectiveRate)
             let overrun       = max(0, elapsed - timeUntilZero)
-            let debt          = overrun * ratePerSecond * 2
+            let debt          = overrun * effectiveRate * 2
 
             return SessionOutcome(
                 newBalance:  0,

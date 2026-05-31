@@ -46,6 +46,9 @@ Items deferred from active development. Verify or ship when ready.
 | ~~Decimal display for sub-1 credit amounts~~ | ✅ Done Session 19 |
 | ~~Siri / App Intents (Path A)~~ | ✅ Done Session 23. `AppIntents/DopamineLedgerIntents.swift`. 5 intents + AppShortcutsProvider. |
 | **Siri phrases — multilingual (v1.1)** | English-only phrases. Other languages need an `AppShortcuts.stringsdict` with per-language variants (e.g. French: "Lance \(\.$activity) dans \(.applicationName)"). Response dialogs also hardcoded English — move to `LocalizedStringResource`. Low priority: Siri works; this is polish for the 6 non-English locales. |
+| **Peak Hours multiplier** | 1.5× multiplier on credits earned/spent during a user-defined 6-hour window. Design locked in D-017 and Session 28 journal. Ready to implement. Files: new `PeakHoursService.swift`, `Session.timeMultiplier`, `SessionMath` multiplier param, `SessionFinalizer`, `ActivityListView` (stamp at start), `SessionView` badge, `SettingsView` section, strings. |
+| **Peak Hours — chronobiology research links (v1.1)** | Links to research on biological peak hours and how to identify your chronotype, surfaced from the Peak Hours settings section. Deferred from v1 — feature ships without them. |
+| **Peak Hours — named profile presets (v1.1)** | "Early Bird" (preset 06:00 start) and "Night Owl" (preset 20:00 start) as quick-start buttons above the time picker. Deferred — the time picker alone covers all chronotypes. |
 | HealthKit workout observer (Path B) | Auto-start a charger when a workout begins. Clean signal; requires HealthKit capability + one Settings toggle. Medium confidence. |
 | Screen Time API — app-launch interception (Path C) | ⛔ Blocked — API in active regression on iOS 26. See research note below. Re-evaluate after WWDC 2026/2027. |
 | Pixel-art theme (Step 7) | Assets not generated; fonts wired but no pixel-art icons yet |
@@ -331,6 +334,29 @@ over-engineer this into a "do it all for you" feature.
 - [ShieldConfigurationDataSource tutorial (Medium / John Baker)](https://medium.com/@B4k3R/creating-a-screentime-shieldconfigurationdatasource-for-ios-familycontrols-api-5ca1079d3188)
 - [App Intents + AppShortcutsProvider (createwithswift.com)](https://www.createwithswift.com/performing-your-app-actions-with-siri-through-app-shortcuts-provider/)
 - [WWDC22: Implement App Shortcuts with App Intents (Apple)](https://developer.apple.com/videos/play/wwdc2022/10170/)
+
+---
+
+## Performance — History tab at scale
+
+> **Status: proactive note — no action needed now. Revisit before v1.1 or when a power user reports slowness.**
+
+`HistoryView` currently fetches **all sessions and all quests** in a single `@Query`, then runs the bundling/blip-filtering algorithm client-side on the full dataset before any UI renders. For a v1.0 user with a handful of sessions this is fine. At scale it becomes a problem.
+
+**When it hurts:** A power user logging 5+ sessions/day accumulates ~1 800 session rows in a year. Fetching and walking all of them on every tab switch will produce a measurable first-render pause, and SwiftData loads rows into memory before any display happens.
+
+**Root cause:** The bundling algorithm (`dayGroups` computed property) has to see the full sorted list to detect consecutive same-activity runs correctly — a bundle boundary only becomes visible when the *next* item in the sequence differs. This makes a naïve "fetch the first N rows and stop" approach break at window edges (the first visible session of a new page might be the tail of a bundle that started on the previous page).
+
+**Likely fix path when the time comes:**
+
+1. **Day-based windowed fetch.** Instead of fetching all sessions, fetch sessions in calendar-day chunks using `FetchDescriptor` with a date predicate (`startedAt >= windowStart`). Load the most recent 30 days on first render; append the next 30 days when the user scrolls to the bottom.
+2. **Bundle-safe window edges.** When appending a new window, fetch one extra day of context before the window start so the bundling algorithm can detect whether the first session in the new page continues a run from the previous page.
+3. **`LazyVStack` + on-appear trigger.** Replace the current `ForEach` inside the `ScrollView` with a `LazyVStack`. A sentinel row at the bottom fires an `.onAppear` that appends the next window. Standard iOS infinite-scroll pattern.
+4. **No DB schema changes needed.** `FetchDescriptor` date predicates work against the existing `startedAt` field on `Session`. The bundling logic can stay pure-Swift — it just operates on a smaller input slice.
+
+**What not to do early:** Don't pre-aggregate or denormalize history into a separate table just to speed up reads. The query cost at < 500 rows is negligible and premature denormalization adds a consistency burden every time a session is mutated.
+
+**Trigger to act:** User-reported lag on the History tab, or internal benchmark showing > 100 ms render time at 500+ sessions. Until then, leave the current approach in place.
 
 ---
 
