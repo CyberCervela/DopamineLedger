@@ -22,6 +22,14 @@ Items deferred from active development. Verify or ship when ready.
 
 ---
 
+## Your to-do (needs a physical device)
+
+| Item | How |
+|---|---|
+| **Device-test unverified URL schemes** | Run a session with each linked activity below and tap "Open [App] →". If the app opens → scheme is good. If the "not installed" alert fires incorrectly → remove that entry from the catalog. **Spender-side:** Disney+ (`disneyplus://`), Prime Video (`aiv://`), Max (`max://`), Threads (`threads://`), Reddit (`reddit://`), Roblox (`roblox://`), BeReal (`bereal://`), Netflix (`nflx://`). **Charger-side:** Kindle (`kindle://`), Calm (`calm://`), Notion (`notion://`). **Bonus:** test `paramountplus://` directly — if it opens, add Paramount+ to the catalog. |
+
+---
+
 ## Next session — priority order
 
 | # | Item | Notes |
