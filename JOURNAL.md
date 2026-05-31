@@ -5,6 +5,31 @@
 
 ---
 
+## Session 35 — 2026-05-31
+
+**Focus:** Charger-side linked apps.
+
+**Shipped:** `Models/LinkedApp.swift`, `Models/ActivityTemplate.swift`, `DopamineLedger/Info.plist`.
+
+Six new entries in the LinkedApp catalog under a new "Productivity & Learning" section. Six new charger templates with linked app schemes pre-wired:
+
+| Template | Category | Rate | Scheme |
+|---|---|---|---|
+| Focus - Forest | focusLearning | 6.0 cr/min | `forest://` |
+| Focus - Notion | focusLearning | 6.0 cr/min | `notion://` |
+| Learning - Duolingo | focusLearning | 5.0 cr/min | `duolingo://` |
+| Reading - Kindle | focusLearning | 5.0 cr/min | `kindle://` |
+| Meditation - Headspace | rest | 5.0 cr/min | `headspace://` |
+| Meditation - Calm | rest | 5.0 cr/min | `calm://` |
+
+Confirmed schemes (from cataloging repos): Duolingo, Headspace, Forest. Device test still needed for Kindle, Calm, Notion. Catalog is now 25 apps; template count 36.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- Device-test Kindle, Calm, Notion schemes.
+
+---
+
 ## Session 34 — 2026-05-31
 
 **Focus:** Linked app catalog expansion — 11 new apps, 10 new templates.
