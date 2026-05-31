@@ -100,6 +100,58 @@ expression of this pillar. The anti-engagement design rules in
 
 ---
 
+---
+
+## The app as a gate, not a door
+
+Most apps want to be opened as effortlessly as possible. DL inverts this for
+consumption: for spender activities linked to a third-party app (YouTube,
+Instagram, TikTok, etc.), DL becomes the mandatory first step.
+
+The user opens DL → starts the session → *then* taps "Open YouTube →".
+The app they want is one deliberate tap away, not one reflex tap away.
+
+**Why this matters:**
+
+The home screen is a wall of instant gratification. Every icon is an open door
+— zero friction between impulse and action. The gatekeeper feature replaces
+that reflex with a moment of awareness: *I am choosing to spend credits on
+this. I know what it costs. I am starting the clock.*
+
+That moment is the product. Not the tracking, not the balance number — the
+pause before the action.
+
+**Why auto-launch was rejected:**
+
+When we built this feature, the technically easy path was to auto-open YouTube
+the moment the session starts. We rejected it. If the app opens automatically,
+DL becomes a launcher with a timer attached — the intentional moment disappears
+entirely. The gate must have a handle the user consciously turns.
+
+**Why the friction is the credit system, not the UI:**
+
+The "Open YouTube →" button has no delay, no confirmation, no second
+are-you-sure screen. The friction is the session that is already running — the
+clock ticking, the credits moving, the debt risk accumulating. That is
+sufficient. Adding UI friction on top of credit friction is patronising and
+produces the kind of dark-pattern energy the app is trying to counter.
+
+One conscious tap. Session running first. App opens second. The sequence is the
+point.
+
+**Why this is philosophically different from One Sec / Opal:**
+
+One Sec and Opal intercept app launches via the Screen Time API — they
+*block* apps until you complete a pause ritual. Their model is adversarial: the
+app is bad, the user needs to be stopped.
+
+DL's model is collaborative: the activity is worth tracking, the user is in
+control, and the credit system is the honest accounting of what they chose.
+DL does not decide YouTube is bad. It just makes the choice visible and
+ensures the session clock starts before the content does.
+
+---
+
 ## Open questions — to be fleshed out
 
 These ideas have been raised but not fully resolved. Do not treat them as

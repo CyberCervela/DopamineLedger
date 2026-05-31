@@ -250,6 +250,17 @@ individual event log. No change to the `QuestHistorySection` in Stats.
 
 **Supersedes:** none
 
+## D-018 — Digital gatekeeper: session-first, button-second, no auto-launch   (2026-05-31)
+**Decision:** When an activity has a linked app (e.g. YouTube), the "Open YouTube →" button lives in `SessionView` — visible only while a session is already running. The linked app is never opened automatically. There is no UI delay on the button.
+**Why:** Three sub-decisions, each with a reason:
+1. *Session must start before the app opens.* If the user opened YouTube and then started a session, the tracking would be retrospective and incomplete. The session running first makes the accounting honest — the clock started the moment the choice was made.
+2. *No auto-launch.* Auto-opening YouTube on session start would turn DL into a launcher with a timer attached. The intentional moment — the user consciously choosing to open the app — would vanish. The gate must have a handle the user turns. See `PHILOSOPHY.md` "The app as a gate, not a door."
+3. *No UI delay on the button.* We considered a 5-second fade-in to force a pause between session start and app launch. Rejected: the credit system (the running clock, the moving balance, the debt risk) is already the friction. Adding a UI timeout on top is patronising and creates the kind of dark-pattern energy the app is trying to counter. One conscious tap is sufficient.
+**How:** `Activity.linkedAppScheme` + `Activity.linkedAppName` stored at creation. `SessionView` renders the button when both are non-nil. `openLinkedApp()` calls `canOpenURL` → open directly, or show an alert offering the App Store page (stored in `LinkedApp.catalog`). `LSApplicationQueriesSchemes` declared in `Info.plist` (required for `canOpenURL` on iOS 9+).
+**Alternative considered:** Button in `ActivityMenuView` (pre-session). Rejected — the session must be running before the linked app opens, both for tracking accuracy and for the philosophical reason above.
+**Philosophical comparison:** One Sec / Opal block apps adversarially (Screen Time API). DL does not block — it inserts an intentional moment and honest accounting. The model is collaborative, not adversarial. DL does not decide YouTube is bad; it ensures the choice is visible and the session starts first.
+**Scope:** `Models/Activity.swift` (2 new fields), `Models/LinkedApp.swift` (new), `Views/AddActivityView.swift` (linked app section), `Views/SessionView.swift` (button + alert), `Info.plist` (LSApplicationQueriesSchemes), `Models/ActivityTemplate.swift` (linked app fields on templates).
+
 ## D-016 — All taps route through ActivityMenuView (2026-05-29)
 **Decision:** Every activity tap opens `ActivityMenuView` before any session starts. No session is ever triggered by a single bare tap.
 **Why:** Users were accidentally starting sessions by tapping activity rows without intent — especially chargers, which previously started immediately. A confirmed explicit "Start" tap is the only path into `startSession(for:)`.

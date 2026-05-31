@@ -5,6 +5,41 @@
 
 ---
 
+## Session 32 — 2026-05-31
+
+**Focus:** Polish pass on the activity editor + app-linked templates.
+
+**Shipped:** `Views/AddActivityView.swift`, `Models/ActivityTemplate.swift`, `BACKLOG.md`, `DECISIONS.md`, `PHILOSOPHY.md`.
+
+### Grid shadow bleed — AddActivityView
+
+Category and Linked App grids both used `spacing: theme.spacing.sm` (8pt). Neumorphic shadows on adjacent tiles overlapped and blurred into each other. Fixed to `theme.spacing.md` (12pt) — the same fix applied to `AddQuestView` in Session 17 that was missed in AddActivityView.
+
+### App-linked templates
+
+`ActivityTemplate` gains explicit `init` with `linkedAppScheme: String? = nil` and `linkedAppName: String? = nil` parameters (Swift's synthesized memberwise init excluded stored properties with default values, so an explicit init was required).
+
+Catalog changes:
+- Removed: generic "Streaming"
+- Added: "Streaming - Netflix" (film.fill, leisure, medium, `nflx://`), "Streaming - YouTube" (tv.fill, leisure, medium, `youtube://`)
+- Added: "Social - Instagram" (camera.circle.fill, high-risk, high, `instagram://`), "Social - TikTok" (music.note, high-risk, high, `tiktok://`)
+- Kept: "Social Media" (generic, for users not on specific platforms)
+
+`.fromTemplate` init path in `AddActivityView` now reverse-maps `t.linkedAppScheme` back to the correct tile selection — so opening a Netflix template pre-selects the Netflix tile in the Linked App section.
+
+### Docs
+
+- `PHILOSOPHY.md` — new section "The app as a gate, not a door": the intentional entry point concept, why auto-launch was rejected, why the credit system (not the UI) is the friction, and how DL's model differs from One Sec / Opal.
+- `DECISIONS.md` — D-018: all three sub-decisions (session-first, no auto-launch, no UI delay) with reasoning.
+- `BACKLOG.md` — research entry for expanding the linked app catalog (Prime Video, Disney+, Twitch, Kindle, Duolingo, etc.).
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- History soft delete.
+- Research top App Store apps to expand linked app catalog.
+
+---
+
 ## Session 31 — 2026-05-31
 
 **Focus:** Digital gatekeeper — link an activity to a native iOS app or website.
