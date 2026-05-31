@@ -174,11 +174,16 @@ struct HistoryView: View {
     private var emptyState: some View {
         VStack {
             Spacer()
-            Text(lBundle.l("history.empty"))
-                .font(theme.typography.body)
-                .foregroundStyle(theme.colors.textSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, theme.spacing.xxl)
+            VStack(spacing: theme.spacing.lg) {
+                theme.icon(.history)
+                    .font(.system(size: 28))
+                    .foregroundStyle(theme.colors.textSecondary.opacity(0.4))
+                Text(lBundle.l("history.empty"))
+                    .font(theme.typography.caption)
+                    .foregroundStyle(theme.colors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, theme.spacing.xxl)
+            }
             Spacer()
         }
     }

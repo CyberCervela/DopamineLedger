@@ -5,6 +5,53 @@
 
 ---
 
+## Session 30 — 2026-05-31
+
+**Focus:** Empty states — all four screens, copy overhaul, design rules for empty state hierarchy.
+
+**Shipped:** `Views/ActivityListView.swift`, `Views/DashboardView.swift`, `Views/HistoryView.swift`, `Localization/Localizable.xcstrings` (6 keys updated + 2 new).
+
+### What changed
+
+**ActivityListView — new `homeEmptyState` view builder:**
+Replaces the old generic `emptyState(icon:message:)` call in `combinedList` (the true first-launch case). Shows the balance icon + "Your ledger is empty." + two `NeuTextButton` CTAs: "Browse Templates" → opens `TemplateGalleryView`; "Start from scratch" → opens `AddActivityView`. No outer neumorphic card — buttons sit directly on the background.
+
+**ActivityListView — `emptyState()` helper updated:**
+Icon shrunk from 36pt to 28pt, opacity reduced from 0.5 → 0.4, font changed from `body` (17pt) to `caption` (13pt). Used for chargers/spenders/quests filter empty states.
+
+**DashboardView — `SectionEmptyState` updated:**
+Now accepts an `icon: SemanticIcon` parameter (call site passes `.stats`). Same 28pt/0.4/caption treatment.
+
+**HistoryView — `emptyState` updated:**
+Added `theme.icon(.history)` at 28pt/0.4 above the caption text. Retains the `Spacer()` sandwich for vertical centering.
+
+**Copy (EN):**
+- `home.empty.all`: "Your ledger is empty." (headline for CTA card)
+- `home.empty.all.browse` (new): "Browse Templates"
+- `home.empty.all.create` (new): "Start from scratch"
+- `home.empty.chargers`: "No chargers yet.\nChargers are things worth doing — deep work, exercise, learning."
+- `home.empty.spenders`: "No spenders yet.\nSpenders are habits you want to stay intentional about."
+- `home.empty.quests`: "No active quests.\nQuests give you credit for getting things done." ← phrased to cover both one-off and recurring quests
+- `stats.no_sessions`: "No activity recorded in this period."
+- `history.empty`: "Nothing here yet.\nYour first completed session will appear here."
+
+All × 7 languages.
+
+### Design decisions locked
+
+**No nested neumorphic surfaces.** A neumorphic card (raised) containing `NeuTextButton` pills (also raised) stacks two shadow layers on the same background — too much depth. The home empty state originally used a card wrapper; it was removed so the buttons sit directly on the flat background. Rule: never put a raised surface inside another raised surface.
+
+**Empty state text uses `caption` (13pt), not `body` (17pt).** Empty state copy is secondary/explanatory — it should read smaller than the surrounding chrome (filter pills, activity names, etc.). 17pt text in an empty state competes visually with content that isn't there. Caption is the right level for this hierarchy.
+
+**Quick test path:** Settings → Danger Zone → Wipe Data resets to empty state without reinstalling.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- History soft delete (Session 25 priority #2).
+- Digital gatekeeper feature (design session first — Session 25 priority #3).
+
+---
+
 ## Session 29 — 2026-05-31
 
 **Focus:** Peak Hours badge — differentiate charger bonus from spender penalty.

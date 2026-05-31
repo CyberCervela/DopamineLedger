@@ -46,7 +46,7 @@ struct DashboardView: View {
                 VStack(spacing: theme.spacing.xl) {
                     SummaryCard(stats: stats)
                     if stats.categoryGroups.isEmpty {
-                        SectionEmptyState(message: lBundle.l("stats.no_sessions"))
+                        SectionEmptyState(icon: .stats, message: lBundle.l("stats.no_sessions"))
                     } else {
                         ForEach(stats.categoryGroups) { group in
                             CategoryGroupSection(group: group)
@@ -385,15 +385,21 @@ private struct SectionHeader: View {
 
 private struct SectionEmptyState: View {
     @Environment(\.theme) private var theme
+    let icon:    SemanticIcon
     let message: String
 
     var body: some View {
-        Text(message)
-            .font(theme.typography.body)
-            .foregroundStyle(theme.colors.textSecondary)
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, theme.spacing.xl)
+        VStack(spacing: theme.spacing.lg) {
+            theme.icon(icon)
+                .font(.system(size: 28))
+                .foregroundStyle(theme.colors.textSecondary.opacity(0.4))
+            Text(message)
+                .font(theme.typography.caption)
+                .foregroundStyle(theme.colors.textSecondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, theme.spacing.xl)
     }
 }
 

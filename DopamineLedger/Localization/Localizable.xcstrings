@@ -2875,43 +2875,137 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noch nichts.\nTippe +, um zu beginnen."
+            "value" : "Dein Ledger ist leer."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nothing yet.\nTap + to add your first."
+            "value" : "Your ledger is empty."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nada aún.\nPulsa + para añadir el primero."
+            "value" : "Tu registro está vacío."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rien encore.\nAppuyez sur + pour commencer."
+            "value" : "Votre grand livre est vide."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "まだ何もありません。\n+ をタップして追加しましょう。"
+            "value" : "まだ何も記録されていません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아직 없습니다.\n+ 를 눌러 추가하세요."
+            "value" : "아직 기록이 없습니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还没有内容。\n点击 + 开始添加。"
+            "value" : "您的账本还是空的。"
+          }
+        }
+      }
+    },
+    "home.empty.all.browse" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlagen durchsuchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Browse Templates"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explorar plantillas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parcourir les modèles"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テンプレートを見る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "템플릿 둘러보기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浏览模板"
+          }
+        }
+      }
+    },
+    "home.empty.all.create" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selbst erstellen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start from scratch"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear desde cero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Créer soi-même"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分で作成する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 만들기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自己创建"
           }
         }
       }
@@ -2922,43 +3016,43 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noch keine Lader.\nLader verdienen im Laufe der Zeit Credits."
+            "value" : "Noch keine Lader.\nLader sind Dinge, die sich lohnen — Tiefarbeit, Sport, Lernen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No chargers yet.\nChargers earn credits over time."
+            "value" : "No chargers yet.\nChargers are things worth doing — deep work, exercise, learning."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin cargadores aún.\nLos cargadores ganan créditos con el tiempo."
+            "value" : "Sin cargadores aún.\nLos cargadores son actividades que valen la pena — trabajo profundo, ejercicio, aprendizaje."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas encore de chargeurs.\nLes chargeurs gagnent des crédits avec le temps."
+            "value" : "Pas encore de chargeurs.\nLes chargeurs sont des activités qui en valent la peine — travail profond, exercice, apprentissage."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チャージ活動がまだありません。\nチャージ活動は時間とともにクレジットを獲得します。"
+            "value" : "チャージ活動がまだありません。\nチャージ活動は続ける価値のあること — 集中作業、運動、学習。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "충전 활동이 없습니다.\n충전 활동은 시간이 지남에 따라 크레딧을 획득합니다."
+            "value" : "충전 활동이 없습니다.\n충전 활동은 할 가치 있는 일입니다 — 집중 작업, 운동, 학습."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还没有充值活动。\n充值活动会随时间积累积分。"
+            "value" : "还没有充值活动。\n充值活动是值得坚持的事情 — 深度工作、运动、学习。"
           }
         }
       }
@@ -2969,43 +3063,43 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine aktiven Quests.\nTippe +, um eine hinzuzufügen."
+            "value" : "Keine aktiven Quests.\nQuests belohnen dich, wenn du Aufgaben erledigst."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No active quests.\nTap + to add one."
+            "value" : "No active quests.\nQuests give you credit for getting things done."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin misiones activas.\nPulsa + para añadir una."
+            "value" : "Sin misiones activas.\nLas misiones te dan crédito por completar tareas."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune quête active.\nAppuyez sur + pour en ajouter."
+            "value" : "Aucune quête active.\nLes quêtes vous récompensent quand vous accomplissez des tâches."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "進行中のクエストはありません。\n+ をタップして追加しましょう。"
+            "value" : "進行中のクエストはありません。\nクエストはタスクを達成したときにクレジットを付与します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "진행 중인 퀘스트가 없습니다.\n+ 를 눌러 추가하세요."
+            "value" : "진행 중인 퀘스트가 없습니다.\n퀘스트는 할 일을 완료하면 크레딧을 줍니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有进行中的任务。\n点击 + 添加一个。"
+            "value" : "没有进行中的任务。\n任务在您完成事项时给予积分奖励。"
           }
         }
       }
@@ -3016,43 +3110,43 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noch keine Ausgeber.\nAusgeber verbrauchen im Laufe der Zeit Credits."
+            "value" : "Noch keine Ausgeber.\nAusgeber sind Gewohnheiten, bei denen du bewusst bleiben möchtest."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No spenders yet.\nSpenders spend credits over time."
+            "value" : "No spenders yet.\nSpenders are habits you want to stay intentional about."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin gastadores aún.\nLos gastadores gastan créditos con el tiempo."
+            "value" : "Sin gastadores aún.\nLos gastadores son hábitos con los que quieres ser intencional."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas encore de dépenseurs.\nLes dépenseurs dépensent des crédits avec le temps."
+            "value" : "Pas encore de dépenseurs.\nLes dépenseurs sont des habitudes que vous voulez garder intentionnelles."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "消費活動がまだありません。\n消費活動は時間とともにクレジットを消費します。"
+            "value" : "消費活動がまだありません。\n消費活動は、意識的に向き合いたい習慣です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "소비 활동이 없습니다.\n소비 활동은 시간이 지남에 따라 크레딧을 소모합니다."
+            "value" : "소비 활동이 없습니다.\n소비 활동은 의식적으로 다루고 싶은 습관입니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还没有消耗活动。\n消耗活动会随时间消耗积分。"
+            "value" : "还没有消耗活动。\n消耗活动是您想要保持自律的习惯。"
           }
         }
       }
@@ -6503,43 +6597,43 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Sitzungen in diesem Zeitraum"
+            "value" : "Keine Aktivität in diesem Zeitraum aufgezeichnet."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No sessions in this period"
+            "value" : "No activity recorded in this period."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sin sesiones en este período"
+            "value" : "Sin actividad registrada en este período."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune séance dans cette période"
+            "value" : "Aucune activité enregistrée dans cette période."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "この期間中のセッションなし"
+            "value" : "この期間中の記録はありません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 기간 동안 세션 없음"
+            "value" : "이 기간 동안 기록된 활동이 없습니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此时间段内无会话"
+            "value" : "此时间段内无活动记录。"
           }
         }
       }
@@ -6994,13 +7088,13 @@
     "history.empty" : {
       "extractionState" : "stale",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Noch keine Sitzungen. Starte eine Aktivität, um deine Chronik zu beginnen." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "No sessions yet. Start an activity to begin your history." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aún no hay sesiones. Inicia una actividad para comenzar tu historial." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune session pour l'instant. Lance une activité pour commencer ton historique." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "セッションはまだありません。活動を開始して履歴を作りましょう。" } },
-        "ko" : { "stringUnit" : { "state" : "translated", "value" : "아직 세션이 없습니다. 활동을 시작하여 기록을 만들어 보세요." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "暂无记录。开始一个活动来建立你的历史。" } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Noch nichts hier.\nDeine erste abgeschlossene Sitzung erscheint hier." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Nothing here yet.\nYour first completed session will appear here." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nada todavía.\nTu primera sesión completada aparecerá aquí." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rien pour l'instant.\nVotre première session terminée apparaîtra ici." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "まだ何もありません。\n最初のセッションを完了するとここに表示されます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "아직 없습니다.\n첫 번째 완료된 세션이 여기에 표시됩니다." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "暂时没有内容。\n您完成第一个会话后将显示在此处。" } }
       }
     },
     "history.quest.caption" : {

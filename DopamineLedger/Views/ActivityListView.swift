@@ -285,10 +285,45 @@ struct ActivityListView: View {
         context.delete(quest)
     }
 
+    // Full-screen empty state shown on first launch (no activities or quests at all).
+    // Uses a neumorphic card with two CTAs so new users have a clear path forward
+    // without hunting for the + button.
+    // No outer card — NeuTextButton pills are already raised surfaces.
+    // Wrapping them in a neumorphic card would stack two shadow layers on the
+    // same background, creating visual noise (card raised → buttons raised inside).
+    @ViewBuilder
+    private var homeEmptyState: some View {
+        VStack(spacing: theme.spacing.lg) {
+            theme.icon(.balance)
+                .font(.system(size: 28))
+                .foregroundStyle(theme.colors.textSecondary.opacity(0.4))
+            Text(lBundle.l("home.empty.all"))
+                .font(theme.typography.caption)
+                .foregroundStyle(theme.colors.textSecondary)
+                .multilineTextAlignment(.center)
+            VStack(spacing: theme.spacing.md) {
+                NeuTextButton(
+                    title:      lBundle.l("home.empty.all.browse"),
+                    font:       theme.typography.caption,
+                    foreground: theme.colors.accent,
+                    action:     { showTemplateGallery = true }
+                )
+                NeuTextButton(
+                    title:      lBundle.l("home.empty.all.create"),
+                    font:       theme.typography.caption,
+                    foreground: theme.colors.textSecondary,
+                    action:     { showAddActivity = true }
+                )
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, theme.spacing.xxl)
+    }
+
     @ViewBuilder
     private var combinedList: some View {
         if activities.isEmpty && quests.isEmpty {
-            emptyState(icon: .balance, message: lBundle.l("home.empty.all"))
+            homeEmptyState
         } else {
             LazyVStack(spacing: theme.spacing.xl) {
                 ForEach(ActivityCategory.allCases, id: \.self) { cat in
@@ -363,10 +398,10 @@ struct ActivityListView: View {
     private func emptyState(icon: SemanticIcon, message: String) -> some View {
         VStack(spacing: theme.spacing.lg) {
             theme.icon(icon)
-                .font(.system(size: 36))
-                .foregroundStyle(theme.colors.textSecondary.opacity(0.5))
+                .font(.system(size: 28))
+                .foregroundStyle(theme.colors.textSecondary.opacity(0.4))
             Text(message)
-                .font(theme.typography.body)
+                .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .multilineTextAlignment(.center)
         }

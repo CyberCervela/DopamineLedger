@@ -223,6 +223,22 @@ When the user confirms a bug fix worked ("fixed", "all good", or equivalent):
 
 ---
 
+## NEVER commit or push before user confirmation
+
+**Do not commit or push until the user has explicitly confirmed the change
+works** ("confirmed", "works", "all good", "looks good", or equivalent).
+The correct sequence is always:
+
+1. Implement the change.
+2. End your message with `✅ READY TO TEST`.
+3. Wait for the user's confirmation.
+4. Only then update docs, commit, and push.
+
+Committing before confirmation means a broken or unwanted change lands on
+`main`. The test step exists precisely to catch those cases.
+
+---
+
 ## When to push to GitHub
 
 **Push at the end of a meaningful chunk.** For features: when the testing

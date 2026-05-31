@@ -76,3 +76,4 @@
 | "How long can I keep going?" burn-down on spender rows | `done` | Shipped Session 5. See `JOURNAL.md`. |
 | Shortcut / HealthKit auto-session triggers | `planned` | See `BACKLOG.md` |
 | App Store submission | `done` | Submitted 2026-05-27 22:52. Awaiting Apple review (24–72 h). |
+| **Empty states** | `done` | Home (all/chargers/spenders/quests), Stats, History. Home "all" shows CTA buttons (Browse Templates / Start from scratch). Caption-size text throughout. Session 30. |
