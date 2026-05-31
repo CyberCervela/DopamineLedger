@@ -93,9 +93,11 @@ struct SessionView: View {
                     .foregroundStyle(paused ? theme.colors.textSecondary : (isOverrun ? theme.colors.negative : kindColor))
                     .kerning(2)
                 if session.timeMultiplier > 1.0 {
-                    Text(lBundle.l("session.peak_bonus").uppercased())
+                    // Chargers: bonus (earn more) → green. Spenders: penalty (cost more) → red.
+                    let peakKey = activity.kind == .charger ? "session.peak_bonus" : "session.peak_penalty"
+                    Text(lBundle.l(peakKey).uppercased())
                         .font(theme.typography.caption)
-                        .foregroundStyle(theme.colors.positive)
+                        .foregroundStyle(activity.kind == .charger ? theme.colors.positive : theme.colors.negative)
                         .kerning(2)
                 }
                 Text(formatElapsed(elapsed))

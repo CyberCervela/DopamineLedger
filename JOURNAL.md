@@ -5,6 +5,23 @@
 
 ---
 
+## Session 29 — 2026-05-31
+
+**Focus:** Peak Hours badge — differentiate charger bonus from spender penalty.
+
+**Shipped:** `Views/SessionView.swift`, `Localization/Localizable.xcstrings` (1 new key).
+
+The "1.5× PEAK BONUS" badge was showing in green for spender sessions too — semantically wrong, since peak hours *cost* more during a spend, not less. Fixed in two parts:
+
+- **Label:** badge now reads "1.5× PEAK PENALTY" for spenders, "1.5× PEAK BONUS" for chargers. New key `session.peak_penalty` added × 7 languages.
+- **Color:** badge uses `theme.colors.negative` (red) for spenders, `theme.colors.positive` (green) for chargers.
+
+Confirmed on device.
+
+**What to pick up next:** Empty state for `ActivityListView` (priority #1 from Session 25).
+
+---
+
 ## Session 28 — 2026-05-31
 
 **Focus:** Peak Hours multiplier — design locked, docs updated, implementation starting.
