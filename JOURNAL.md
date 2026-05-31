@@ -5,6 +5,26 @@
 
 ---
 
+## Session 37 — 2026-05-31
+
+**Focus:** Frequency-grouped quest tab.
+
+**Shipped:** `Views/ActivityListView.swift`, `Localization/Localizable.xcstrings` (1 new key × 7 languages).
+
+Quests filter tab now groups by cadence instead of a flat list: **Daily → Weekly → Monthly → Goals** (one-shot quests). Empty sections are hidden — if the user only has daily and weekly quests, the Monthly and Goals sections don't render. The All tab category grouping is unchanged (quests remain within their life-area category sections there).
+
+Implementation: `questList` replaced with a `LazyVStack` of four `questSection()` calls; `questSection()` is a new `@ViewBuilder` helper that renders a captioned section header + `LazyVStack` of `QuestRow`s, or nothing when the list is empty. Reuses existing `quest.cadence.daily/weekly/monthly` localization keys; adds `quest.section.goals` for the one-shot bucket ("Goals" / "Objectifs" / "Ziele" / "Objetivos" + CJK).
+
+**Confirmed on device:** Daily section shows Make Bed and Push-ups; Weekly shows Laundry. Sections for unused cadences don't appear.
+
+**Also added to backlog this session:** Performance audit entry — UI responsiveness investigation for sheet open latency, shadow rasterisation, and SwiftData fetch behaviour. Do not optimise before measuring with Instruments on a physical device.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- Device-test Kindle, Calm, Notion URL schemes.
+
+---
+
 ## Session 36 — 2026-05-31
 
 **Focus:** Recurring quests + spender rate rebalance.
