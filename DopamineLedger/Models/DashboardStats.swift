@@ -134,7 +134,7 @@ struct DashboardStats {
 
         // Quests completed within scope — must have both the flag and a timestamp.
         let scopedQuests = quests.filter { q in
-            guard q.isCompleted, let completedAt = q.completedAt else { return false }
+            guard q.isCompleted, !q.isArchived, let completedAt = q.completedAt else { return false }
             guard let start = startDate else { return true }
             return completedAt >= start
         }

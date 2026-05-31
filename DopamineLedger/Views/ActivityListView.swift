@@ -26,7 +26,7 @@ struct ActivityListView: View {
     @Query                            private var ledgers:        [Ledger]
     @Query(filter: #Predicate<ActivityDebt> { $0.amount > 0 })
                                       private var debts:          [ActivityDebt]
-    @Query(filter: #Predicate<Quest>  { $0.isCompleted == false })
+    @Query(filter: #Predicate<Quest>  { $0.isCompleted == false && $0.isArchived == false })
                                       private var quests:         [Quest]
     @Query(filter: #Predicate<Session> { $0.endedAt == nil })
                                       private var activeSessions: [Session]
@@ -306,7 +306,13 @@ struct ActivityListView: View {
     }
 
     private func deleteQuest(_ quest: Quest) {
-        context.delete(quest)
+        if quest.isCompleted {
+            // Credits already moved at completion — preserve history, soft-delete only.
+            quest.isArchived = true
+        } else {
+            // No credits moved yet — safe to hard-delete.
+            context.delete(quest)
+        }
     }
 
     // Full-screen empty state shown on first launch (no activities or quests at all).

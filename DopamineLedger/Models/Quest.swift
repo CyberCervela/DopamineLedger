@@ -32,6 +32,11 @@ final class Quest {
     // true once Done has been tapped — filtered out of the active list.
     var isCompleted:   Bool
     var completedAt:   Date?
+    // Soft-delete flag — mirrors Activity.isArchived. Completed quests are never
+    // hard-deleted: the payoff credit already moved at completion time and the
+    // history entry should remain. Incomplete quests (no credits moved) can be
+    // hard-deleted safely. Default false keeps lightweight migration safe.
+    var isArchived:    Bool = false
 
     init(name: String, payoffCredits: Double, iconName: String = "star", category: ActivityCategory = .other) {
         self.id            = UUID()

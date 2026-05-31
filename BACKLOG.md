@@ -4,6 +4,14 @@ Items deferred from active development. Verify or ship when ready.
 
 ---
 
+## Data ownership
+
+| Item | Notes |
+|---|---|
+| **Export / Import (backup & restore)** | The full data wipe in Settings → Danger Zone is a one-way operation with no recovery. Export gives users a safety net and full ownership of their data — consistent with the privacy-first philosophy. **Format:** JSON is recommended over CSV: the data has nested structure (activities with linked apps, sessions with multipliers, debts per activity) that maps cleanly to JSON but awkwardly to flat CSV. A single `.dopamineLedger` file (JSON internally, custom extension) is the right deliverable. **Delivery mechanism:** iOS share sheet — the user saves to Files, emails it to themselves, AirDrops to another device, etc. No server, no cloud — consistent with the privacy policy. **What to export:** All Activities (including archived), all Sessions (including creditsMoved), all Quests (including archived), all ActivityDebts, current Ledger balance. **Import / restore:** Replace all current data with the file contents. Not a merge (merge is complex and creates duplicates). Show a confirmation: "This will replace all current data. Are you sure?" **Premium angle:** First mentioned as a potential paid feature (Session 25). Could ship as part of a one-time purchase alongside the pixel-art theme and tip jar — but also valid as a free feature since it costs nothing to serve and directly supports the "no lock-in" philosophy. Decide at monetisation planning time. **Scope note:** This also makes History soft-delete feel safer — users can export first, then wipe. The export should be clearly surfaced near the Danger Zone in Settings. |
+
+---
+
 ## UI polish — post-MVP
 
 | Item | Notes |

@@ -64,7 +64,7 @@ struct HistoryView: View {
             .map { .session($0, activityMap[$0.activityId]) }
 
         let questEntries: [HistoryEntry] = allQuests
-            .filter { $0.isCompleted && $0.completedAt != nil }
+            .filter { $0.isCompleted && $0.completedAt != nil && !$0.isArchived }
             .map    { .quest($0) }
 
         // Sort unified list newest-first before run detection.
