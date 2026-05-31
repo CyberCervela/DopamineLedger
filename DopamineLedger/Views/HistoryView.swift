@@ -218,12 +218,18 @@ private struct SessionHistoryRow: View {
     let session:  Session
     let activity: Activity?
 
+    // Positive creditsMoved = charger (earned), negative = spender (spent).
+    // Falls back to computed value for pre-migration sessions where creditsMoved == 0.
+    private var resolvedCredits: Double? {
+        if session.creditsMoved != 0 { return session.creditsMoved }
+        guard let activity else { return nil }
+        let raw = activity.ratePerSecond * session.elapsed
+        return activity.kind == .charger ? raw : -raw
+    }
+
     private var kindColor: Color {
-        switch activity?.kind {
-        case .charger: return theme.colors.positive
-        case .spender: return theme.colors.negative
-        case nil:      return theme.colors.textSecondary
-        }
+        if let c = resolvedCredits { return c > 0 ? theme.colors.positive : theme.colors.negative }
+        return theme.colors.textSecondary
     }
 
     private var rowIcon: Image {
@@ -234,15 +240,13 @@ private struct SessionHistoryRow: View {
     }
 
     private var creditsText: String {
-        guard let activity else { return "" }
-        let credits = activity.ratePerSecond * session.elapsed
-        let fmt = credits.formatted(.number.precision(.fractionLength(0...1)))
-        return activity.kind == .charger ? "+\(fmt)" : "−\(fmt)"
+        guard let c = resolvedCredits else { return "" }
+        let abs = Swift.abs(c)
+        let fmt = abs.formatted(.number.precision(.fractionLength(0...1)))
+        return c > 0 ? "+\(fmt)" : "−\(fmt)"
     }
 
-    private var creditsColor: Color {
-        activity?.kind == .charger ? theme.colors.positive : theme.colors.negative
-    }
+    private var creditsColor: Color { kindColor }
 
     private var activityName: String {
         activity?.name ?? lBundle.l("history.deleted_activity")
@@ -263,7 +267,7 @@ private struct SessionHistoryRow: View {
 
             Spacer()
 
-            if activity != nil {
+            if !creditsText.isEmpty {
                 Text(creditsText)
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(creditsColor)
@@ -322,15 +326,25 @@ private struct BundledSessionHistoryRow: View {
         sessions.reduce(0) { $0 + $1.elapsed }
     }
 
+    // Sum using stored creditsMoved when available; fall back to computed for old sessions.
+    private var totalResolved: Double? {
+        let stored = sessions.reduce(0.0) { $0 + $1.creditsMoved }
+        if stored != 0 { return stored }
+        guard let activity else { return nil }
+        let raw = activity.ratePerSecond * totalElapsed
+        return activity.kind == .charger ? raw : -raw
+    }
+
     private var totalCreditsText: String {
-        guard let activity else { return "" }
-        let credits = activity.ratePerSecond * totalElapsed
-        let fmt = credits.formatted(.number.precision(.fractionLength(0...1)))
-        return activity.kind == .charger ? "+\(fmt)" : "−\(fmt)"
+        guard let c = totalResolved else { return "" }
+        let abs = Swift.abs(c)
+        let fmt = abs.formatted(.number.precision(.fractionLength(0...1)))
+        return c > 0 ? "+\(fmt)" : "−\(fmt)"
     }
 
     private var creditsColor: Color {
-        activity?.kind == .charger ? theme.colors.positive : theme.colors.negative
+        if let c = totalResolved { return c > 0 ? theme.colors.positive : theme.colors.negative }
+        return theme.colors.textSecondary
     }
 
     // "19:45 → 20:18 · 5 sessions · 29 min"
@@ -363,7 +377,7 @@ private struct BundledSessionHistoryRow: View {
 
                 Spacer()
 
-                if activity != nil {
+                if !totalCreditsText.isEmpty {
                     Text(totalCreditsText)
                         .font(theme.typography.bodyStrong)
                         .foregroundStyle(creditsColor)

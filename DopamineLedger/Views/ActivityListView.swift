@@ -21,7 +21,8 @@ struct ActivityListView: View {
     @Environment(\.languageBundle) private var lBundle
     @Environment(\.scenePhase)     private var scenePhase
 
-    @Query(sort: \Activity.createdAt) private var activities:    [Activity]
+    @Query(filter: #Predicate<Activity> { $0.isArchived == false },
+           sort: \Activity.createdAt) private var activities: [Activity]
     @Query                            private var ledgers:        [Ledger]
     @Query(filter: #Predicate<ActivityDebt> { $0.amount > 0 })
                                       private var debts:          [ActivityDebt]
@@ -42,6 +43,7 @@ struct ActivityListView: View {
     @State private var questToEdit:         Quest?         = nil
     @State private var activityMenuFor:     Activity?      = nil
     @State private var activeSession:       Session?       = nil
+    @State private var activityToArchive:   Activity?      = nil
 
     private var ledger: Ledger? { ledgers.first }
     private var totalDebt: Double { debts.reduce(0) { $0 + $1.amount } }
@@ -146,6 +148,27 @@ struct ActivityListView: View {
                     activeSession = nil
                 }
             }
+        }
+        // Confirmation before archiving an activity. Soft-delete keeps all session
+        // history intact — the activity disappears from this list but its credits
+        // and sessions remain in Stats and History forever.
+        .alert(
+            String(format: lBundle.l("activity.archive.title"),
+                   activityToArchive?.name ?? ""),
+            isPresented: Binding(
+                get: { activityToArchive != nil },
+                set: { if !$0 { activityToArchive = nil } }
+            )
+        ) {
+            Button(lBundle.l("activity.archive.confirm"), role: .destructive) {
+                if let a = activityToArchive { a.isArchived = true }
+                activityToArchive = nil
+            }
+            Button(lBundle.l("common.cancel"), role: .cancel) {
+                activityToArchive = nil
+            }
+        } message: {
+            Text(lBundle.l("activity.archive.message"))
         }
     }
 
@@ -267,7 +290,8 @@ struct ActivityListView: View {
     }
 
     private func delete(_ activity: Activity) {
-        context.delete(activity)
+        // Route through confirmation alert — actual archive is set there.
+        activityToArchive = activity
     }
 
     private func complete(_ quest: Quest) {

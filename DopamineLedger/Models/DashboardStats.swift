@@ -157,9 +157,15 @@ struct DashboardStats {
         var totalSpent  = 0.0
 
         for session in scopedSessions {
-            // Sessions whose activity was deleted have no match — skip silently.
-            guard let activity = activityMap[session.activityId] else { continue }
-            let credits = activity.credits(for: session.elapsed)
+            guard let activity = activityMap[session.activityId] else {
+                // Activity archived/deleted — include in headline totals using the
+                // stored creditsMoved (stamped at finalize time). Can't add to the
+                // per-activity breakdown since we have no category or kind info.
+                if session.creditsMoved > 0 { totalEarned += session.creditsMoved }
+                else if session.creditsMoved < 0 { totalSpent += Swift.abs(session.creditsMoved) }
+                continue
+            }
+            let credits = activity.credits(for: session.elapsed) * session.timeMultiplier
 
             perCredits[activity.id,      default: 0] += credits
             perElapsed[activity.id,      default: 0] += session.elapsed

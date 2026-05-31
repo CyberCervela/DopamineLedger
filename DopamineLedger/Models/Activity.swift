@@ -27,6 +27,11 @@ final class Activity {
     // Non-optional Codable enum defaults crash on migration for existing stores
     // (SwiftData's transformer can't fill old rows). Read via ?? .other.
     var category:      ActivityCategory?
+    // Soft-delete flag. True = activity removed from the home list but kept in the
+    // DB so its historical sessions remain attributed and visible in Stats + History.
+    // Never hard-delete an Activity — credits already moved at session finalize time
+    // and cannot be retroactively erased. Default false keeps lightweight migration safe.
+    var isArchived:    Bool = false
     // Optional URL scheme ("youtube://") or https URL for linked-app gatekeeper.
     // Nil means no linked app. Set at activity creation/edit; read by SessionView
     // to show the "Open [App] →" button during a running session.

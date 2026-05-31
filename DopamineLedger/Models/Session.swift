@@ -32,6 +32,11 @@ final class Session {
     // window. Default 1.0 keeps SwiftData lightweight migration safe for all
     // pre-existing session rows.
     var timeMultiplier: Double = 1.0
+    // Credits moved at session finalize time: positive = earned (charger),
+    // negative = spent (spender). Stored so History and Stats remain correct
+    // even if the Activity is later archived. Default 0 = pre-migration session
+    // (falls back to computed value if Activity still exists).
+    var creditsMoved: Double = 0
 
     init(activityId: UUID) {
         self.id                 = UUID()

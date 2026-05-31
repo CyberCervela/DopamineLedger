@@ -73,6 +73,12 @@ enum SessionFinalizer {
         ledger.balance   = outcome.newBalance
         ledger.updatedAt = Date()
 
+        // Stamp the signed credit amount on the session so History and Stats
+        // can display it even if this Activity is archived later.
+        // Positive = earned (charger), negative = spent (spender).
+        let moved = activity.ratePerSecond * elapsed * session.timeMultiplier
+        session.creditsMoved = activity.kind == .charger ? moved : -moved
+
         if outcome.debtAccrued > 0 {
             context.insert(
                 ActivityDebt(activityId: activity.id, amount: outcome.debtAccrued)
