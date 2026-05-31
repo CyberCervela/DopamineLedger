@@ -99,17 +99,24 @@ struct AddActivityView: View {
             }
 
         case .fromTemplate(let t):
-            _name               = State(initialValue: t.name)
-            _kind               = State(initialValue: t.kind)
-            _category           = State(initialValue: t.category)
-            _iconName           = State(initialValue: t.iconName)
-            _isHighImpact       = State(initialValue: t.isHighImpact    ?? false)
-            _isHighEnjoyment    = State(initialValue: t.isHighEnjoyment ?? false)
-            _toxicity           = State(initialValue: t.toxicity        ?? .medium)
-            _ratePerMinute      = State(initialValue: String(format: "%.1f", t.ratePerMinute))
-            _linkedAppSelection = State(initialValue: "")
-            _customURL          = State(initialValue: "")
-            _customName         = State(initialValue: "")
+            _name            = State(initialValue: t.name)
+            _kind            = State(initialValue: t.kind)
+            _category        = State(initialValue: t.category)
+            _iconName        = State(initialValue: t.iconName)
+            _isHighImpact    = State(initialValue: t.isHighImpact    ?? false)
+            _isHighEnjoyment = State(initialValue: t.isHighEnjoyment ?? false)
+            _toxicity        = State(initialValue: t.toxicity        ?? .medium)
+            _ratePerMinute   = State(initialValue: String(format: "%.1f", t.ratePerMinute))
+            // Pre-select the linked app tile when the template ships with one.
+            if let scheme = t.linkedAppScheme, !scheme.isEmpty {
+                _linkedAppSelection = State(initialValue: scheme)
+                _customURL          = State(initialValue: "")
+                _customName         = State(initialValue: "")
+            } else {
+                _linkedAppSelection = State(initialValue: "")
+                _customURL          = State(initialValue: "")
+                _customName         = State(initialValue: "")
+            }
         }
     }
 
@@ -259,8 +266,8 @@ struct AddActivityView: View {
         VStack(alignment: .leading, spacing: theme.spacing.sm) {
             label(lBundle.l("activity.field.category").uppercased())
             LazyVGrid(
-                columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.sm), count: 3),
-                spacing: theme.spacing.sm
+                columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.md), count: 3),
+                spacing: theme.spacing.md
             ) {
                 ForEach(ActivityCategory.allCases, id: \.self) { cat in
                     categoryButton(cat)
@@ -308,8 +315,8 @@ struct AddActivityView: View {
 
             // 3-column grid: None + catalog apps + Custom website
             LazyVGrid(
-                columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.sm), count: 3),
-                spacing: theme.spacing.sm
+                columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.md), count: 3),
+                spacing: theme.spacing.md
             ) {
                 linkedAppTile(scheme: "", sfSymbol: "slash.circle",
                               name: lBundle.l("activity.linked_app.none"))

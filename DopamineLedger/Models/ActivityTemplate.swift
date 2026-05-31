@@ -70,6 +70,23 @@ struct ActivityTemplate: Identifiable, Hashable {
     let isHighEnjoyment: Bool?
     // Spender guidance (nil for chargers)
     let toxicity: SpenderToxicity?
+    // Optional linked app — pre-fills the gatekeeper section in AddActivityView.
+    let linkedAppScheme: String?
+    let linkedAppName:   String?
+
+    init(name: String, kind: ActivityKind, iconName: String, category: ActivityCategory,
+         isHighImpact: Bool?, isHighEnjoyment: Bool?, toxicity: SpenderToxicity?,
+         linkedAppScheme: String? = nil, linkedAppName: String? = nil) {
+        self.name            = name
+        self.kind            = kind
+        self.iconName        = iconName
+        self.category        = category
+        self.isHighImpact    = isHighImpact
+        self.isHighEnjoyment = isHighEnjoyment
+        self.toxicity        = toxicity
+        self.linkedAppScheme = linkedAppScheme
+        self.linkedAppName   = linkedAppName
+    }
 
     // Derived from the guidance fields. Uses the same formula as
     // AddActivityView.applyGuidanceRate() — keep them in sync.
@@ -108,11 +125,14 @@ struct ActivityTemplate: Identifiable, Hashable {
         .init(name: "Meditation",    kind: .charger, iconName: "leaf.fill",           category: .rest,          isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
         .init(name: "Rest / Nap",    kind: .charger, iconName: "bed.double.fill",     category: .rest,          isHighImpact: false, isHighEnjoyment: true,  toxicity: nil),
         // Spenders — Leisure
-        .init(name: "Streaming",     kind: .spender, iconName: "tv.fill",             category: .leisure,       isHighImpact: nil,   isHighEnjoyment: nil,   toxicity: .medium),
-        .init(name: "Gaming",        kind: .spender, iconName: "gamecontroller.fill", category: .leisure,       isHighImpact: nil,   isHighEnjoyment: nil,   toxicity: .medium),
-        .init(name: "Light Leisure", kind: .spender, iconName: "cup.and.saucer.fill", category: .leisure,       isHighImpact: nil,   isHighEnjoyment: nil,   toxicity: .low),
+        .init(name: "Streaming - Netflix",  kind: .spender, iconName: "film.fill",           category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "nflx://",     linkedAppName: "Netflix"),
+        .init(name: "Streaming - YouTube",  kind: .spender, iconName: "tv.fill",             category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "youtube://",  linkedAppName: "YouTube"),
+        .init(name: "Gaming",               kind: .spender, iconName: "gamecontroller.fill", category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium),
+        .init(name: "Light Leisure",        kind: .spender, iconName: "cup.and.saucer.fill", category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .low),
         // Spenders — High-Risk
-        .init(name: "Social Media",  kind: .spender, iconName: "message.fill",        category: .highRisk,      isHighImpact: nil,   isHighEnjoyment: nil,   toxicity: .high),
-        .init(name: "Browsing",      kind: .spender, iconName: "laptopcomputer",      category: .highRisk,      isHighImpact: nil,   isHighEnjoyment: nil,   toxicity: .medium),
+        .init(name: "Social - Instagram",   kind: .spender, iconName: "camera.circle.fill",  category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "instagram://", linkedAppName: "Instagram"),
+        .init(name: "Social - TikTok",      kind: .spender, iconName: "music.note",          category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "tiktok://",    linkedAppName: "TikTok"),
+        .init(name: "Social Media",         kind: .spender, iconName: "message.fill",        category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high),
+        .init(name: "Browsing",             kind: .spender, iconName: "laptopcomputer",      category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium),
     ]
 }
