@@ -27,6 +27,11 @@ final class Activity {
     // Non-optional Codable enum defaults crash on migration for existing stores
     // (SwiftData's transformer can't fill old rows). Read via ?? .other.
     var category:      ActivityCategory?
+    // Optional URL scheme ("youtube://") or https URL for linked-app gatekeeper.
+    // Nil means no linked app. Set at activity creation/edit; read by SessionView
+    // to show the "Open [App] →" button during a running session.
+    var linkedAppScheme: String?
+    var linkedAppName:   String?
     var createdAt:     Date
 
     init(name: String, kind: ActivityKind, ratePerMinute: Double, iconName: String = "circle", category: ActivityCategory = .other) {

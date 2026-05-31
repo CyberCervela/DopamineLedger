@@ -5,6 +5,60 @@
 
 ---
 
+## Session 31 — 2026-05-31
+
+**Focus:** Digital gatekeeper — link an activity to a native iOS app or website.
+
+**Shipped:** `Models/Activity.swift`, `Models/LinkedApp.swift` (new), `DopamineLedger/Info.plist`, `Views/AddActivityView.swift`, `Views/SessionView.swift`, `Localization/Localizable.xcstrings` (11 new keys × 7 languages), `LICENSE` (replaced MIT with CC BY-NC 4.0), `project.pbxproj` (regenerated via `make generate`).
+
+### What it does
+
+Any activity (charger or spender) can now be linked to a native iOS app or a custom website URL. While that activity's session is running, an **"Open [App] →"** button appears in SessionView above the Pause/Stop controls. Tapping it opens the app directly via its URL scheme — no browser, no banner — bypassing the home screen entirely.
+
+The friction is the credit system, not the UI. The button is always visible once a session starts; there is no delay. The session running *before* the app opens is what makes this a gate rather than a launcher.
+
+### Implementation
+
+**`Models/Activity.swift`** — two new optional SwiftData fields:
+- `linkedAppScheme: String?` — URL scheme (`youtube://`) or https URL. Nil = no linked app.
+- `linkedAppName: String?` — display name stored at save time. SessionView reads this directly; no catalog lookup needed at runtime.
+Safe lightweight migration — optional with nil defaults.
+
+**`Models/LinkedApp.swift`** (new) — static catalog of 8 supported apps (YouTube, Twitter/X, Instagram, Snapchat, Facebook, TikTok, Netflix, Chrome) plus the "custom website" concept. Stores SF Symbol names for the picker and App Store URLs for the "not installed" fallback alert.
+
+**`DopamineLedger/Info.plist`** — added `LSApplicationQueriesSchemes` array with all 8 scheme names. Without this iOS returns false from `canOpenURL` for any non-system scheme regardless of installation status (iOS 9+ privacy rule).
+
+**`Views/AddActivityView.swift`** — new "Linked App" section in the form (between Category and Rate):
+- 3-column grid of app tiles: None + 8 catalog apps + "Website" (custom URL)
+- Same selected/unselected styling as the category grid (accent stroke, reduced shadow)
+- When "Website" is selected: URL and optional display name text fields animate in
+- Reverse-maps stored `linkedAppScheme` back to picker selection in edit mode
+- `applyLinkedApp(to:)` helper runs after save for all three modes (create/edit/fromTemplate)
+
+**`Views/SessionView.swift`** — linked app button inside the controls VStack, above Pause:
+- Only renders when `activity.linkedAppScheme != nil && !scheme.isEmpty`
+- `openLinkedApp()`: `canOpenURL` → open immediately, or show "not installed" alert with App Store link
+- Alert uses `common.cancel` (existing key) for dismiss; "App Store" button opens the catalog App Store page directly
+- `appStoreURL` looked up from `LinkedApp.catalog` at alert time — SessionView doesn't need the catalog at render time
+
+**Design decision:** button uses `textSecondary` (not accent) — it's an escape hatch, not the primary action. Accent is reserved for Stop.
+
+**`LICENSE`** — replaced MIT with CC BY-NC 4.0 (Copyright 2026 Cyber Cervela). GitHub will detect this automatically and show the badge on the repo page. App Store listing does not need to change — the license covers the source code, not the distributed binary.
+
+### How to test
+
+1. Edit any spender activity (e.g. Doomscrolling) → scroll to "Linked App" → tap YouTube → Save
+2. Start that session → "Open YouTube" button appears above Pause
+3. Tap it → YouTube opens (if installed) or "not installed" alert appears
+4. For custom website: tap "Website" tile → enter `https://reddit.com` → name it "Reddit" → Save → run session → tap button → Safari opens Reddit
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- History soft delete (Session 25 priority #2).
+- Test gatekeeper on a physical device (URL schemes behave the same on device as simulator; the `canOpenURL` result will differ based on what's installed).
+
+---
+
 ## Session 30 — 2026-05-31
 
 **Focus:** Empty states — all four screens, copy overhaul, design rules for empty state hierarchy.

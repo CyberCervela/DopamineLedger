@@ -554,6 +554,90 @@
         }
       }
     },
+    "activity.field.linked_app" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verknüpfte App" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Linked App" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "App vinculada" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Application liée" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "リンクアプリ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "연결된 앱" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关联应用" } }
+      }
+    },
+    "activity.linked_app.custom" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Website" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Website" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sitio web" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Site web" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ウェブサイト" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "웹사이트" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "网站" } }
+      }
+    },
+    "activity.linked_app.hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Während deiner Sitzung erscheint ein Button, um diese App zu öffnen." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A button to open this app will appear while your session is running." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aparecerá un botón para abrir esta app mientras tu sesión está activa." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un bouton pour ouvrir cette app apparaîtra pendant votre session." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "セッション中にこのアプリを開くボタンが表示されます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "세션이 진행되는 동안 이 앱을 열 수 있는 버튼이 표시됩니다." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "会话进行时将出现一个打开此应用的按钮。" } }
+      }
+    },
+    "activity.linked_app.name_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Name (optional)" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Name (optional)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nombre (opcional)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Nom (optionnel)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前（任意）" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이름 (선택사항)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "名称（可选）" } }
+      }
+    },
+    "activity.linked_app.name_placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "z.B. Nachrichtensite" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "e.g. News Site" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "p. ej. Sitio de noticias" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "ex. Site d'actualités" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "例：ニュースサイト" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "예: 뉴스 사이트" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "例如：新闻网站" } }
+      }
+    },
+    "activity.linked_app.none" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ninguna" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "なし" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "없음" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无" } }
+      }
+    },
+    "activity.linked_app.url_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "URL" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "URL" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "URL" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "URL" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "URL" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "URL" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "URL" } }
+      }
+    },
     "activity.guidance.charger.enjoyment" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4568,6 +4652,54 @@
             "value" : "1.5× 高峰惩罚"
           }
         }
+      }
+    },
+    "session.linked_app.not_installed.go" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "App Store" } }
+      }
+    },
+    "session.linked_app.not_installed.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Möchtest du es im App Store finden?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Would you like to find it in the App Store?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Te gustaría encontrarlo en el App Store?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Voulez-vous le trouver dans l'App Store ?" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "App Storeで探しますか？" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "App Store에서 찾으시겠습니까?" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "您是否想在 App Store 中找到它？" } }
+      }
+    },
+    "session.linked_app.not_installed.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ ist nicht installiert" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@ isn't installed" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%@ no está instalado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@ n'est pas installé" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@はインストールされていません" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@이(가) 설치되어 있지 않습니다" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@ 未安装" } }
+      }
+    },
+    "session.linked_app.open" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ öffnen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Open %@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abrir %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir %@" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@を開く" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ 열기" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "打开 %@" } }
       }
     },
     "session.rate" : {

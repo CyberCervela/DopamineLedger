@@ -17,6 +17,9 @@ struct SessionView: View {
 
     @Binding var presented: Session?
 
+    @State private var showNotInstalledAlert = false
+    @State private var appStoreURL:           URL?
+
     @Query private var ledgers: [Ledger]
     // Balance at session start — the Ledger is only updated on finalize,
     // so this is the pre-session value throughout the session's lifetime.
@@ -136,6 +139,32 @@ struct SessionView: View {
             Spacer()
 
             VStack(spacing: theme.spacing.md) {
+                // Linked-app gatekeeper button — only shown when the activity has
+                // a linked app configured. Appears above Pause/Stop so the user
+                // opens the app consciously after the session is already running.
+                if let scheme = activity.linkedAppScheme, !scheme.isEmpty,
+                   let appName = activity.linkedAppName {
+                    Button(action: openLinkedApp) {
+                        HStack(spacing: theme.spacing.sm) {
+                            // Arrow-up-right = "leaving to external app" convention on iOS.
+                            Image(systemName: "arrow.up.right.square")
+                                .font(.system(size: 15))
+                            Text(String(format: lBundle.l("session.linked_app.open"), appName))
+                                .font(theme.typography.button)
+                                .kerning(2)
+                                .textCase(.uppercase)
+                        }
+                        .foregroundStyle(theme.colors.textSecondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, theme.spacing.md)
+                        .background(theme.colors.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                        .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
+                        .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+                    }
+                    .buttonStyle(.plain)
+                }
+
                 Button(action: togglePause) {
                     Text(lBundle.l(paused ? "session.resume" : "session.pause"))
                         .font(theme.typography.button.weight(.semibold))
@@ -170,6 +199,36 @@ struct SessionView: View {
         .padding(theme.spacing.lg)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(theme.colors.background.ignoresSafeArea())
+        .alert(
+            String(format: lBundle.l("session.linked_app.not_installed.title"),
+                   activity.linkedAppName ?? ""),
+            isPresented: $showNotInstalledAlert
+        ) {
+            if let url = appStoreURL {
+                Button(lBundle.l("session.linked_app.not_installed.go")) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button(lBundle.l("common.cancel"), role: .cancel) { }
+        } message: {
+            Text(lBundle.l("session.linked_app.not_installed.message"))
+        }
+    }
+
+    // Opens the activity's linked app directly via its URL scheme.
+    // Falls through to a "find on App Store" alert if the scheme doesn't resolve —
+    // meaning the app isn't installed or the scheme changed between versions.
+    private func openLinkedApp() {
+        guard let schemeStr = activity.linkedAppScheme,
+              let url = URL(string: schemeStr) else { return }
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        } else {
+            appStoreURL = LinkedApp.catalog
+                .first(where: { $0.id == schemeStr })
+                .flatMap { URL(string: $0.appStoreURL) }
+            showNotInstalledAlert = true
+        }
     }
 
     private func togglePause() {

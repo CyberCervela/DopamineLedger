@@ -33,6 +33,10 @@ struct AddActivityView: View {
     @State private var isHighImpact:    Bool
     @State private var isHighEnjoyment: Bool
     @State private var toxicity:        SpenderToxicity
+    // Linked app — "" = none, "custom" = user-entered URL, otherwise a catalog scheme.
+    @State private var linkedAppSelection: String
+    @State private var customURL:          String
+    @State private var customName:         String
 
     init(mode: ActivityMode = .create, initialKind: ActivityKind = .charger, onSaved: (() -> Void)? = nil) {
         self.mode    = mode
@@ -41,16 +45,19 @@ struct AddActivityView: View {
         switch mode {
         case .create:
             let k = initialKind
-            _name            = State(initialValue: "")
-            _kind            = State(initialValue: k)
-            _category        = State(initialValue: .other)
-            _isHighImpact    = State(initialValue: false)
-            _isHighEnjoyment = State(initialValue: false)
-            _toxicity        = State(initialValue: .medium)
+            _name              = State(initialValue: "")
+            _kind              = State(initialValue: k)
+            _category          = State(initialValue: .other)
+            _isHighImpact      = State(initialValue: false)
+            _isHighEnjoyment   = State(initialValue: false)
+            _toxicity          = State(initialValue: .medium)
             // Default rate matches guidance defaults: charger (false,false)→3.0, spender medium→2.0
             let rate = k == .charger ? 3.0 : 2.0
-            _ratePerMinute   = State(initialValue: String(format: "%.1f", rate))
-            _iconName        = State(initialValue: k == .charger ? "bolt.fill" : "hourglass")
+            _ratePerMinute     = State(initialValue: String(format: "%.1f", rate))
+            _iconName          = State(initialValue: k == .charger ? "bolt.fill" : "hourglass")
+            _linkedAppSelection = State(initialValue: "")
+            _customURL         = State(initialValue: "")
+            _customName        = State(initialValue: "")
 
         case .edit(let a):
             let ratePM = a.ratePerSecond * 60
@@ -74,16 +81,35 @@ struct AddActivityView: View {
                 _isHighEnjoyment = State(initialValue: false)
                 _toxicity        = State(initialValue: Self.spenderToxicity(from: ratePM))
             }
+            // Reverse-map stored linked app back to picker selection.
+            if let scheme = a.linkedAppScheme, !scheme.isEmpty {
+                if LinkedApp.catalog.contains(where: { $0.id == scheme }) {
+                    _linkedAppSelection = State(initialValue: scheme)
+                    _customURL          = State(initialValue: "")
+                    _customName         = State(initialValue: "")
+                } else {
+                    _linkedAppSelection = State(initialValue: "custom")
+                    _customURL          = State(initialValue: scheme)
+                    _customName         = State(initialValue: a.linkedAppName ?? "")
+                }
+            } else {
+                _linkedAppSelection = State(initialValue: "")
+                _customURL          = State(initialValue: "")
+                _customName         = State(initialValue: "")
+            }
 
         case .fromTemplate(let t):
-            _name            = State(initialValue: t.name)
-            _kind            = State(initialValue: t.kind)
-            _category        = State(initialValue: t.category)
-            _iconName        = State(initialValue: t.iconName)
-            _isHighImpact    = State(initialValue: t.isHighImpact    ?? false)
-            _isHighEnjoyment = State(initialValue: t.isHighEnjoyment ?? false)
-            _toxicity        = State(initialValue: t.toxicity        ?? .medium)
-            _ratePerMinute   = State(initialValue: String(format: "%.1f", t.ratePerMinute))
+            _name               = State(initialValue: t.name)
+            _kind               = State(initialValue: t.kind)
+            _category           = State(initialValue: t.category)
+            _iconName           = State(initialValue: t.iconName)
+            _isHighImpact       = State(initialValue: t.isHighImpact    ?? false)
+            _isHighEnjoyment    = State(initialValue: t.isHighEnjoyment ?? false)
+            _toxicity           = State(initialValue: t.toxicity        ?? .medium)
+            _ratePerMinute      = State(initialValue: String(format: "%.1f", t.ratePerMinute))
+            _linkedAppSelection = State(initialValue: "")
+            _customURL          = State(initialValue: "")
+            _customName         = State(initialValue: "")
         }
     }
 
@@ -185,6 +211,10 @@ struct AddActivityView: View {
                     // Category picker — groups this activity on the dashboard.
                     categorySection
 
+                    // Linked app — optional gatekeeper: a button to open a chosen app
+                    // appears in SessionView while this activity's session is running.
+                    linkedAppSection
+
                     neuField(label: lBundle.l("activity.field.rate").uppercased()) {
                         HStack {
                             TextField("3.0", text: $ratePerMinute)
@@ -262,6 +292,89 @@ struct AddActivityView: View {
                         .strokeBorder(selected ? theme.colors.accent.opacity(0.35) : Color.clear,
                                       lineWidth: 1.5)
                 )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Linked app section
+
+    @ViewBuilder
+    private var linkedAppSection: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.sm) {
+            label(lBundle.l("activity.field.linked_app").uppercased())
+            Text(lBundle.l("activity.linked_app.hint"))
+                .font(theme.typography.caption)
+                .foregroundStyle(theme.colors.textSecondary)
+
+            // 3-column grid: None + catalog apps + Custom website
+            LazyVGrid(
+                columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.sm), count: 3),
+                spacing: theme.spacing.sm
+            ) {
+                linkedAppTile(scheme: "", sfSymbol: "slash.circle",
+                              name: lBundle.l("activity.linked_app.none"))
+                ForEach(LinkedApp.catalog) { app in
+                    linkedAppTile(scheme: app.id, sfSymbol: app.sfSymbol, name: app.name)
+                }
+                linkedAppTile(scheme: "custom", sfSymbol: "link",
+                              name: lBundle.l("activity.linked_app.custom"))
+            }
+
+            // Custom URL fields — animate in when the "Website" tile is selected.
+            if linkedAppSelection == "custom" {
+                VStack(spacing: theme.spacing.sm) {
+                    neuField(label: lBundle.l("activity.linked_app.url_label").uppercased()) {
+                        TextField("https://example.com", text: $customURL)
+                            .font(theme.typography.body)
+                            .foregroundStyle(theme.colors.textPrimary)
+                            .keyboardType(.URL)
+                            .autocorrectionDisabled()
+                            .textInputAutocapitalization(.never)
+                    }
+                    neuField(label: lBundle.l("activity.linked_app.name_label").uppercased()) {
+                        TextField(lBundle.l("activity.linked_app.name_placeholder"), text: $customName)
+                            .font(theme.typography.body)
+                            .foregroundStyle(theme.colors.textPrimary)
+                            .autocorrectionDisabled()
+                    }
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .animation(.easeInOut(duration: 0.2), value: linkedAppSelection)
+    }
+
+    @ViewBuilder
+    private func linkedAppTile(scheme: String, sfSymbol: String, name: String) -> some View {
+        let selected = linkedAppSelection == scheme
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) { linkedAppSelection = scheme }
+        } label: {
+            VStack(spacing: theme.spacing.xs) {
+                // SF Symbol used as a generic placeholder icon — not a brand asset,
+                // not part of the theme system. Intentional direct Image call here.
+                Image(systemName: sfSymbol)
+                    .font(.system(size: 18))
+                    .foregroundStyle(selected ? theme.colors.accent : theme.colors.textSecondary)
+                Text(name)
+                    .font(theme.typography.caption)
+                    .foregroundStyle(selected ? theme.colors.accent : theme.colors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, theme.spacing.md)
+            .background(theme.colors.surface)
+            .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+            .shadow(color: theme.colors.shadowLight, radius: selected ? 4 : 8,
+                    x: selected ? -3 : -5, y: selected ? -3 : -5)
+            .shadow(color: theme.colors.shadowDark,  radius: selected ? 4 : 8,
+                    x: selected ?  3 :  5, y: selected ?  3 :  5)
+            .overlay(
+                RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
+                    .strokeBorder(selected ? theme.colors.accent.opacity(0.35) : Color.clear,
+                                  lineWidth: 1.5)
+            )
         }
         .buttonStyle(.plain)
     }
@@ -479,9 +592,12 @@ struct AddActivityView: View {
     private func save() {
         guard isValid, let rate = parsedRate else { return }
         let trimmed = name.trimmingCharacters(in: .whitespaces)
+        let saved: Activity
         switch mode {
         case .create:
-            context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category))
+            let a = Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category)
+            context.insert(a)
+            saved = a
         case .fromTemplate:
             // If the user already has an activity with this name, update it rather than
             // creating a duplicate. Matching by name is intentional — templates have unique
@@ -494,8 +610,11 @@ struct AddActivityView: View {
                 existing.ratePerSecond = rate / 60.0
                 existing.iconName      = iconName
                 existing.category      = category
+                saved = existing
             } else {
-                context.insert(Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category))
+                let a = Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category)
+                context.insert(a)
+                saved = a
             }
         case .edit(let activity):
             activity.name          = trimmed
@@ -503,8 +622,31 @@ struct AddActivityView: View {
             activity.ratePerSecond = rate / 60.0
             activity.iconName      = iconName
             activity.category      = category
+            saved = activity
         }
+        applyLinkedApp(to: saved)
         if let onSaved { onSaved() } else { dismiss() }
+    }
+
+    private func applyLinkedApp(to activity: Activity) {
+        if linkedAppSelection.isEmpty {
+            activity.linkedAppScheme = nil
+            activity.linkedAppName   = nil
+        } else if linkedAppSelection == "custom" {
+            let raw = customURL.trimmingCharacters(in: .whitespaces)
+            guard !raw.isEmpty else {
+                activity.linkedAppScheme = nil
+                activity.linkedAppName   = nil
+                return
+            }
+            let url = raw.hasPrefix("http") ? raw : "https://\(raw)"
+            let label = customName.trimmingCharacters(in: .whitespaces)
+            activity.linkedAppScheme = url
+            activity.linkedAppName   = label.isEmpty ? (URL(string: url)?.host ?? url) : label
+        } else if let app = LinkedApp.catalog.first(where: { $0.id == linkedAppSelection }) {
+            activity.linkedAppScheme = app.id
+            activity.linkedAppName   = app.name
+        }
     }
 }
 

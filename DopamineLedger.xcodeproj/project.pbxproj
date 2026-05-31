@@ -55,6 +55,7 @@
 		E69390F6F455AC442665AAA0 /* AddActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84FBDCE63D4A089A5776B180 /* AddActivityView.swift */; };
 		E9F5D71A18FF1A4D72D36324 /* NotificationMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799737179C6FAA48A05E0539 /* NotificationMath.swift */; };
 		EF39365336812E176767B6DD /* ActivityListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */; };
+		FE17850FE35D2FB43D6EBF8E /* LinkedApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2B15F3433A5F19C6783EC05 /* LinkedApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +130,7 @@
 		BB278EAC2CE14CE56E68910D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BF29E10783F9F0EE030F19D6 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		C287E54C5633627752C58610 /* PeakHoursService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeakHoursService.swift; sourceTree = "<group>"; };
+		C2B15F3433A5F19C6783EC05 /* LinkedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedApp.swift; sourceTree = "<group>"; };
 		C4544B842E7F43616765D9F7 /* SessionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionView.swift; sourceTree = "<group>"; };
 		D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DopamineLedgerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBD984D0688E7C0DB14E351E /* DopamineLedgerIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerIntents.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 				A9571C6EC4DF91040C621F88 /* ActivityTemplate.swift */,
 				028AD865AF4F2F49AFF5C96B /* DashboardStats.swift */,
 				632483371A4CE068A0150FD4 /* Ledger.swift */,
+				C2B15F3433A5F19C6783EC05 /* LinkedApp.swift */,
 				799737179C6FAA48A05E0539 /* NotificationMath.swift */,
 				75974194EFB58BCC1BE1D176 /* Quest.swift */,
 				444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */,
@@ -452,6 +455,7 @@
 				0E9D4AFCBF1FA2487E6B4DF1 /* IconResolver.swift in Sources */,
 				468D4DF6CAE0FBC15B357392 /* LanguageBundle.swift in Sources */,
 				8CC558F59D0D02AA4097571E /* Ledger.swift in Sources */,
+				FE17850FE35D2FB43D6EBF8E /* LinkedApp.swift in Sources */,
 				C57C579F7A1119A0428B66B4 /* LiveActivityService.swift in Sources */,
 				7DCC6D49A8D67608559D07E7 /* NeuTextButton.swift in Sources */,
 				D6C29C6856EEDF8B68D0BF4E /* NeuTheme.swift in Sources */,

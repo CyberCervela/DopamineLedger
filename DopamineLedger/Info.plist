@@ -79,5 +79,20 @@
     <!-- Required for ActivityKit Live Activities. -->
     <key>NSSupportsLiveActivities</key>
     <true/>
+
+    <!-- URL schemes we query via canOpenURL() for the linked-app gatekeeper.
+         Without this declaration, canOpenURL always returns false for non-system
+         schemes regardless of whether the app is installed (iOS 9+ privacy rule). -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>youtube</string>
+        <string>twitter</string>
+        <string>instagram</string>
+        <string>snapchat</string>
+        <string>fb</string>
+        <string>tiktok</string>
+        <string>nflx</string>
+        <string>googlechrome</string>
+    </array>
 </dict>
 </plist>
