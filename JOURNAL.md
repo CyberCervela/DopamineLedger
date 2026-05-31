@@ -57,7 +57,7 @@ Export/Import feature logged under new "Data ownership" section — JSON format,
 **What to pick up next:**
 - Await Apple review; click Release on approval.
 - History soft delete (Session 25 priority #2) — now safe to build since soft-delete infrastructure is in place.
-- Linked app catalog expansion (research done, verify URL schemes on device).
+- **Linked app catalog expansion — next dedicated session.** Research is done (see `BACKLOG.md` "Linked app catalog" entry). The session should: (1) decide which apps to add to `LinkedApp.catalog` in `LinkedApp.swift` (verify URL schemes are real — `canOpenURL` test on device); (2) decide which get their own app-specific templates in `ActivityTemplate.swift` (e.g. "Streaming - Disney+", "Streaming - Prime Video", "Social - Reddit", charger-side: "Learning - Duolingo", "Reading - Kindle"); (3) ship both the catalog entries and the templates together in one commit. Priority candidates from the research: Disney+ (`disneyplus://`), Prime Video (`aiv://`), Twitch (`twitch://`), Duolingo (`duolingo://`), Kindle (`kindle://`), Reddit (`reddit://`), Threads (`threads://`).
 
 ---
 
