@@ -5,6 +5,62 @@
 
 ---
 
+## Session 33 — 2026-05-31
+
+**Focus:** Data integrity — deleting an activity or quest must never erase credit history.
+
+**Shipped:** `Models/Activity.swift`, `Models/Quest.swift`, `Models/Session.swift`, `Services/SessionFinalizer.swift`, `Views/ActivityListView.swift`, `Views/HistoryView.swift`, `Models/DashboardStats.swift`, `Localization/Localizable.xcstrings` (3 new keys × 7 languages), `BACKLOG.md`.
+
+### Bug
+
+Deleting an activity from the home screen caused its sessions to disappear from both History and Stats. Root causes were two separate issues:
+
+1. **DashboardStats silently dropped orphaned sessions.** `compute()` had a `guard let activity = activityMap[session.activityId] else { continue }` that excluded orphaned sessions from ALL calculations — not just the per-activity breakdown, but also `creditsEarned`, `creditsSpent`, and `netDelta`. The balance card (which reads from Ledger directly) was always correct; only the Stats view was wrong.
+
+2. **Potential SwiftData cascade deletion.** Even though `Session` uses a raw `activityId: UUID` (not a `@Relationship`), some SwiftData versions may cascade-delete associated records. The soft-delete approach eliminates the risk entirely.
+
+The philosophy framing: *"In the real world, you can't delete your credit burn retroactively."* Credits move at session stop time and are immutable after that.
+
+### Fix 1 — Soft-delete Activities (`Activity.isArchived: Bool = false`)
+
+- `context.delete(activity)` replaced with `activity.isArchived = true`
+- `ActivityListView @Query` filters `isArchived == false` — activity disappears from home list but stays in DB
+- All associated sessions remain attributed, named, and credited in History and Stats
+- Confirmation alert before archiving: *"Remove 'Streaming'? All sessions and credits remain in your History and Stats."*
+- 3 new localisation keys: `activity.archive.title`, `activity.archive.message`, `activity.archive.confirm` × 7 languages
+
+### Fix 2 — Soft-delete completed Quests (`Quest.isArchived: Bool = false`)
+
+Same principle: quest payoff credits move at completion time, so completed quests are soft-deleted. Incomplete quests (no credits moved yet) are still hard-deleted safely.
+
+- `deleteQuest()` branches: `quest.isCompleted` → `isArchived = true`; else → `context.delete(quest)`
+- `ActivityListView @Query` for quests adds `isArchived == false`
+- `HistoryView` and `DashboardStats` filter out archived quests
+
+### Fix 3 — Store `creditsMoved` on Session at finalize time (`Session.creditsMoved: Double = 0`)
+
+Positive = earned (charger), negative = spent (spender). Default 0 = pre-migration (falls back to computed value if Activity still exists).
+
+- `SessionFinalizer` stamps `session.creditsMoved = rate × elapsed × multiplier` with the correct sign
+- `HistoryView.SessionHistoryRow` uses `creditsMoved` when non-zero; fallback to `activity.ratePerSecond × elapsed` for old sessions. Credit amount now shows even when Activity is archived.
+- `BundledSessionHistoryRow` sums `creditsMoved` across the bundle
+- `DashboardStats` includes archived/deleted sessions in headline totals using `creditsMoved` — they remain absent from the per-activity category groups since kind/category is unknown without the Activity record
+
+### What this means for the user's existing deleted data
+
+The previously hard-deleted "Streaming" activity's sessions have `creditsMoved == 0` (pre-migration default). History will still show them as "Deleted activity" without a credit amount — the rate is irretrievable. The Ledger balance was always correct. Future deletions are fully protected.
+
+### Backlog addition
+
+Export/Import feature logged under new "Data ownership" section — JSON format, iOS share sheet, full backup/restore. The export and Wipe Data will sit next to each other in Settings ("export first, then wipe").
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- History soft delete (Session 25 priority #2) — now safe to build since soft-delete infrastructure is in place.
+- Linked app catalog expansion (research done, verify URL schemes on device).
+
+---
+
 ## Session 32 — 2026-05-31
 
 **Focus:** Polish pass on the activity editor + app-linked templates.
