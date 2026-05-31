@@ -1,0 +1,14 @@
+<!-- SPDX-License-Identifier: CC-BY-NC-4.0 -->
+
+Documentation and prose content in this repository (all .md files, including
+PHILOSOPHY.md, DECISIONS.md, JOURNAL.md, BACKLOG.md, FEATURES.md, README.md,
+and optimization.md) are licensed under the
+Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0).
+
+Copyright 2026 Cyber Cervela.
+
+You are free to share and adapt this material for noncommercial purposes, with
+attribution. Full legal text: https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+Source code is licensed separately — see the LICENSE file (PolyForm
+Noncommercial 1.0.0).
