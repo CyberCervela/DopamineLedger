@@ -38,6 +38,13 @@ struct LinkedApp: Identifiable, Equatable {
         LinkedApp(id: "bereal://",       name: "BeReal",       sfSymbol: "livephoto",                        appStoreURL: "https://apps.apple.com/app/id1459645446"),
         // Gaming
         LinkedApp(id: "roblox://",       name: "Roblox",       sfSymbol: "gamecontroller.fill",              appStoreURL: "https://apps.apple.com/app/id431946152"),
+        // Productivity & Learning (charger-side)
+        LinkedApp(id: "duolingo://",     name: "Duolingo",     sfSymbol: "translate",                        appStoreURL: "https://apps.apple.com/app/id570060128"),
+        LinkedApp(id: "kindle://",       name: "Kindle",       sfSymbol: "book.closed.fill",                 appStoreURL: "https://apps.apple.com/app/id302584613"),
+        LinkedApp(id: "headspace://",    name: "Headspace",    sfSymbol: "brain.head.profile",               appStoreURL: "https://apps.apple.com/app/id493145008"),
+        LinkedApp(id: "calm://",         name: "Calm",         sfSymbol: "moon.stars.fill",                  appStoreURL: "https://apps.apple.com/app/id571800810"),
+        LinkedApp(id: "forest://",       name: "Forest",       sfSymbol: "tree.fill",                        appStoreURL: "https://apps.apple.com/app/id866450515"),
+        LinkedApp(id: "notion://",       name: "Notion",       sfSymbol: "note.text",                        appStoreURL: "https://apps.apple.com/app/id1232780281"),
         // Browser
         LinkedApp(id: "googlechrome://", name: "Chrome",       sfSymbol: "globe",                            appStoreURL: "https://apps.apple.com/app/id535886823"),
     ]

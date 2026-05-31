@@ -106,6 +106,13 @@
         <string>bereal</string>
         <!-- Gaming -->
         <string>roblox</string>
+        <!-- Productivity & Learning (charger-side) -->
+        <string>duolingo</string>
+        <string>kindle</string>
+        <string>headspace</string>
+        <string>calm</string>
+        <string>forest</string>
+        <string>notion</string>
         <!-- Browser -->
         <string>googlechrome</string>
     </array>

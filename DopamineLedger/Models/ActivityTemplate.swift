@@ -111,19 +111,25 @@ struct ActivityTemplate: Identifiable, Hashable {
 
     static let catalog: [ActivityTemplate] = [
         // Chargers — Focus & Learning
-        .init(name: "Deep Work",     kind: .charger, iconName: "book.fill",           category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
-        .init(name: "Learning",      kind: .charger, iconName: "graduationcap.fill",  category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
-        .init(name: "Creative Work", kind: .charger, iconName: "pencil",              category: .focusLearning, isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
-        .init(name: "Journaling",    kind: .charger, iconName: "doc.fill",               category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
-        .init(name: "Homework",      kind: .charger, iconName: "pencil.and.ruler.fill", category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
-        .init(name: "Reading",       kind: .charger, iconName: "book.closed.fill",      category: .focusLearning, isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
+        .init(name: "Deep Work",           kind: .charger, iconName: "book.fill",              category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Focus - Forest",      kind: .charger, iconName: "tree.fill",              category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil, linkedAppScheme: "forest://",   linkedAppName: "Forest"),
+        .init(name: "Focus - Notion",      kind: .charger, iconName: "doc.text.fill",          category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil, linkedAppScheme: "notion://",   linkedAppName: "Notion"),
+        .init(name: "Learning",            kind: .charger, iconName: "graduationcap.fill",     category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Learning - Duolingo", kind: .charger, iconName: "translate",              category: .focusLearning, isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil, linkedAppScheme: "duolingo://", linkedAppName: "Duolingo"),
+        .init(name: "Creative Work",       kind: .charger, iconName: "pencil",                 category: .focusLearning, isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
+        .init(name: "Journaling",          kind: .charger, iconName: "doc.fill",               category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Homework",            kind: .charger, iconName: "pencil.and.ruler.fill",  category: .focusLearning, isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Reading",             kind: .charger, iconName: "book.closed.fill",       category: .focusLearning, isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
+        .init(name: "Reading - Kindle",    kind: .charger, iconName: "book.closed.fill",       category: .focusLearning, isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil, linkedAppScheme: "kindle://",   linkedAppName: "Kindle"),
         // Chargers — Movement
-        .init(name: "Exercise",      kind: .charger, iconName: "figure.run",            category: .movement,      isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
-        .init(name: "Walk",          kind: .charger, iconName: "figure.walk",           category: .movement,      isHighImpact: false, isHighEnjoyment: false, toxicity: nil),
-        .init(name: "Chores",        kind: .charger, iconName: "house.fill",            category: .movement,      isHighImpact: false, isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Exercise",            kind: .charger, iconName: "figure.run",             category: .movement,      isHighImpact: true,  isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Walk",                kind: .charger, iconName: "figure.walk",            category: .movement,      isHighImpact: false, isHighEnjoyment: false, toxicity: nil),
+        .init(name: "Chores",              kind: .charger, iconName: "house.fill",             category: .movement,      isHighImpact: false, isHighEnjoyment: false, toxicity: nil),
         // Chargers — Rest & Recovery
-        .init(name: "Meditation",    kind: .charger, iconName: "leaf.fill",           category: .rest,          isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
-        .init(name: "Rest / Nap",    kind: .charger, iconName: "bed.double.fill",     category: .rest,          isHighImpact: false, isHighEnjoyment: true,  toxicity: nil),
+        .init(name: "Meditation",              kind: .charger, iconName: "leaf.fill",          category: .rest,          isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
+        .init(name: "Meditation - Headspace",  kind: .charger, iconName: "brain.head.profile", category: .rest,          isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil, linkedAppScheme: "headspace://", linkedAppName: "Headspace"),
+        .init(name: "Meditation - Calm",       kind: .charger, iconName: "moon.stars.fill",    category: .rest,          isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil, linkedAppScheme: "calm://",      linkedAppName: "Calm"),
+        .init(name: "Rest / Nap",              kind: .charger, iconName: "bed.double.fill",    category: .rest,          isHighImpact: false, isHighEnjoyment: true,  toxicity: nil),
         // Spenders — Leisure (streaming)
         .init(name: "Streaming - Netflix",      kind: .spender, iconName: "film.fill",                        category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "nflx://",        linkedAppName: "Netflix"),
         .init(name: "Streaming - YouTube",      kind: .spender, iconName: "tv.fill",                          category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "youtube://",     linkedAppName: "YouTube"),
