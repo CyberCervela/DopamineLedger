@@ -166,7 +166,7 @@ struct SettingsView: View {
     // re-injects the bundle and re-renders the whole hierarchy — instant switch.
     // CJK languages are prepared in the string catalog but hidden from the
     // picker until a native speaker can verify the translations.
-    private let visibleLanguages: [SupportedLanguage] = [.en, .fr, .de, .es]
+    private let visibleLanguages: [SupportedLanguage] = [.en, .fr, .de, .es, .zhHans, .ja, .ko]
 
     private var languageSection: some View {
         sectionCard(title: lBundle.l("settings.section.language")) {

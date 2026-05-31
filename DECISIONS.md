@@ -77,8 +77,10 @@ views read it via `lBundle.l("key")`.
 `.environment(\.locale)` for bundle selection — it always reads
 `Bundle.main`. The custom key + `NSLocalizedString(_:bundle:)` is the only
 reliable way to switch language without an app restart.
-**Scope:** All user-facing strings. CJK languages are in the catalog but
-hidden from the picker pending native-speaker review.
+**Scope:** All user-facing strings. All 7 languages (EN/FR/DE/ES/ZH/JA/KO)
+are now active in the picker. CJK strings are machine-translated; activated
+Session 28 after the user (native French speaker, fluent in 2 of the 3 CJK
+languages) reviewed and accepted the translation quality.
 **Supersedes:** none
 
 ## D-008 — No `TabView`; a custom `ZStack` + `NeuTabBar`   (2026-05-25)
