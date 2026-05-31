@@ -3946,6 +3946,18 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "定期" } }
       }
     },
+    "quest.section.goals" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ziele" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Goals" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Objetivos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Objectifs" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "目標" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "목표" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "目标" } }
+      }
+    },
     "row.activity.burndown" : {
       "extractionState" : "stale",
       "localizations" : {

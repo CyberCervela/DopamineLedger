@@ -465,14 +465,39 @@ struct ActivityListView: View {
         if filteredQuests.isEmpty {
             emptyState(icon: .quest, message: lBundle.l("home.empty.quests"))
         } else {
-            LazyVStack(spacing: theme.spacing.md) {
-                ForEach(filteredQuests) { quest in
-                    QuestRow(
-                        quest:      quest,
-                        onComplete: { complete(quest) },
-                        onEdit:     { questToEdit = quest },
-                        onDelete:   { deleteQuest(quest) }
-                    )
+            LazyVStack(spacing: theme.spacing.xl) {
+                questSection(lBundle.l("quest.cadence.daily"),
+                             quests: filteredQuests.filter { $0.recurringCadence == .daily })
+                questSection(lBundle.l("quest.cadence.weekly"),
+                             quests: filteredQuests.filter { $0.recurringCadence == .weekly })
+                questSection(lBundle.l("quest.cadence.monthly"),
+                             quests: filteredQuests.filter { $0.recurringCadence == .monthly })
+                questSection(lBundle.l("quest.section.goals"),
+                             quests: filteredQuests.filter { $0.recurringCadence == nil })
+            }
+        }
+    }
+
+    // Renders a titled section of quest rows. Renders nothing when the list is
+    // empty, so sections for cadences the user hasn't created stay hidden.
+    @ViewBuilder
+    private func questSection(_ title: String, quests: [Quest]) -> some View {
+        if !quests.isEmpty {
+            VStack(alignment: .leading, spacing: theme.spacing.md) {
+                Text(title.uppercased())
+                    .font(theme.typography.caption)
+                    .foregroundStyle(theme.colors.textSecondary)
+                    .kerning(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                LazyVStack(spacing: theme.spacing.md) {
+                    ForEach(quests) { quest in
+                        QuestRow(
+                            quest:      quest,
+                            onComplete: { complete(quest) },
+                            onEdit:     { questToEdit = quest },
+                            onDelete:   { deleteQuest(quest) }
+                        )
+                    }
                 }
             }
         }
