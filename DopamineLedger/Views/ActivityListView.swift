@@ -48,6 +48,13 @@ struct ActivityListView: View {
     private var ledger: Ledger? { ledgers.first }
     private var totalDebt: Double { debts.reduce(0) { $0 + $1.amount } }
 
+    // Hides next-period instances of recurring quests (availableAt > now).
+    // One-shot quests (availableAt == nil) are always visible.
+    private var filteredQuests: [Quest] {
+        let now = Date()
+        return quests.filter { $0.availableAt.map { $0 <= now } ?? true }
+    }
+
     private var filteredActivities: [Activity] {
         switch filter {
         case .chargers:     return activities.filter { $0.kind == .charger }
@@ -90,13 +97,18 @@ struct ActivityListView: View {
                 activeSession = leftover
             }
             recoverLiveActivityIfNeeded()
+            sweepExpiredRecurringQuests()
         }
         // When the app comes to the foreground (e.g. after a Siri intent ran while
         // backgrounded), re-check whether a Live Activity needs to be started.
         // Activity.request() is foreground-only, so the intent's call silently
-        // failed; we start it here instead.
+        // failed; we start it here instead. Also re-sweep recurring quests in
+        // case a period boundary passed while the app was backgrounded.
         .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .active { recoverLiveActivityIfNeeded() }
+            if newPhase == .active {
+                recoverLiveActivityIfNeeded()
+                sweepExpiredRecurringQuests()
+            }
         }
         .sheet(isPresented: $showAddActivity) {
             AddActivityView(mode: .create, initialKind: defaultKindForCurrentFilter)
@@ -303,6 +315,48 @@ struct ActivityListView: View {
         ledger.updatedAt  = Date()
         quest.isCompleted = true
         quest.completedAt = Date()
+        // For recurring quests, spawn the next-period instance immediately.
+        // availableAt is set to the next period boundary so the new instance
+        // stays hidden until the cycle rolls — no double-dipping same day/week/month.
+        if let cadence = quest.recurringCadence {
+            let next = Quest(
+                name:             quest.name,
+                payoffCredits:    quest.payoffCredits,
+                iconName:         quest.iconName,
+                category:         quest.category ?? .other,
+                recurringCadence: cadence
+            )
+            // Quest.init sets availableAt = cadence.currentPeriodStart (visible now).
+            // Override with nextPeriodStart so it's hidden until tomorrow/next week/etc.
+            next.availableAt = cadence.nextPeriodStart(from: Date())
+            context.insert(next)
+        }
+    }
+
+    // Sweeps stale recurring quest instances. On each app open / foreground:
+    // for each uncompleted recurring quest whose period has passed, hard-delete
+    // it (silent expiry — no history entry) and insert a fresh one for today.
+    // This means skipped periods never stack and never create guilt.
+    private func sweepExpiredRecurringQuests() {
+        for quest in Array(quests) where quest.recurringCadence != nil
+                                     && !quest.isCompleted
+                                     && !quest.isArchived {
+            guard let cadence     = quest.recurringCadence,
+                  let availableAt = quest.availableAt else { continue }
+            let currentStart = cadence.currentPeriodStart
+            guard availableAt < currentStart else { continue }
+            let fresh = Quest(
+                name:             quest.name,
+                payoffCredits:    quest.payoffCredits,
+                iconName:         quest.iconName,
+                category:         quest.category ?? .other,
+                recurringCadence: cadence
+            )
+            // Quest.init sets availableAt = cadence.currentPeriodStart, so
+            // the fresh instance is immediately visible (currentPeriodStart ≤ now).
+            context.delete(quest)
+            context.insert(fresh)
+        }
     }
 
     private func deleteQuest(_ quest: Quest) {
@@ -352,12 +406,12 @@ struct ActivityListView: View {
 
     @ViewBuilder
     private var combinedList: some View {
-        if activities.isEmpty && quests.isEmpty {
+        if activities.isEmpty && filteredQuests.isEmpty {
             homeEmptyState
         } else {
             LazyVStack(spacing: theme.spacing.xl) {
                 ForEach(ActivityCategory.allCases, id: \.self) { cat in
-                    let catQuests   = quests.filter     { ($0.category ?? .other) == cat }
+                    let catQuests   = filteredQuests.filter { ($0.category ?? .other) == cat }
                     let catChargers = activities.filter { ($0.category ?? .other) == cat && $0.kind == .charger }
                     let catSpenders = activities.filter { ($0.category ?? .other) == cat && $0.kind == .spender }
                     if !catQuests.isEmpty || !catChargers.isEmpty || !catSpenders.isEmpty {
@@ -408,11 +462,11 @@ struct ActivityListView: View {
 
     @ViewBuilder
     private var questList: some View {
-        if quests.isEmpty {
+        if filteredQuests.isEmpty {
             emptyState(icon: .quest, message: lBundle.l("home.empty.quests"))
         } else {
             LazyVStack(spacing: theme.spacing.md) {
-                ForEach(quests) { quest in
+                ForEach(filteredQuests) { quest in
                     QuestRow(
                         quest:      quest,
                         onComplete: { complete(quest) },
@@ -613,10 +667,23 @@ private struct QuestRow: View {
                 Text(quest.name)
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
-                Text(String(format: lBundle.l("row.quest.payoff"),
-                            quest.payoffCredits.formatted(.number.precision(.fractionLength(0...1)))))
-                    .font(theme.typography.caption)
-                    .foregroundStyle(theme.colors.positive)
+                HStack(spacing: theme.spacing.sm) {
+                    Text(String(format: lBundle.l("row.quest.payoff"),
+                                quest.payoffCredits.formatted(.number.precision(.fractionLength(0...1)))))
+                        .font(theme.typography.caption)
+                        .foregroundStyle(theme.colors.positive)
+                    if let cadence = quest.recurringCadence {
+                        Text(lBundle.l(cadence.labelKey))
+                            .font(theme.typography.caption)
+                            .foregroundStyle(theme.colors.textSecondary)
+                            .padding(.horizontal, theme.spacing.sm)
+                            .padding(.vertical, 2)
+                            .background(theme.colors.surface)
+                            .clipShape(Capsule())
+                            .shadow(color: theme.colors.shadowLight, radius: 2, x: -1, y: -1)
+                            .shadow(color: theme.colors.shadowDark,  radius: 2, x:  1, y:  1)
+                    }
+                }
             }
 
             Spacer()

@@ -51,8 +51,8 @@ struct AddActivityView: View {
             _isHighImpact      = State(initialValue: false)
             _isHighEnjoyment   = State(initialValue: false)
             _toxicity          = State(initialValue: .medium)
-            // Default rate matches guidance defaults: charger (false,false)→3.0, spender medium→2.0
-            let rate = k == .charger ? 3.0 : 2.0
+            // Default rate matches guidance defaults: charger (false,false)→3.0, spender medium→4.0
+            let rate = k == .charger ? 3.0 : SpenderToxicity.medium.ratePerMinute
             _ratePerMinute     = State(initialValue: String(format: "%.1f", rate))
             _iconName          = State(initialValue: k == .charger ? "bolt.fill" : "hourglass")
             _linkedAppSelection = State(initialValue: "")
@@ -532,9 +532,12 @@ struct AddActivityView: View {
     }
 
     // Reverse-maps a stored rate to the nearest SpenderToxicity level.
+    // Explicit cases cover template-generated rates; anything else (including
+    // the old 1.0 / 2.0 defaults before the rate bump) falls back to .medium.
     private static func spenderToxicity(from ratePerMinute: Double) -> SpenderToxicity {
         switch ratePerMinute {
-        case 1.0:  return .low
+        case 2.0:  return .low
+        case 4.0:  return .medium
         case 10.0: return .high
         default:   return .medium
         }

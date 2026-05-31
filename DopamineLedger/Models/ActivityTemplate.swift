@@ -2,10 +2,11 @@
 // Static catalogue of pre-built activity presets and the guidance enums
 // shared with AddActivityView.
 //
-// SpenderToxicity and the charger toggle logic encode the 2:1 philosophy:
-//   • 1 min of the easiest charger (2.0 cr/min) → 2 min of a Low-tox spender.
-//   • Medium-tox (2.0 cr/min) breaks even against the easiest charger: a
-//     reminder that even "moderate" habits consume what you earned.
+// SpenderToxicity and the charger toggle logic encode the credit-budget philosophy:
+//   • Low-tox (2.0 cr/min): 1 min deep work (6.0) → 3 min low-tox. Leisure
+//     with essentially no downside still has a real cost.
+//   • Medium-tox (4.0 cr/min): 1 min deep work → 1.5 min medium-tox. Most
+//     common spenders sit here — streaming, gaming, social browsing.
 //   • High-tox (10.0 cr/min) is deliberately punishing — 30 min of deep work
 //     buys only 18 min of social media, forcing a real trade-off.
 
@@ -18,8 +19,8 @@ enum SpenderToxicity: String, CaseIterable {
 
     var ratePerMinute: Double {
         switch self {
-        case .low:    return 1.0
-        case .medium: return 2.0
+        case .low:    return 2.0
+        case .medium: return 4.0
         case .high:   return 10.0
         }
     }
@@ -99,7 +100,7 @@ struct ActivityTemplate: Identifiable, Hashable {
             case (false, true):  return 2.0
             }
         } else {
-            return toxicity?.ratePerMinute ?? 2.0
+            return toxicity?.ratePerMinute ?? 4.0
         }
     }
 

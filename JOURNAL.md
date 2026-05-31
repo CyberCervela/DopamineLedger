@@ -5,6 +5,52 @@
 
 ---
 
+## Session 36 — 2026-05-31
+
+**Focus:** Recurring quests + spender rate rebalance.
+
+**Shipped:** `Models/Quest.swift`, `Views/AddQuestView.swift`, `Views/ActivityListView.swift`, `Models/ActivityTemplate.swift`, `Views/AddActivityView.swift`, `Localization/Localizable.xcstrings` (6 new keys × 7 languages).
+
+### Recurring quests
+
+`Quest` model extended with two optional fields (safe lightweight migration — nil defaults):
+- `recurringCadence: RecurringCadence?` — nil = one-shot (all existing quests unchanged)
+- `availableAt: Date?` — nil = immediately visible; non-nil = hidden until this date
+
+`RecurringCadence` enum (Daily / Weekly / Monthly) lives in `Quest.swift` with two computed helpers:
+- `currentPeriodStart` — start of today / this Monday / this 1st. Weekly anchors to Monday, consistent with DashboardStats.
+- `nextPeriodStart(from:)` — used to set `availableAt` on the newly-spawned instance after completion.
+
+**Completion flow:** credits move, current instance gets `isCompleted = true` (history entry as before), new instance inserted with `availableAt = nextPeriodStart`. The new instance is invisible in the active list until the period rolls.
+
+**Expiry sweep (`sweepExpiredRecurringQuests()`):** runs on `.task` and every `.active` scene phase. For each uncompleted recurring quest whose `availableAt < currentPeriodStart`, hard-delete the stale instance and insert a fresh one for today. Silent — no history entry, no stacking, no guilt.
+
+**No double-dipping:** `filteredQuests` computed property filters `availableAt > now` before rendering. A completed daily quest cannot be tapped again until midnight.
+
+**UI:** Recurring toggle (off by default) + animated cadence picker in `AddQuestView`. Cadence badge ("Daily" / "Weekly" / "Monthly") in `QuestRow` next to the payoff credit line. Edit mode pre-selects stored cadence; changing cadence resets `availableAt` to the new period's current start.
+
+**6 new localization keys × 7 languages:** `quest.cadence.daily`, `quest.cadence.weekly`, `quest.cadence.monthly`, `quest.field.recurring`, `quest.recurring`.
+
+**Confirmed on device:** Created "Make bed" daily quest. Badge visible on row. Tapping Done moved credits and the quest disappeared. Architecture verified correct.
+
+### Spender rate rebalance
+
+Template defaults only — no SwiftData activities touched.
+
+| Toxicity | Before | After |
+|---|---|---|
+| Low | 1.0 cr/min | 2.0 cr/min |
+| Medium | 2.0 cr/min | 4.0 cr/min |
+| High | 10.0 cr/min | 10.0 cr/min |
+
+`SpenderToxicity.ratePerMinute` updated in `ActivityTemplate.swift`. Default spender rate in `AddActivityView` init updated to `SpenderToxicity.medium.ratePerMinute`. Reverse mapper `spenderToxicity(from:)` updated: `case 2.0 → .low`, `case 4.0 → .medium`, `case 10.0 → .high`. Fallback `?? 2.0` in `ActivityTemplate.ratePerMinute` updated to `?? 4.0`. Header comment updated to reflect new ratios.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- Device-test Kindle, Calm, Notion URL schemes (from Session 35).
+
+---
+
 ## Session 35 — 2026-05-31
 
 **Focus:** Charger-side linked apps.

@@ -17,21 +17,27 @@ struct AddQuestView: View {
 
     let mode: QuestMode
 
-    @State private var name:     String
-    @State private var payoff:   String
-    @State private var category: ActivityCategory
+    @State private var name:        String
+    @State private var payoff:      String
+    @State private var category:    ActivityCategory
+    @State private var isRecurring: Bool
+    @State private var cadence:     RecurringCadence
 
     init(mode: QuestMode = .create) {
         self.mode = mode
         switch mode {
         case .create:
-            _name     = State(initialValue: "")
-            _payoff   = State(initialValue: "50")
-            _category = State(initialValue: .other)
+            _name        = State(initialValue: "")
+            _payoff      = State(initialValue: "50")
+            _category    = State(initialValue: .other)
+            _isRecurring = State(initialValue: false)
+            _cadence     = State(initialValue: .daily)
         case .edit(let q):
-            _name     = State(initialValue: q.name)
-            _payoff   = State(initialValue: q.payoffCredits.formatted(.number.precision(.fractionLength(0...1))))
-            _category = State(initialValue: q.category ?? .other)
+            _name        = State(initialValue: q.name)
+            _payoff      = State(initialValue: q.payoffCredits.formatted(.number.precision(.fractionLength(0...1))))
+            _category    = State(initialValue: q.category ?? .other)
+            _isRecurring = State(initialValue: q.recurringCadence != nil)
+            _cadence     = State(initialValue: q.recurringCadence ?? .daily)
         }
     }
 
@@ -106,6 +112,40 @@ struct AddQuestView: View {
                         }
                     }
 
+                    // Recurring toggle + cadence picker.
+                    // Off by default — creating a one-shot quest requires no extra taps.
+                    VStack(alignment: .leading, spacing: theme.spacing.sm) {
+                        label(lBundle.l("quest.field.recurring").uppercased())
+                        VStack(spacing: theme.spacing.md) {
+                            HStack {
+                                Text(lBundle.l("quest.recurring"))
+                                    .font(theme.typography.body)
+                                    .foregroundStyle(theme.colors.textPrimary)
+                                Spacer()
+                                Toggle("", isOn: $isRecurring)
+                                    .labelsHidden()
+                                    .tint(theme.colors.accent)
+                            }
+                            .padding(theme.spacing.lg)
+                            .background(theme.colors.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                            .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
+                            .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+                            if isRecurring {
+                                LazyVGrid(
+                                    columns: Array(repeating: GridItem(.flexible(), spacing: theme.spacing.md), count: 3),
+                                    spacing: theme.spacing.md
+                                ) {
+                                    ForEach(RecurringCadence.allCases, id: \.self) { c in
+                                        cadenceButton(c)
+                                    }
+                                }
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                            }
+                        }
+                        .animation(.easeInOut(duration: 0.2), value: isRecurring)
+                    }
+
                     if let payoff = parsedPayoff {
                         Text(String(format: lBundle.l("quest.hint"),
                                     payoff.formatted(.number.precision(.fractionLength(0...1)))))
@@ -150,6 +190,33 @@ struct AddQuestView: View {
     }
 
     @ViewBuilder
+    private func cadenceButton(_ c: RecurringCadence) -> some View {
+        let selected = cadence == c
+        Button {
+            withAnimation(.easeInOut(duration: 0.18)) { cadence = c }
+        } label: {
+            Text(lBundle.l(c.labelKey))
+                .font(theme.typography.caption.weight(.semibold))
+                .foregroundStyle(selected ? theme.colors.accent : theme.colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, theme.spacing.md)
+                .background(theme.colors.surface)
+                .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
+                .shadow(color: theme.colors.shadowLight, radius: selected ? 4 : 8,
+                        x: selected ? -3 : -5, y: selected ? -3 : -5)
+                .shadow(color: theme.colors.shadowDark,  radius: selected ? 4 : 8,
+                        x: selected ?  3 :  5, y: selected ?  3 :  5)
+                .overlay(
+                    RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
+                        .strokeBorder(selected ? theme.colors.accent.opacity(0.35) : Color.clear,
+                                      lineWidth: 1.5)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
     private func label(_ text: String) -> some View {
         Text(text)
             .font(theme.typography.caption)
@@ -172,14 +239,23 @@ struct AddQuestView: View {
 
     private func save() {
         guard isValid, let payoff = parsedPayoff else { return }
-        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        let trimmed    = name.trimmingCharacters(in: .whitespaces)
+        let newCadence: RecurringCadence? = isRecurring ? cadence : nil
         switch mode {
         case .create:
-            context.insert(Quest(name: trimmed, payoffCredits: payoff, category: category))
+            context.insert(Quest(name: trimmed, payoffCredits: payoff,
+                                 category: category, recurringCadence: newCadence))
         case .edit(let quest):
             quest.name          = trimmed
             quest.payoffCredits = payoff
             quest.category      = category
+            // Reset the active window only when the cadence actually changes,
+            // so editing the name/payoff of a recurring quest mid-period
+            // doesn't reset the availableAt and make it disappear.
+            if newCadence != quest.recurringCadence {
+                quest.recurringCadence = newCadence
+                quest.availableAt      = newCadence?.currentPeriodStart
+            }
         }
         dismiss()
     }
