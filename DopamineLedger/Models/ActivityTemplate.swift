@@ -124,15 +124,29 @@ struct ActivityTemplate: Identifiable, Hashable {
         // Chargers — Rest & Recovery
         .init(name: "Meditation",    kind: .charger, iconName: "leaf.fill",           category: .rest,          isHighImpact: true,  isHighEnjoyment: true,  toxicity: nil),
         .init(name: "Rest / Nap",    kind: .charger, iconName: "bed.double.fill",     category: .rest,          isHighImpact: false, isHighEnjoyment: true,  toxicity: nil),
-        // Spenders — Leisure
-        .init(name: "Streaming - Netflix",  kind: .spender, iconName: "film.fill",           category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "nflx://",     linkedAppName: "Netflix"),
-        .init(name: "Streaming - YouTube",  kind: .spender, iconName: "tv.fill",             category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "youtube://",  linkedAppName: "YouTube"),
-        .init(name: "Gaming",               kind: .spender, iconName: "gamecontroller.fill", category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium),
-        .init(name: "Light Leisure",        kind: .spender, iconName: "cup.and.saucer.fill", category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .low),
+        // Spenders — Leisure (streaming)
+        .init(name: "Streaming - Netflix",      kind: .spender, iconName: "film.fill",                        category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "nflx://",        linkedAppName: "Netflix"),
+        .init(name: "Streaming - YouTube",      kind: .spender, iconName: "tv.fill",                          category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "youtube://",     linkedAppName: "YouTube"),
+        .init(name: "Streaming - Disney+",      kind: .spender, iconName: "wand.and.stars",                   category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "disneyplus://",  linkedAppName: "Disney+"),
+        .init(name: "Streaming - Prime Video",  kind: .spender, iconName: "play.square.fill",                 category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "aiv://",         linkedAppName: "Prime Video"),
+        .init(name: "Streaming - Hulu",         kind: .spender, iconName: "play.circle.fill",                 category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "hulu://",        linkedAppName: "Hulu"),
+        .init(name: "Streaming - Twitch",       kind: .spender, iconName: "dot.radiowaves.right",             category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "twitch://",      linkedAppName: "Twitch"),
+        // Spenders — Leisure (gaming + light)
+        .init(name: "Gaming",                   kind: .spender, iconName: "gamecontroller.fill",               category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium),
+        .init(name: "Gaming - Roblox",          kind: .spender, iconName: "gamecontroller.fill",               category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "roblox://",      linkedAppName: "Roblox"),
+        .init(name: "Light Leisure",            kind: .spender, iconName: "cup.and.saucer.fill",               category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .low),
+        // Spenders — Leisure (social, lower toxicity)
+        .init(name: "Social - LinkedIn",        kind: .spender, iconName: "briefcase.fill",                    category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "linkedin://",    linkedAppName: "LinkedIn"),
+        .init(name: "Social - Pinterest",       kind: .spender, iconName: "pin.fill",                          category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium, linkedAppScheme: "pinterest://",   linkedAppName: "Pinterest"),
+        // BeReal is once-a-day by design — low toxicity is intentional
+        .init(name: "Social - BeReal",          kind: .spender, iconName: "livephoto",                         category: .leisure,  isHighImpact: nil, isHighEnjoyment: nil, toxicity: .low,    linkedAppScheme: "bereal://",      linkedAppName: "BeReal"),
         // Spenders — High-Risk
-        .init(name: "Social - Instagram",   kind: .spender, iconName: "camera.circle.fill",  category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "instagram://", linkedAppName: "Instagram"),
-        .init(name: "Social - TikTok",      kind: .spender, iconName: "music.note",          category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "tiktok://",    linkedAppName: "TikTok"),
-        .init(name: "Social Media",         kind: .spender, iconName: "message.fill",        category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high),
-        .init(name: "Browsing",             kind: .spender, iconName: "laptopcomputer",      category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium),
+        .init(name: "Social - Instagram",       kind: .spender, iconName: "camera.circle.fill",                category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "instagram://",   linkedAppName: "Instagram"),
+        .init(name: "Social - TikTok",          kind: .spender, iconName: "music.note",                        category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "tiktok://",      linkedAppName: "TikTok"),
+        .init(name: "Social - Twitter / X",     kind: .spender, iconName: "bubble.left.fill",                  category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "twitter://",     linkedAppName: "Twitter / X"),
+        .init(name: "Social - Reddit",          kind: .spender, iconName: "arrow.up.square.fill",              category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "reddit://",      linkedAppName: "Reddit"),
+        .init(name: "Social - Threads",         kind: .spender, iconName: "bubble.left.and.bubble.right.fill", category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high,   linkedAppScheme: "threads://",     linkedAppName: "Threads"),
+        .init(name: "Social Media",             kind: .spender, iconName: "message.fill",                      category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .high),
+        .init(name: "Browsing",                 kind: .spender, iconName: "laptopcomputer",                    category: .highRisk, isHighImpact: nil, isHighEnjoyment: nil, toxicity: .medium),
     ]
 }

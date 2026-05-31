@@ -85,13 +85,28 @@
          schemes regardless of whether the app is installed (iOS 9+ privacy rule). -->
     <key>LSApplicationQueriesSchemes</key>
     <array>
+        <!-- Streaming -->
         <string>youtube</string>
-        <string>twitter</string>
-        <string>instagram</string>
-        <string>snapchat</string>
-        <string>fb</string>
-        <string>tiktok</string>
         <string>nflx</string>
+        <string>disneyplus</string>
+        <string>aiv</string>
+        <string>hulu</string>
+        <string>max</string>
+        <string>twitch</string>
+        <!-- Social -->
+        <string>instagram</string>
+        <string>tiktok</string>
+        <string>threads</string>
+        <string>reddit</string>
+        <string>twitter</string>
+        <string>fb</string>
+        <string>pinterest</string>
+        <string>linkedin</string>
+        <string>snapchat</string>
+        <string>bereal</string>
+        <!-- Gaming -->
+        <string>roblox</string>
+        <!-- Browser -->
         <string>googlechrome</string>
     </array>
 </dict>

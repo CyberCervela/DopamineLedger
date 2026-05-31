@@ -5,6 +5,50 @@
 
 ---
 
+## Session 34 — 2026-05-31
+
+**Focus:** Linked app catalog expansion — 11 new apps, 10 new templates.
+
+**Shipped:** `Models/LinkedApp.swift`, `Models/ActivityTemplate.swift`, `DopamineLedger/Info.plist`.
+
+### LinkedApp catalog (8 → 19 apps)
+
+Catalog reorganised by category (streaming → social → gaming → browser). 11 new entries:
+
+**Streaming:** Disney+ (`disneyplus://`), Prime Video (`aiv://`), Hulu (`hulu://`), Max (`max://`), Twitch (`twitch://`)
+**Social:** Threads (`threads://`), Reddit (`reddit://`), Pinterest (`pinterest://`), LinkedIn (`linkedin://`), BeReal (`bereal://`)
+**Gaming:** Roblox (`roblox://`)
+
+**Schemes with device-test evidence:** Hulu, Twitch, Pinterest, LinkedIn — confirmed in community cataloguing repos. The remainder (Disney+, Prime Video, Max, Threads, Reddit, Roblox, BeReal) are plausible but unverified; `canOpenURL` on device is the definitive test.
+
+**Paramount+ skipped:** The backlog had `cbsallaccess://` (old CBS All Access branding, pre-2021 rebrand). Community sources show Paramount+ now uses HTTPS universal links. No confirmed custom scheme; adding a broken scheme causes every user to see the "not installed" alert. Hold until someone tests `paramountplus://` on device.
+
+**Netflix watch:** `nflx://` stays in catalog. A tvOS breakage was reported in Sept 2025 but not confirmed broken on iOS; monitor.
+
+### ActivityTemplate catalog (19 → 29 entries)
+
+10 new spender templates, all with linked apps pre-wired:
+
+**Leisure — streaming:** Streaming - Disney+, Streaming - Prime Video, Streaming - Hulu, Streaming - Twitch (all medium toxicity, 2.0 cr/min)
+**Leisure — gaming:** Gaming - Roblox (medium, 2.0 cr/min)
+**Leisure — social:** Social - LinkedIn, Social - Pinterest (medium, 2.0 cr/min); Social - BeReal (low, 1.0 cr/min — once-a-day by design, anti-engagement by philosophy)
+**High-risk:** Social - Reddit, Social - Threads (both high toxicity, 10.0 cr/min — infinite-scroll feed design)
+
+### Info.plist
+
+11 new scheme names added to `LSApplicationQueriesSchemes` (matching the new catalog entries). Without this, `canOpenURL` always returns false on iOS 9+.
+
+### Confirmed on simulator
+
+Template gallery renders all new entries with correct icons, rates, and category groupings. Screenshot verified.
+
+**What to pick up next:**
+- Await Apple review; click Release on approval.
+- Execute relicense: PolyForm Noncommercial 1.0.0 for code, CC BY-NC 4.0 for docs (see `RELICENSE-INSTRUCTIONS.md`).
+- Device-test the new URL schemes: tap each new linked app tile in a session to confirm open vs "not installed" alert.
+
+---
+
 ## Session 33 — 2026-05-31
 
 **Focus:** Data integrity — deleting an activity or quest must never erase credit history.

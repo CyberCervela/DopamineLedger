@@ -17,13 +17,28 @@ struct LinkedApp: Identifiable, Equatable {
     let appStoreURL: String
 
     static let catalog: [LinkedApp] = [
-        LinkedApp(id: "youtube://",      name: "YouTube",    sfSymbol: "play.rectangle.fill", appStoreURL: "https://apps.apple.com/app/id544007664"),
-        LinkedApp(id: "twitter://",      name: "Twitter / X",sfSymbol: "bubble.left.fill",    appStoreURL: "https://apps.apple.com/app/id333903271"),
-        LinkedApp(id: "instagram://",    name: "Instagram",  sfSymbol: "camera.circle.fill",  appStoreURL: "https://apps.apple.com/app/id389801252"),
-        LinkedApp(id: "snapchat://",     name: "Snapchat",   sfSymbol: "camera.fill",         appStoreURL: "https://apps.apple.com/app/id447188370"),
-        LinkedApp(id: "fb://",           name: "Facebook",   sfSymbol: "person.2.fill",       appStoreURL: "https://apps.apple.com/app/id284882215"),
-        LinkedApp(id: "tiktok://",       name: "TikTok",     sfSymbol: "music.note",          appStoreURL: "https://apps.apple.com/app/id835599320"),
-        LinkedApp(id: "nflx://",         name: "Netflix",    sfSymbol: "film.fill",           appStoreURL: "https://apps.apple.com/app/id363590051"),
-        LinkedApp(id: "googlechrome://", name: "Chrome",     sfSymbol: "globe",               appStoreURL: "https://apps.apple.com/app/id535886823"),
+        // Streaming
+        LinkedApp(id: "youtube://",      name: "YouTube",      sfSymbol: "play.rectangle.fill",              appStoreURL: "https://apps.apple.com/app/id544007664"),
+        LinkedApp(id: "nflx://",         name: "Netflix",      sfSymbol: "film.fill",                        appStoreURL: "https://apps.apple.com/app/id363590051"),
+        LinkedApp(id: "disneyplus://",   name: "Disney+",      sfSymbol: "wand.and.stars",                   appStoreURL: "https://apps.apple.com/app/id1446075923"),
+        LinkedApp(id: "aiv://",          name: "Prime Video",  sfSymbol: "play.square.fill",                 appStoreURL: "https://apps.apple.com/app/id545519333"),
+        LinkedApp(id: "hulu://",         name: "Hulu",         sfSymbol: "play.circle.fill",                 appStoreURL: "https://apps.apple.com/app/id376510438"),
+        LinkedApp(id: "max://",          name: "Max",          sfSymbol: "play.tv.fill",                     appStoreURL: "https://apps.apple.com/app/id695003446"),
+        LinkedApp(id: "twitch://",       name: "Twitch",       sfSymbol: "dot.radiowaves.right",             appStoreURL: "https://apps.apple.com/app/id460177396"),
+        // Social
+        LinkedApp(id: "instagram://",    name: "Instagram",    sfSymbol: "camera.circle.fill",               appStoreURL: "https://apps.apple.com/app/id389801252"),
+        LinkedApp(id: "tiktok://",       name: "TikTok",       sfSymbol: "music.note",                       appStoreURL: "https://apps.apple.com/app/id835599320"),
+        LinkedApp(id: "threads://",      name: "Threads",      sfSymbol: "bubble.left.and.bubble.right.fill", appStoreURL: "https://apps.apple.com/app/id6446901002"),
+        LinkedApp(id: "reddit://",       name: "Reddit",       sfSymbol: "arrow.up.square.fill",             appStoreURL: "https://apps.apple.com/app/id1064216828"),
+        LinkedApp(id: "twitter://",      name: "Twitter / X",  sfSymbol: "bubble.left.fill",                 appStoreURL: "https://apps.apple.com/app/id333903271"),
+        LinkedApp(id: "fb://",           name: "Facebook",     sfSymbol: "person.2.fill",                    appStoreURL: "https://apps.apple.com/app/id284882215"),
+        LinkedApp(id: "pinterest://",    name: "Pinterest",    sfSymbol: "pin.fill",                         appStoreURL: "https://apps.apple.com/app/id429047995"),
+        LinkedApp(id: "linkedin://",     name: "LinkedIn",     sfSymbol: "briefcase.fill",                   appStoreURL: "https://apps.apple.com/app/id288429040"),
+        LinkedApp(id: "snapchat://",     name: "Snapchat",     sfSymbol: "camera.fill",                      appStoreURL: "https://apps.apple.com/app/id447188370"),
+        LinkedApp(id: "bereal://",       name: "BeReal",       sfSymbol: "livephoto",                        appStoreURL: "https://apps.apple.com/app/id1459645446"),
+        // Gaming
+        LinkedApp(id: "roblox://",       name: "Roblox",       sfSymbol: "gamecontroller.fill",              appStoreURL: "https://apps.apple.com/app/id431946152"),
+        // Browser
+        LinkedApp(id: "googlechrome://", name: "Chrome",       sfSymbol: "globe",                            appStoreURL: "https://apps.apple.com/app/id535886823"),
     ]
 }
