@@ -32,9 +32,13 @@ struct SettingsView: View {
 
     @State private var showPrivacyPolicy: Bool = false
     @State private var activeAlert: SettingsAlert? = nil
+    @State private var isSharePresented: Bool   = false
+    @State private var shareURL:         URL?   = nil
+    @State private var isImporting:      Bool   = false
+    @State private var pendingImport:    ExportData? = nil
 
     private enum SettingsAlert: Identifiable {
-        case wipe, mailFallback
+        case wipe, mailFallback, importConfirm, importError
         var id: Self { self }
     }
     @State private var notifStatus: UNAuthorizationStatus = .notDetermined
@@ -86,6 +90,31 @@ struct SettingsView: View {
         .sheet(isPresented: $showPrivacyPolicy) {
             PrivacyPolicyView()
         }
+        // Share sheet for export — UIActivityViewController wrapped in SwiftUI
+        .sheet(isPresented: $isSharePresented, onDismiss: { shareURL = nil }) {
+            if let url = shareURL {
+                ShareSheetView(url: url)
+            }
+        }
+        // File picker for import — .json type filter matches our backup files
+        .fileImporter(
+            isPresented: $isImporting,
+            allowedContentTypes: [.json],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                guard let url = urls.first else { return }
+                if let data = DataExporter.decodeBackup(from: url) {
+                    pendingImport = data
+                    activeAlert = .importConfirm
+                } else {
+                    activeAlert = .importError
+                }
+            case .failure:
+                activeAlert = .importError
+            }
+        }
         .alert(item: $activeAlert) { alert in
             switch alert {
             case .mailFallback:
@@ -103,6 +132,28 @@ struct SettingsView: View {
                     message: Text(lBundle.l("alert.wipe.message")),
                     primaryButton: .destructive(Text(lBundle.l("alert.wipe.confirm"))) { wipeAllData() },
                     secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
+                )
+            case .importConfirm:
+                return Alert(
+                    title: Text(lBundle.l("alert.import.title")),
+                    message: Text(lBundle.l("alert.import.message")),
+                    primaryButton: .destructive(Text(lBundle.l("alert.import.confirm"))) {
+                        guard let data = pendingImport else { return }
+                        do {
+                            try DataExporter.applyImport(data, context: context)
+                            dismiss()
+                        } catch {
+                            pendingImport = nil
+                            activeAlert = .importError
+                        }
+                    },
+                    secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
+                )
+            case .importError:
+                return Alert(
+                    title: Text(lBundle.l("alert.import.error")),
+                    message: Text(lBundle.l("alert.import.error.message")),
+                    dismissButton: .default(Text(lBundle.l("common.done")))
                 )
             }
         }
@@ -364,26 +415,111 @@ struct SettingsView: View {
 
     private var dangerZoneSection: some View {
         sectionCard(title: lBundle.l("settings.section.danger_zone")) {
-            Button {
-                activeAlert = .wipe
-            } label: {
-                HStack {
-                    VStack(alignment: .leading, spacing: theme.spacing.xxs) {
-                        Text(lBundle.l("settings.wipe.title"))
-                            .font(theme.typography.bodyStrong)
-                            .foregroundStyle(theme.colors.negative)
-                        Text(lBundle.l("settings.wipe.caption"))
-                            .font(theme.typography.caption)
+            VStack(spacing: 0) {
+                // Export
+                Button {
+                    if let url = DataExporter.exportToFile(context: context) {
+                        shareURL = url
+                        isSharePresented = true
+                    }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+                            Text(lBundle.l("settings.export.title"))
+                                .font(theme.typography.bodyStrong)
+                                .foregroundStyle(theme.colors.textPrimary)
+                            Text(lBundle.l("settings.export.caption"))
+                                .font(theme.typography.caption)
+                                .foregroundStyle(theme.colors.textSecondary)
+                        }
+                        Spacer()
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 16))
                             .foregroundStyle(theme.colors.textSecondary)
                     }
-                    Spacer()
-                    Image(systemName: "trash")
-                        .font(.system(size: 16))
-                        .foregroundStyle(theme.colors.negative)
+                    .contentShape(Rectangle())
                 }
-                .contentShape(Rectangle())
+                .buttonStyle(.plain)
+
+                Divider().padding(.vertical, theme.spacing.sm)
+
+                // Import
+                Button { isImporting = true } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+                            Text(lBundle.l("settings.import.title"))
+                                .font(theme.typography.bodyStrong)
+                                .foregroundStyle(theme.colors.textPrimary)
+                            Text(lBundle.l("settings.import.caption"))
+                                .font(theme.typography.caption)
+                                .foregroundStyle(theme.colors.textSecondary)
+                        }
+                        Spacer()
+                        Image(systemName: "square.and.arrow.down")
+                            .font(.system(size: 16))
+                            .foregroundStyle(theme.colors.textSecondary)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+
+                Divider().padding(.vertical, theme.spacing.sm)
+
+                // DEBUG: Load Test Data — reads seed-data.json from the app bundle
+                // via the same import code path as a real user restore. Only compiled
+                // in DEBUG builds; never visible to App Store users.
+                #if DEBUG
+                Button {
+                    if let data = DataExporter.decodeBundleSeed() {
+                        pendingImport = data
+                        activeAlert = .importConfirm
+                    } else {
+                        activeAlert = .importError
+                    }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+                            Text("Load Test Data")
+                                .font(theme.typography.bodyStrong)
+                                .foregroundStyle(theme.colors.accent)
+                            Text("DEBUG — replaces all data with seed-data.json")
+                                .font(theme.typography.caption)
+                                .foregroundStyle(theme.colors.textSecondary)
+                        }
+                        Spacer()
+                        Image(systemName: "ladybug")
+                            .font(.system(size: 16))
+                            .foregroundStyle(theme.colors.accent)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+
+                Divider().padding(.vertical, theme.spacing.sm)
+                #endif
+
+                // Wipe (existing)
+                Button {
+                    activeAlert = .wipe
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: theme.spacing.xxs) {
+                            Text(lBundle.l("settings.wipe.title"))
+                                .font(theme.typography.bodyStrong)
+                                .foregroundStyle(theme.colors.negative)
+                            Text(lBundle.l("settings.wipe.caption"))
+                                .font(theme.typography.caption)
+                                .foregroundStyle(theme.colors.textSecondary)
+                        }
+                        Spacer()
+                        Image(systemName: "trash")
+                            .font(.system(size: 16))
+                            .foregroundStyle(theme.colors.negative)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
     }
 
@@ -510,4 +646,14 @@ struct SettingsView: View {
         .environment(\.theme, NeuTheme())
         .modelContainer(for: [Activity.self, Session.self, ActivityDebt.self, Ledger.self, Quest.self],
                         inMemory: true)
+}
+
+// Thin UIKit wrapper — UIActivityViewController can't be used directly in SwiftUI.
+// Only used for export; import goes through the native .fileImporter modifier.
+private struct ShareSheetView: UIViewControllerRepresentable {
+    let url: URL
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    }
+    func updateUIViewController(_ uvc: UIActivityViewController, context: Context) {}
 }

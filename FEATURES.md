@@ -80,3 +80,4 @@
 | **Digital gatekeeper — linked app** | `done` | Activity editor: link any activity to a native iOS app or website. SessionView shows "Open [App] →" button during running session. canOpenURL + App Store fallback alert. Session 31. Catalog expanded to 19 apps (Session 34). |
 | **Recurring quests** | `done` | Daily / weekly / monthly cadence. Calendar-anchored reset. Silent expiry on skip (no stacking). Done spawns next-period instance with `availableAt` gate. `QuestRow` badge. Session 36. |
 | **Spender rate rebalance** | `done` | Low toxicity 1.0 → 2.0 cr/min, Medium 2.0 → 4.0 cr/min, High unchanged at 10.0. Template defaults only — existing SwiftData activities untouched. Session 36. |
+| **Export / Import** | `done` | Full backup/restore. Settings → Danger Zone → Export (share sheet, JSON) / Import (file picker, replace-all). Round-trip unit test enforces field sync. `#if DEBUG` Load Test Data button. `Services/DataExporter.swift`. Session 39. |

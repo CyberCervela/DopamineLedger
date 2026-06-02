@@ -2037,6 +2037,66 @@
         }
       }
     },
+    "alert.import.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ersetzen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Replace" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reemplazar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "置き換える" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "교체" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "替换" } }
+      }
+    },
+    "alert.import.error" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Import fehlgeschlagen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import Failed" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Error de importación" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec de l'import" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "インポート失敗" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "가져오기 실패" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "导入失败" } }
+      }
+    },
+    "alert.import.error.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Datei konnte nicht gelesen werden. Stellen Sie sicher, dass es eine gültige Dopamine Ledger-Sicherung ist." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The file could not be read. Make sure it's a valid Dopamine Ledger backup." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se pudo leer el archivo. Asegúrese de que sea una copia de seguridad válida de Dopamine Ledger." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible de lire le fichier. Vérifiez qu'il s'agit d'une sauvegarde Dopamine Ledger valide." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファイルを読み込めませんでした。有効なDopamine Ledgerバックアップであることを確認してください。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "파일을 읽을 수 없습니다. 유효한 Dopamine Ledger 백업인지 확인하세요." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "无法读取文件。请确保这是有效的Dopamine Ledger备份文件。" } }
+      }
+    },
+    "alert.import.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle aktuellen Daten werden gelöscht und durch die Sicherung ersetzt. Dies kann nicht rückgängig gemacht werden." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "This will delete all current data and replace it with the backup. This cannot be undone." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esto eliminará todos los datos actuales y los reemplazará con la copia de seguridad. No se puede deshacer." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Toutes les données actuelles seront supprimées et remplacées par la sauvegarde. Cette action est irréversible." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "現在のすべてのデータが削除され、バックアップに置き換えられます。この操作は取り消せません。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "현재 데이터가 모두 삭제되고 백업으로 교체됩니다. 이 작업은 취소할 수 없습니다." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "这将删除所有当前数据并替换为备份内容。此操作无法撤销。" } }
+      }
+    },
+    "alert.import.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Daten ersetzen?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Replace All Data?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Reemplazar todos los datos?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer toutes les données ?" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "すべてのデータを置き換えますか？" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "모든 데이터를 교체하시겠습니까?" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "替换所有数据？" } }
+      }
+    },
     "alert.wipe.confirm" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5372,6 +5432,54 @@
             "value" : "宽松模式"
           }
         }
+      }
+    },
+    "settings.export.caption" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Als Datei, E-Mail oder AirDrop sichern" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Save a backup to Files, email, or AirDrop" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Guardar copia en Archivos, email o AirDrop" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sauvegarder dans Fichiers, e-mail ou AirDrop" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ファイル、メール、またはAirDropに保存" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "파일, 이메일 또는 AirDrop에 저장" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "备份到文件、电子邮件或AirDrop" } }
+      }
+    },
+    "settings.export.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten exportieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Export Data" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Exportar datos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Exporter les données" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "データをエクスポート" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "데이터 내보내기" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "导出数据" } }
+      }
+    },
+    "settings.import.caption" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aus Sicherung wiederherstellen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restore from a backup file" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Restaurar desde copia de seguridad" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Restaurer depuis une sauvegarde" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バックアップから復元" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "백업 파일에서 복원" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "从备份文件恢复" } }
+      }
+    },
+    "settings.import.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten importieren" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Import Data" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Importar datos" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer les données" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "データをインポート" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "데이터 가져오기" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "导入数据" } }
       }
     },
     "settings.legal.disclaimer" : {

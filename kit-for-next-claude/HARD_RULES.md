@@ -88,6 +88,19 @@ applied; views consume them unmodified. See `DESIGN_SYSTEM.md` /
 
 ---
 
+### 9. Export field sync — update DataExporter.swift in the same commit as any @Model field addition
+
+If you add a field to `Activity`, `Session`, `Quest`, `ActivityDebt`, or `Ledger`,
+update the corresponding Export struct (`ActivityExport`, `SessionExport`, etc.) AND
+the `init(_ model:)` extension at the bottom of `DataExporter.swift` in the **same
+commit**. The `testExportImportRoundTrip` unit test enforces this at build time — a
+missing field will import as its zero/nil/false default and an assertion will fail.
+
+Not greppable (field additions by definition don't exist until you add them). The
+test is the enforcement.
+
+---
+
 ## How to add a rule
 
 1. Write it here with a one-line rationale (ideally citing the incident

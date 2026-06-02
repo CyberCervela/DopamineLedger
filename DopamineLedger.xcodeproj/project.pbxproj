@@ -39,6 +39,7 @@
 		95BA0A539B6490F875F51BC5 /* SessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4544B842E7F43616765D9F7 /* SessionView.swift */; };
 		9736840EADEE5C5F8B43078C /* ActivityTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9571C6EC4DF91040C621F88 /* ActivityTemplate.swift */; };
 		A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E384A5EA6024739125C1550C /* AddQuestView.swift */; };
+		A3A7E162DB65380C6870201C /* DataExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D3870ABDB39AD2369ACA42 /* DataExporter.swift */; };
 		A55BFE80ACABC142C58DDEA9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */; };
 		A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */; };
 		A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */; };
@@ -125,6 +126,7 @@
 		A9571C6EC4DF91040C621F88 /* ActivityTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityTemplate.swift; sourceTree = "<group>"; };
 		AAB2943323D5BB42DAA92FB5 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
+		B1D3870ABDB39AD2369ACA42 /* DataExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExporter.swift; sourceTree = "<group>"; };
 		B4303ADDAC9AC075F40B5F97 /* ActivityListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityListView.swift; sourceTree = "<group>"; };
 		BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		BB278EAC2CE14CE56E68910D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 		239FA22A6D5CDABE19B452C7 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B1D3870ABDB39AD2369ACA42 /* DataExporter.swift */,
 				6599E0272A30BC468CA04713 /* LiveActivityService.swift */,
 				1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */,
 				C287E54C5633627752C58610 /* PeakHoursService.swift */,
@@ -447,6 +450,7 @@
 				55DD428459901EA8721E53C1 /* ContentView.swift in Sources */,
 				1F5E779B106F119A2A16C707 /* DashboardStats.swift in Sources */,
 				73B733CFDCD1E5D9A116D712 /* DashboardView.swift in Sources */,
+				A3A7E162DB65380C6870201C /* DataExporter.swift in Sources */,
 				6F22D4B5A3951DD71FB05AC5 /* DebtView.swift in Sources */,
 				CA4B496394C4D54CE3032965 /* DebugSeeder.swift in Sources */,
 				C03B3AB954255FB5CB72A429 /* DopamineLedgerApp.swift in Sources */,

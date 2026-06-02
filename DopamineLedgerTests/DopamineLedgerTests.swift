@@ -425,4 +425,127 @@ final class DopamineLedgerTests: XCTestCase {
     func testNotificationMathReturnsNilForZeroRate() {
         XCTAssertNil(NotificationMath.compute(currentBalance: 50, ratePerSecond: 0))
     }
+
+    // MARK: - Export / Import round-trip
+    // Creates an in-memory store, inserts one of each model with EVERY field set to a
+    // non-default value, runs the full export → encode → decode → import cycle, then
+    // asserts field-by-field equality. If you add a model field and forget to update
+    // DataExporter, the imported value will be the default and this test will fail.
+    @MainActor
+    func testExportImportRoundTrip() throws {
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: config)
+        let ctx = container.mainContext
+
+        // Activity — all fields non-default
+        let act = Activity(name: "Test", kind: .charger, ratePerMinute: 6.0,
+                           iconName: "bolt.fill", category: .focusLearning)
+        act.isArchived      = true
+        act.linkedAppScheme = "notion://"
+        act.linkedAppName   = "Notion"
+        ctx.insert(act)
+
+        // Session — all fields non-default
+        let sess = Session(activityId: act.id)
+        sess.endedAt            = Date(timeIntervalSinceNow: 300)
+        sess.pausedAt           = nil
+        sess.totalPausedSeconds = 45
+        sess.timeMultiplier     = 1.5
+        sess.creditsMoved       = 30.0
+        ctx.insert(sess)
+
+        // Quest — all fields non-default, recurring
+        let q = Quest(name: "Make Bed", payoffCredits: 5.0, iconName: "star",
+                      category: .movement, recurringCadence: .daily)
+        q.isCompleted     = true
+        q.completedAt     = Date(timeIntervalSinceNow: -3600)
+        q.isArchived      = true
+        q.availableAt     = Date(timeIntervalSinceNow: 86400)
+        ctx.insert(q)
+
+        // Debt — all fields non-default
+        let debt = ActivityDebt(activityId: act.id, amount: 12.5)
+        debt.originalAmount = 25.0
+        debt.repaidAt       = Date(timeIntervalSinceNow: -1800)
+        ctx.insert(debt)
+
+        // Ledger
+        let ledger = Ledger.fetchOrCreate(in: ctx)
+        ledger.balance = 420.5
+
+        try ctx.save()
+
+        // ---- Export ----
+        guard let url = DataExporter.exportToFile(context: ctx) else {
+            XCTFail("exportToFile returned nil"); return
+        }
+        guard let exported = DataExporter.decodeBackup(from: url) else {
+            XCTFail("decodeBackup returned nil"); return
+        }
+
+        // ---- Import into a fresh store ----
+        let container2 = try ModelContainer(for: schema, configurations:
+            ModelConfiguration(isStoredInMemoryOnly: true))
+        let ctx2 = container2.mainContext
+        try DataExporter.applyImport(exported, context: ctx2)
+
+        // ---- Assert Activity fields ----
+        let acts = try ctx2.fetch(FetchDescriptor<Activity>())
+        XCTAssertEqual(acts.count, 1)
+        let a2 = acts[0]
+        XCTAssertEqual(a2.id,              act.id)
+        XCTAssertEqual(a2.name,            act.name)
+        XCTAssertEqual(a2.kind,            act.kind)
+        XCTAssertEqual(a2.ratePerSecond,   act.ratePerSecond, accuracy: 0.0001)
+        XCTAssertEqual(a2.iconName,        act.iconName)
+        XCTAssertEqual(a2.category,        act.category)
+        XCTAssertEqual(a2.isArchived,      act.isArchived)
+        XCTAssertEqual(a2.linkedAppScheme, act.linkedAppScheme)
+        XCTAssertEqual(a2.linkedAppName,   act.linkedAppName)
+        XCTAssertEqual(a2.createdAt.timeIntervalSince1970,
+                       act.createdAt.timeIntervalSince1970, accuracy: 1.0)
+
+        // ---- Assert Session fields ----
+        let sessions = try ctx2.fetch(FetchDescriptor<Session>())
+        XCTAssertEqual(sessions.count, 1)
+        let s2 = sessions[0]
+        XCTAssertEqual(s2.id,                 sess.id)
+        XCTAssertEqual(s2.activityId,         sess.activityId)
+        XCTAssertEqual(s2.totalPausedSeconds, sess.totalPausedSeconds, accuracy: 0.01)
+        XCTAssertEqual(s2.timeMultiplier,     sess.timeMultiplier, accuracy: 0.0001)
+        XCTAssertEqual(s2.creditsMoved,       sess.creditsMoved, accuracy: 0.0001)
+        XCTAssertNil(s2.pausedAt)
+        XCTAssertNotNil(s2.endedAt)
+
+        // ---- Assert Quest fields ----
+        let quests = try ctx2.fetch(FetchDescriptor<Quest>())
+        XCTAssertEqual(quests.count, 1)
+        let q2 = quests[0]
+        XCTAssertEqual(q2.id,               q.id)
+        XCTAssertEqual(q2.name,             q.name)
+        XCTAssertEqual(q2.payoffCredits,    q.payoffCredits, accuracy: 0.0001)
+        XCTAssertEqual(q2.iconName,         q.iconName)
+        XCTAssertEqual(q2.category,         q.category)
+        XCTAssertEqual(q2.isCompleted,      q.isCompleted)
+        XCTAssertEqual(q2.isArchived,       q.isArchived)
+        XCTAssertEqual(q2.recurringCadence, q.recurringCadence)
+        XCTAssertNotNil(q2.completedAt)
+        XCTAssertNotNil(q2.availableAt)
+
+        // ---- Assert Debt fields ----
+        let debts = try ctx2.fetch(FetchDescriptor<ActivityDebt>())
+        XCTAssertEqual(debts.count, 1)
+        let d2 = debts[0]
+        XCTAssertEqual(d2.id,             debt.id)
+        XCTAssertEqual(d2.activityId,     debt.activityId)
+        XCTAssertEqual(d2.amount,         debt.amount, accuracy: 0.0001)
+        XCTAssertEqual(d2.originalAmount, debt.originalAmount, accuracy: 0.0001)
+        XCTAssertNotNil(d2.repaidAt)
+
+        // ---- Assert Ledger balance ----
+        let l2 = Ledger.fetchOrCreate(in: ctx2)
+        XCTAssertEqual(l2.balance, 420.5, accuracy: 0.0001)
+    }
 }

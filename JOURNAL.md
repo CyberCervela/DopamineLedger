@@ -5,6 +5,33 @@
 
 ---
 
+## Session 39 — 2026-06-02
+
+**Focus:** Export / Import — full implementation. Confirmed working on device by user.
+
+**Shipped:**
+- New: `DopamineLedger/Services/DataExporter.swift` — pure service, no SwiftUI dependencies. `exportToFile`, `decodeBackup`, `decodeBundleSeed`, `applyImport`. Portable Codable structs (`ExportData`, `ActivityExport`, `SessionExport`, `QuestExport`, `DebtExport`) with String enum raw values so old backups survive future enum case additions. ISO 8601 dates, pretty-printed JSON, schema `version: 1`.
+- Edit: `DopamineLedger/Views/SettingsView.swift` — Danger Zone section now has Export Data + Import Data rows above the existing Wipe row. `#if DEBUG` "Load Test Data" button (reads `seed-data.json` from app bundle via the same `applyImport` code path). Two share/import modifiers on body: `ShareSheetView` (UIKit wrapper) for export, `.fileImporter` for import. Two new alert cases: `importConfirm` (destructive gate) + `importError`.
+- Edit: `DopamineLedger/Localization/Localizable.xcstrings` — 9 new keys × 7 languages: `settings.export.title/caption`, `settings.import.title/caption`, `alert.import.title/message/confirm/error/error.message`.
+- Edit: `DopamineLedgerTests/DopamineLedgerTests.swift` — `testExportImportRoundTrip`: in-memory ModelContainer, every field set to a non-default value, full export→encode→decode→import cycle, field-by-field assertions. 43 tests, 0 failures.
+
+**Key decisions:**
+- Replace-all on import, not merge. Two explicit confirmation gates before data is deleted (file picker confirmation + destructive alert).
+- `#if DEBUG` button is compile-time only — not present in App Store/Release builds. Confirmed on device.
+- Exported user's real device backup (`DopamineLedger-backup.json`): structurally correct. One open session (active at export time) and orphaned `FC7EBE66` sessions (hard-deleted before Session 33's soft-delete) are both handled gracefully — expected behavior.
+- Seed file generation deferred (manual step after TestFlight validation with a friend).
+
+**TestFlight note:** user plans to test cross-device import with a friend. Two paths: (1) if App Store review approved, release and share link; (2) TestFlight External Testing — add friend's email in App Store Connect, submit existing build for Beta Review (~same day).
+
+**HARD_RULES updated:** export field sync rule added — any `@Model` field addition must update `DataExporter.swift` in the same commit; `testExportImportRoundTrip` enforces it at build time.
+
+**What to pick up next:**
+- Check App Store Connect status — if approved, click Release.
+- Seed file: open app (DebugSeeder fires on empty store) → Export → save as `seed-data.json` → add to `DopamineLedger/Debug/` → `make generate` → commit.
+- Cross-device import validation with friend via TestFlight.
+
+---
+
 ## Session 37 — 2026-05-31
 
 **Focus:** Frequency-grouped quest tab.
