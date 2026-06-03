@@ -44,6 +44,8 @@ struct ActivityListView: View {
     @State private var activityMenuFor:     Activity?      = nil
     @State private var activeSession:       Session?       = nil
     @State private var activityToArchive:   Activity?      = nil
+    @State private var activityToAction:    Activity?      = nil
+    @State private var questToAction:       Quest?         = nil
 
     private var ledger: Ledger? { ledgers.first }
     private var totalDebt: Double { debts.reduce(0) { $0 + $1.amount } }
@@ -145,6 +147,28 @@ struct ActivityListView: View {
         }
         .sheet(item: $questToEdit) { quest in
             AddQuestView(mode: .edit(quest))
+        }
+        .sheet(item: $activityToAction) { activity in
+            ActivityActionMenuView(
+                name:              activity.name,
+                editTitleKey:      "activity.action.edit.title",
+                editSubtitleKey:   "activity.action.edit.subtitle",
+                removeTitleKey:    "activity.action.remove.title",
+                removeSubtitleKey: "activity.action.remove.subtitle",
+                onEdit:   { activityToEdit    = activity },
+                onRemove: { activityToArchive = activity }
+            )
+        }
+        .sheet(item: $questToAction) { quest in
+            ActivityActionMenuView(
+                name:              quest.name,
+                editTitleKey:      "quest.action.edit.title",
+                editSubtitleKey:   "quest.action.edit.subtitle",
+                removeTitleKey:    "quest.action.delete.title",
+                removeSubtitleKey: "quest.action.delete.subtitle",
+                onEdit:   { questToEdit = quest },
+                onRemove: { deleteQuest(quest) }
+            )
         }
         .sheet(item: $activityMenuFor) { activity in
             ActivityMenuView(activity: activity) {
@@ -294,8 +318,7 @@ struct ActivityListView: View {
                         debtAmount:      debtAmount(for: activity),
                         balance:         ledger?.balance ?? 0,
                         onTap:           { openActivity(activity) },
-                        onEdit:          { activityToEdit = activity },
-                        onDelete:        { delete(activity) }
+                        onLongPress:     { activityToAction = activity }
                     )
                 }
             }
@@ -425,10 +448,9 @@ struct ActivityListView: View {
                             LazyVStack(spacing: theme.spacing.md) {
                                 ForEach(catQuests) { quest in
                                     QuestRow(
-                                        quest:      quest,
-                                        onComplete: { complete(quest) },
-                                        onEdit:     { questToEdit = quest },
-                                        onDelete:   { deleteQuest(quest) }
+                                        quest:       quest,
+                                        onComplete:  { complete(quest) },
+                                        onLongPress: { questToAction = quest }
                                     )
                                 }
                                 ForEach(catChargers) { activity in
@@ -439,8 +461,7 @@ struct ActivityListView: View {
                                         debtAmount:      debtAmount(for: activity),
                                         balance:         ledger?.balance ?? 0,
                                         onTap:           { openActivity(activity) },
-                                        onEdit:          { activityToEdit = activity },
-                                        onDelete:        { delete(activity) }
+                                        onLongPress:     { activityToAction = activity }
                                     )
                                 }
                                 ForEach(catSpenders) { activity in
@@ -451,8 +472,7 @@ struct ActivityListView: View {
                                         debtAmount:      debtAmount(for: activity),
                                         balance:         ledger?.balance ?? 0,
                                         onTap:           { openActivity(activity) },
-                                        onEdit:          { activityToEdit = activity },
-                                        onDelete:        { delete(activity) }
+                                        onLongPress:     { activityToAction = activity }
                                     )
                                 }
                             }
@@ -495,10 +515,9 @@ struct ActivityListView: View {
                 LazyVStack(spacing: theme.spacing.md) {
                     ForEach(quests) { quest in
                         QuestRow(
-                            quest:      quest,
-                            onComplete: { complete(quest) },
-                            onEdit:     { questToEdit = quest },
-                            onDelete:   { deleteQuest(quest) }
+                            quest:       quest,
+                            onComplete:  { complete(quest) },
+                            onLongPress: { questToAction = quest }
                         )
                     }
                 }
@@ -562,11 +581,11 @@ private struct ActivityRow: View {
     let anySessionActive: Bool
     let debtAmount:      Double
     let balance:         Double
-    let onTap:    () -> Void
-    let onEdit:   () -> Void
-    let onDelete: () -> Void
+    let onTap:       () -> Void
+    let onLongPress: () -> Void
 
     @State private var pulsing = false
+    @GestureState private var isLongPressing = false
 
     private var ratePerMinute: Double { activity.ratePerSecond * 60 }
     private var iconColor: Color {
@@ -655,19 +674,21 @@ private struct ActivityRow: View {
                 )
         )
         .contentShape(Rectangle())
+        .scaleEffect(isLongPressing ? 0.97 : 1.0)
+        .animation(.easeInOut(duration: 0.15), value: isLongPressing)
         .onTapGesture { onTap() }
+        .simultaneousGesture(
+            LongPressGesture(minimumDuration: 0.4)
+                .updating($isLongPressing) { value, state, _ in state = value }
+                .onEnded { _ in
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    onLongPress()
+                }
+        )
         .onAppear {
             guard isActive else { return }
             withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
                 pulsing = true
-            }
-        }
-        .contextMenu {
-            Button { onEdit() } label: {
-                Label(lBundle.l("common.edit"), systemImage: "pencil")
-            }
-            Button(role: .destructive) { onDelete() } label: {
-                Label(lBundle.l("common.delete"), systemImage: "trash")
             }
         }
     }
@@ -679,9 +700,10 @@ private struct QuestRow: View {
     @Environment(\.theme)          private var theme
     @Environment(\.languageBundle) private var lBundle
     let quest:      Quest
-    let onComplete: () -> Void
-    let onEdit:     () -> Void
-    let onDelete:   () -> Void
+    let onComplete:  () -> Void
+    let onLongPress: () -> Void
+
+    @GestureState private var isLongPressing = false
 
     var body: some View {
         HStack(spacing: theme.spacing.md) {
@@ -734,14 +756,16 @@ private struct QuestRow: View {
         }
         .padding(theme.spacing.lg)
         .neuCard()
-        .contextMenu {
-            Button { onEdit() } label: {
-                Label(lBundle.l("common.edit"), systemImage: "pencil")
-            }
-            Button(role: .destructive) { onDelete() } label: {
-                Label(lBundle.l("common.delete"), systemImage: "trash")
-            }
-        }
+        .scaleEffect(isLongPressing ? 0.97 : 1.0)
+        .animation(.easeInOut(duration: 0.15), value: isLongPressing)
+        .simultaneousGesture(
+            LongPressGesture(minimumDuration: 0.4)
+                .updating($isLongPressing) { value, state, _ in state = value }
+                .onEnded { _ in
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    onLongPress()
+                }
+        )
     }
 }
 

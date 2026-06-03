@@ -73,6 +73,102 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "删除\"%@\"？" } }
       }
     },
+    "activity.action.edit.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktivität bearbeiten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit Activity" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar actividad" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier l'activité" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "活動を編集" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활동 편집" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编辑活动" } }
+      }
+    },
+    "activity.action.edit.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Name, Rate, Symbol oder verknüpfte App ändern" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Adjust name, rate, icon, or linked app" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cambiar nombre, tasa, ícono o app vinculada" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier le nom, le taux, l'icône ou l'app liée" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前・レート・アイコン・リンクアプリを変更" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이름, 요금, 아이콘 또는 연결된 앱 변경" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "更改名称、速率、图标或关联应用" } }
+      }
+    },
+    "activity.action.remove.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktivität entfernen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remove Activity" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Eliminar actividad" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer l'activité" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "活動を削除" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "활동 삭제" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "删除活动" } }
+      }
+    },
+    "activity.action.remove.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Chronik und Statistiken bleiben erhalten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "History and stats are kept" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "El historial y estadísticas se conservan" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L'historique et les stats sont conservés" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "履歴と統計は保持されます" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "기록과 통계는 유지됩니다" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "历史记录和统计数据将保留" } }
+      }
+    },
+    "quest.action.edit.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Quest bearbeiten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Edit Quest" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar misión" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier la quête" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "クエストを編集" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "퀘스트 편집" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "编辑任务" } }
+      }
+    },
+    "quest.action.edit.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Name, Belohnung oder Kategorie ändern" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Adjust name, payoff, or category" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cambiar nombre, recompensa o categoría" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier le nom, la récompense ou la catégorie" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "名前・報酬・カテゴリを変更" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이름, 보상 또는 카테고리 변경" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "更改名称、奖励或类别" } }
+      }
+    },
+    "quest.action.delete.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Quest löschen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Delete Quest" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Eliminar misión" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer la quête" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "クエストを削除" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "퀘스트 삭제" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "删除任务" } }
+      }
+    },
+    "quest.action.delete.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bereits verdiente Credits bleiben erhalten" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Credits already earned are kept" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Los créditos ya ganados se conservan" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les crédits déjà gagnés sont conservés" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "すでに獲得したクレジットは保持されます" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "이미 획득한 크레딧은 유지됩니다" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已获得的积分将保留" } }
+      }
+    },
     "activity.add.create.own" : {
       "extractionState" : "manual",
       "localizations" : {

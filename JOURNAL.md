@@ -5,6 +5,28 @@
 
 ---
 
+## Session 48 — 2026-06-03
+
+**Focus:** Polish — replace iOS system context menu on activity/quest rows with a neumorphic long-press action sheet; rename NeuTheme display name from "Minimal" to "Dopamine".
+
+**Shipped:**
+- New: `DopamineLedger/Views/ActivityActionMenuView.swift` — neumorphic sheet (same pattern as `ActivityAddChoiceView`): cancel button + activity/quest name in header, Edit card (pencil, accent color) + Remove/Delete card (trash, negative color), `.presentationDetents([.height(280)])`. Fully theme-aware — in the Dopamine theme it renders bilateral-shadow cards; in the System theme the `shadowDark`/`shadowLight` tokens are `.clear` so the cards look like native iOS grouped cells.
+- Edit: `DopamineLedger/Views/ActivityListView.swift` — removed `.contextMenu` from `ActivityRow` and `QuestRow`. Replaced `onEdit`/`onDelete` callbacks with a single `onLongPress`. Added `@GestureState var isLongPressing` + `LongPressGesture(minimumDuration: 0.4)` using `.simultaneousGesture` (preserves tap-to-open). Press-in animation: `scaleEffect(isLongPressing ? 0.97 : 1.0)`. `onEnded` fires `UIImpactFeedbackGenerator(style: .medium)` then `onLongPress()`. Added `@State var activityToAction` / `questToAction` + two new `.sheet(item:)` bindings. All 5 row call sites updated.
+- Edit: `DopamineLedger/Localization/Localizable.xcstrings` — 8 new keys × 7 languages: `activity.action.edit.title/subtitle`, `activity.action.remove.title/subtitle`, `quest.action.edit.title/subtitle`, `quest.action.delete.title/subtitle`.
+- Edit: `DopamineLedger/NeuTheme.swift` — `displayName` changed from `"Minimal"` to `"Dopamine"`. Settings → Appearance now shows **Dopamine · System**.
+
+**Why the press-in instead of iOS lift:** The system `.contextMenu` produces a white floating card + upward lift animation — both clash with the neumorphic surface (cool gray background, bilateral shadows). The neumorphic "language" is tactile: things press in, not float up. Scale to 0.97 on hold gives the same physical signal the system lift does, but in the correct direction for this design system.
+
+**Theme compatibility note:** The `ActivityActionMenuView` uses only theme tokens — no hardcoded colors, fonts, or shadows. In SystemTheme both `shadowDark` and `shadowLight` are `.clear` (fixed Session 46), so the cards render as flat white-on-gray without any extra code.
+
+**Confirmed on device:** Haptic feedback fires, scale animation visible, sheet presents correctly, Edit and Remove both route through the existing `activityToEdit` / `activityToArchive` paths (no logic change — only the trigger point moved).
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 backlog: #1 (release on approval), #2 (verify icon fix on device), #7 (performance audit).
+
+---
+
 ## Session 47 — 2026-06-03
 
 **Focus:** Tech debt — integration tests for ledger-mutating flows (v1.1 item #4).
