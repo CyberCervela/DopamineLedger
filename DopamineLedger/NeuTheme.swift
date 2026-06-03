@@ -17,7 +17,7 @@ import SwiftUI
 
 struct NeuTheme: Theme {
     let id          = "neu"
-    let displayName = "Minimal"
+    let displayName = "Dopamine"
 
     let colors = ThemeColors(
         background:      Color(red: 0.910, green: 0.910, blue: 0.933),
