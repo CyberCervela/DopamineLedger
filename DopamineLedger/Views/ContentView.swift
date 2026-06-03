@@ -48,10 +48,7 @@ private struct NeuTabBar: View {
             tabButton(.history, icon: .history, labelKey: "tab.history")
         }
         .padding(.vertical, theme.spacing.sm)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
-        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .neuCard(.lg)
         .padding(.horizontal, theme.spacing.lg)
         .padding(.bottom, theme.spacing.sm)
         // Top buffer matches the lg (16pt) gap the filter bar leaves below itself,

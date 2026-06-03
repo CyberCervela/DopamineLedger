@@ -646,10 +646,7 @@ private struct ActivityRow: View {
                 .foregroundStyle(theme.colors.accent)
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
         .overlay(
             RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
                 .strokeBorder(
@@ -736,10 +733,7 @@ private struct QuestRow: View {
             .buttonStyle(.plain)
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
         .contextMenu {
             Button { onEdit() } label: {
                 Label(lBundle.l("common.edit"), systemImage: "pencil")

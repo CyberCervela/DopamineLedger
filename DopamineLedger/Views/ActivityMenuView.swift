@@ -125,10 +125,7 @@ struct ActivityMenuView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(theme.spacing.xl)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
-        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .neuCard(.lg)
     }
 
     private var actionRow: some View {
@@ -163,10 +160,7 @@ struct ActivityMenuView: View {
                         .foregroundStyle(theme.colors.textPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, theme.spacing.md)
-                        .background(theme.colors.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                        .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
-                        .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+                        .neuCard(.sm)
                 }
                 .buttonStyle(.plain)
             }
@@ -190,10 +184,7 @@ struct ActivityMenuView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(theme.spacing.xl)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
-        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .neuCard(.lg)
     }
 
     private var clearedState: some View {

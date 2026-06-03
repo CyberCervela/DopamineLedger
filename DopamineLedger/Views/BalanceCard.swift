@@ -68,10 +68,7 @@ struct BalanceCard: View {
             }
         }
         .padding(theme.spacing.xl)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
-        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .neuCard(.lg)
         .onAppear {
             // Set without animation so the number doesn't roll on first render.
             animatedBalance = balance

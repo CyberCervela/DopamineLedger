@@ -108,10 +108,7 @@ struct ActivityAddChoiceView: View {
                     .foregroundStyle(theme.colors.textSecondary.opacity(0.5))
             }
             .padding(theme.spacing.lg)
-            .background(theme.colors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-            .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-            .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+            .neuCard()
         }
         .buttonStyle(.plain)
     }

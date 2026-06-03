@@ -198,10 +198,7 @@ private struct SummaryCard: View {
             }
         }
         .padding(theme.spacing.xl)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
-        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .neuCard(.lg)
     }
 }
 
@@ -298,10 +295,7 @@ private struct ActivitySummaryRow: View {
                 .foregroundStyle(creditsColor)
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 }
 
@@ -341,10 +335,7 @@ private struct CompletedQuestRow: View {
                 .foregroundStyle(theme.colors.positive)
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 }
 

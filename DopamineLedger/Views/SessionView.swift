@@ -159,10 +159,7 @@ struct SessionView: View {
                         .foregroundStyle(theme.colors.textSecondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, theme.spacing.md)
-                        .background(theme.colors.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                        .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
-                        .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+                        .neuCard(.sm)
                     }
                     .buttonStyle(.plain)
                 }
@@ -175,10 +172,7 @@ struct SessionView: View {
                         .foregroundStyle(paused ? theme.colors.positive : theme.colors.textPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, theme.spacing.md)
-                        .background(theme.colors.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                        .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
-                        .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+                        .neuCard(.sm)
                 }
                 .buttonStyle(.plain)
 

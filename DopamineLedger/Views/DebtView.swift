@@ -83,10 +83,7 @@ struct DebtView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(theme.spacing.xl)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 10, x: -6, y: -6)
-        .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
+        .neuCard(.lg)
     }
 
     @ViewBuilder
@@ -138,10 +135,7 @@ struct DebtView: View {
             .disabled(!canRepay)
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 
     private var emptyState: some View {

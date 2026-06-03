@@ -106,10 +106,7 @@ struct PrivacyPolicyView: View {
             .foregroundStyle(theme.colors.accent)
             .frame(maxWidth: .infinity)
             .padding(theme.spacing.md)
-            .background(theme.colors.surface)
-            .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-            .shadow(color: theme.colors.shadowLight, radius: 6, x: -4, y: -4)
-            .shadow(color: theme.colors.shadowDark,  radius: 6, x:  4, y:  4)
+            .neuCard(.sm)
         }
         .padding(.bottom, theme.spacing.md)
     }

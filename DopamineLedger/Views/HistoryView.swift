@@ -274,10 +274,7 @@ private struct SessionHistoryRow: View {
             }
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 
     private var subtitleText: String {
@@ -410,10 +407,7 @@ private struct BundledSessionHistoryRow: View {
                 .padding(.bottom, theme.spacing.sm)
             }
         }
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 }
 
@@ -506,10 +500,7 @@ private struct QuestHistoryRow: View {
                 .foregroundStyle(theme.colors.positive)
         }
         .padding(theme.spacing.lg)
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 }
 

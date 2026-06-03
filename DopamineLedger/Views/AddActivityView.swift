@@ -206,10 +206,7 @@ struct AddActivityView: View {
                             }
                         }
                         .padding(theme.spacing.md)
-                        .background(theme.colors.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-                        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+                        .neuCard()
                     }
 
                     // Guidance section — toggles or toxicity picker that auto-fill the rate below.
@@ -418,10 +415,7 @@ struct AddActivityView: View {
                 binding:  $isHighEnjoyment
             )
         }
-        .background(theme.colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-        .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-        .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+        .neuCard()
     }
 
     @ViewBuilder
@@ -559,10 +553,7 @@ struct AddActivityView: View {
             label(labelText)
             content()
                 .padding(theme.spacing.lg)
-                .background(theme.colors.surface)
-                .clipShape(RoundedRectangle(cornerRadius: theme.spacing.cornerRadius))
-                .shadow(color: theme.colors.shadowLight, radius: 8, x: -5, y: -5)
-                .shadow(color: theme.colors.shadowDark,  radius: 8, x:  5, y:  5)
+                .neuCard()
         }
     }
 
