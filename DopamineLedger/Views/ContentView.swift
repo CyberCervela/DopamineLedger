@@ -54,6 +54,11 @@ private struct NeuTabBar: View {
         .shadow(color: theme.colors.shadowDark,  radius: 10, x:  6, y:  6)
         .padding(.horizontal, theme.spacing.lg)
         .padding(.bottom, theme.spacing.sm)
+        // Top buffer matches the lg (16pt) gap the filter bar leaves below itself,
+        // giving the last list row symmetrical breathing room before the pill.
+        // The solid background covers the buffer + gutters + home-indicator strip.
+        .padding(.top, theme.spacing.lg)
+        .background(theme.colors.background.ignoresSafeArea(.container, edges: .bottom))
     }
 
     @ViewBuilder
