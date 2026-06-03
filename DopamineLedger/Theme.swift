@@ -132,31 +132,23 @@ struct SystemTheme: Theme {
     let displayName = "System"
 
     let colors = ThemeColors(
-        background:      Color(.systemBackground),
-        surface:         Color(.secondarySystemBackground),
-        surfaceElevated: Color(.tertiarySystemBackground),
+        // systemGroupedBackground (gray) as the page canvas, secondarySystemGroupedBackground
+        // (white) as the card surface — the same pairing Apple uses in Settings and other
+        // inset-grouped list UIs. Cards read as raised purely from white-on-gray contrast;
+        // no shadows needed.
+        background:      Color(.systemGroupedBackground),
+        surface:         Color(.secondarySystemGroupedBackground),
+        surfaceElevated: Color(.tertiarySystemGroupedBackground),
         textPrimary:     Color(.label),
         textSecondary:   Color(.secondaryLabel),
         textOnAccent:    .white,
         accent:          .accentColor,
-        positive:        .green,
+        positive:        .accentColor,  // match the STOP button — both pull from the same green
         negative:        .red,
         neutral:         .blue,
         divider:         Color(.separator),
-        // Adaptive shadows: light mode gets the standard neumorphic pair;
-        // dark mode flips to values that don't produce white blobs on dark surfaces.
-        // Color(uiColor:) resolves at render time from the active trait collection —
-        // the same mechanism used by Color(.systemBackground).
-        shadowDark: Color(uiColor: UIColor { trait in
-            trait.userInterfaceStyle == .dark
-                ? UIColor.black.withAlphaComponent(0.40)
-                : UIColor.black.withAlphaComponent(0.15)
-        }),
-        shadowLight: Color(uiColor: UIColor { trait in
-            trait.userInterfaceStyle == .dark
-                ? UIColor.white.withAlphaComponent(0.08)
-                : UIColor.white.withAlphaComponent(0.70)
-        })
+        shadowDark:      .clear,
+        shadowLight:     .clear
     )
 
     let typography = ThemeTypography(

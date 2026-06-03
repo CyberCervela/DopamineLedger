@@ -5,6 +5,37 @@
 
 ---
 
+## Session 46 — 2026-06-03
+
+**Focus:** Polish — make SystemTheme look genuinely Apple-native, not neumorphic-with-system-colors.
+
+**Shipped:** `DopamineLedger/Theme.swift` — three token changes in `SystemTheme.colors`.
+
+**Problem:** SystemTheme was visually a hybrid: neumorphic bilateral shadows on top of iOS system colors. The background/surface colors were also inverted relative to what Apple uses — white background with gray cards, when Apple's inset-grouped UI (Settings, etc.) uses a gray background with white cards.
+
+**Fix 1 — Background/surface swap to grouped semantic colors:**
+- `background: Color(.systemBackground)` → `Color(.systemGroupedBackground)` (the gray canvas)
+- `surface: Color(.secondarySystemBackground)` → `Color(.secondarySystemGroupedBackground)` (white cards)
+- `surfaceElevated` → `Color(.tertiarySystemGroupedBackground)`
+
+These are the exact UIKit semantic colors Apple uses for inset-grouped lists. Cards now read as raised from white-on-gray contrast, not shadows.
+
+**Fix 2 — Remove all shadows:**
+- `shadowDark` and `shadowLight` both set to `.clear`. Color contrast does the work; no shadow layer needed.
+
+**Fix 3 — Green consistency:**
+- `positive: .green` → `positive: .accentColor`. The charger icon, credits counter, and STOP button were two different greens (Apple system green vs. the app's accent mint). Now all three pull from `.accentColor` — same shade throughout.
+
+**NeuTheme and PixelArtTheme unchanged.**
+
+**Confirmed on simulator:** SystemTheme light + dark mode both look Apple-native. Session view icon, counter, and STOP button all match green.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 item #4: integration tests for ledger-mutating flows.
+
+---
+
 ## Session 45 — 2026-06-03
 
 **Focus:** Polish fix — dark mode neumorphic shadows broken in SystemTheme.
