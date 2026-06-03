@@ -285,6 +285,12 @@ fastlane/test_output
 *.env
 .env.local
 
+# Personal data export — contains real user activity/session data; never publish
+DopamineLedger-backup.json
+
+# Round 1 archive — kept locally for reference, too large for r2 repo
+ARCHIVED (INTIAL DL project)/
+
 # PixelLab generated PNGs — keep committed unless you want regeneration to be the source of truth
 # (uncomment the next line if you decide PixelLab is the source of truth)
 # PixelArt/generated/
