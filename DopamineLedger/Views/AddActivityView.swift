@@ -611,6 +611,7 @@ struct AddActivityView: View {
                 existing.ratePerSecond = rate / 60.0
                 existing.iconName      = iconName
                 existing.category      = category
+                existing.isArchived    = false   // restore if previously removed
                 saved = existing
             } else {
                 let a = Activity(name: trimmed, kind: kind, ratePerMinute: rate, iconName: iconName, category: category)
