@@ -46,7 +46,7 @@ Items deferred from active development. Verify or ship when ready.
 | 1 | ops | **Release v1.0** | After Apple approval: click "Release this version" in App Store Connect. Then submit v1.1 build. |
 | 2 | ops | **Verify icon fix** | Session 21 fixed ActivityMenuView + DebtView to show the user's chosen icon. Confirm Gaming shows `gamecontroller.fill` (not hourglass) in both sheets on device/simulator. |
 | 3 | polish | **Tab bar — content scrolls behind it** | ✅ Done — Session 43. Solid background backing on NeuTabBar; lg top buffer. |
-| 4 | tech debt | **Integration tests for ledger-mutating flows** | SessionFinalizer.finalize and the repay flows have zero test coverage. Add tests with an in-memory ModelContainer. |
+| 4 | tech debt | **Integration tests for ledger-mutating flows** | ✅ Done — Session 47. 3 new tests (finalizer charger, finalizer spender overrun, repay partial). 46 tests total, 0 failures. |
 | 5 | tech debt | **Extract `.neuCard()` view modifier** | ✅ Done — Session 44. `NeuCardModifier.swift`, 3 sizes (.lg/.md/.sm), ~26 sites replaced. |
 | 6 | polish | **Dark mode fix — SystemTheme shadows** | ✅ Done — Session 45. Adaptive `Color(uiColor:)` tokens in `SystemTheme`; all ~50 shadow sites fixed. |
 | 7 | tech debt | **Performance audit with Instruments** | Measure before any optimisation. Physical device only. See Post-v1.1 entry for full spec. |

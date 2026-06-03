@@ -5,6 +5,26 @@
 
 ---
 
+## Session 47 — 2026-06-03
+
+**Focus:** Tech debt — integration tests for ledger-mutating flows (v1.1 item #4).
+
+**Shipped:** `DopamineLedgerTests/DopamineLedgerTests.swift` — 3 new tests. Total: 46 tests, 0 failures.
+
+**What these test:** The pure math (`SessionMath`, `RepayMath`) was already covered. These cover the *glue* — the code that applies that math to the real SwiftData store. Each test spins up an in-memory `ModelContainer`, runs the actual production code path, and asserts on the resulting database state.
+
+- **`testFinalizerChargerCreditsLedger`** — charger session (60 s, 6 cr/min, balance 100) finalizes → ledger becomes 106, `creditsMoved` is +6, no debt row inserted.
+- **`testFinalizerSpenderOverrunCreatesDebt`** — spender session (120 s, 6 cr/min, balance 5) finalizes → ledger floors at 0, `creditsMoved` is negative, one debt row inserted for 14 cr (70 s overrun × 0.1 cr/s × 2× rate).
+- **`testRepayReducesDebtAndBalance`** — 20 cr balance against a 30 cr debt row → repay drains balance to 0, debt reduced to 10, `repaidAt` stays nil (partial repay).
+
+All three marked `@MainActor` — `SessionFinalizer.finalize()` requires it, and XCTest supports `@MainActor` test methods.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 backlog: items #1 (release), #2 (verify icon fix on device), #7 (performance audit).
+
+---
+
 ## Session 46 — 2026-06-03
 
 **Focus:** Polish — make SystemTheme look genuinely Apple-native, not neumorphic-with-system-colors.

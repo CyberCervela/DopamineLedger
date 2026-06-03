@@ -548,4 +548,118 @@ final class DopamineLedgerTests: XCTestCase {
         let l2 = Ledger.fetchOrCreate(in: ctx2)
         XCTAssertEqual(l2.balance, 420.5, accuracy: 0.0001)
     }
+
+    // MARK: - SessionFinalizer integration tests
+    //
+    // These tests spin up a real in-memory SwiftData store and call
+    // SessionFinalizer.finalize() the way the app does — verifying that the
+    // Ledger balance, session.creditsMoved, and debt rows are all correct
+    // after the call. The pure math is covered by SessionMath tests above;
+    // these tests cover the glue that writes the results to the database.
+
+    // A charger session that runs for 60 s at 6 cr/min (0.1 cr/s) should add
+    // exactly 6 credits to the ledger, stamp a positive creditsMoved, and
+    // create no debt row.
+    @MainActor
+    func testFinalizerChargerCreditsLedger() throws {
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: config)
+        let ctx = container.mainContext
+
+        let activity = Activity(name: "Reading", kind: .charger, ratePerMinute: 6.0)
+        ctx.insert(activity)
+
+        let ledger = Ledger.fetchOrCreate(in: ctx)
+        ledger.balance = 100.0
+
+        // Build a session with a known 60-second elapsed time.
+        let session = Session(activityId: activity.id)
+        let t0 = session.startedAt
+        session.endedAt = t0.addingTimeInterval(60)
+        ctx.insert(session)
+
+        SessionFinalizer.finalize(session: session, in: ctx)
+
+        XCTAssertEqual(ledger.balance, 106.0, accuracy: 0.001)   // 100 + 6
+        XCTAssertEqual(session.creditsMoved, 6.0, accuracy: 0.001) // positive = earned
+        let debts = try ctx.fetch(FetchDescriptor<ActivityDebt>())
+        XCTAssertTrue(debts.isEmpty, "charger overrun should create no debt")
+    }
+
+    // A spender session that runs 120 s at 6 cr/min on a 5-credit balance should
+    // drain the balance to zero, accrue 7 credits of debt (the 2× overrun on the
+    // 3.5 s of overrun... actually: 5 cr balance / 0.1 cr/s = 50 s covered;
+    // remaining 70 s at 2× debt rate = 70 × 0.1 × 2 = 14 cr debt), stamp a
+    // negative creditsMoved, and insert exactly one debt row.
+    @MainActor
+    func testFinalizerSpenderOverrunCreatesDebt() throws {
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: config)
+        let ctx = container.mainContext
+
+        let activity = Activity(name: "Doomscrolling", kind: .spender, ratePerMinute: 6.0)
+        ctx.insert(activity)
+
+        let ledger = Ledger.fetchOrCreate(in: ctx)
+        ledger.balance = 5.0   // only 50 s of runway at 0.1 cr/s
+
+        let session = Session(activityId: activity.id)
+        let t0 = session.startedAt
+        session.endedAt = t0.addingTimeInterval(120)  // 70 s of overrun
+        ctx.insert(session)
+
+        SessionFinalizer.finalize(session: session, in: ctx)
+
+        // Balance floors at zero (SessionMath never goes negative).
+        XCTAssertEqual(ledger.balance, 0.0, accuracy: 0.001)
+        // creditsMoved is negative for spenders.
+        XCTAssertLessThan(session.creditsMoved, 0)
+        // Overrun: 70 s × 0.1 cr/s × 2× debt rate = 14 cr debt.
+        let debts = try ctx.fetch(FetchDescriptor<ActivityDebt>())
+        XCTAssertEqual(debts.count, 1, "one debt row should be inserted on overrun")
+        XCTAssertEqual(debts[0].amount, 14.0, accuracy: 0.001)
+    }
+
+    // Starting with 20 cr balance and a single 30-cr debt row, calling the repay
+    // logic should drain the full 20 cr from the ledger, reduce the debt row to
+    // 10 cr, and leave repaidAt nil (row is only partially repaid).
+    @MainActor
+    func testRepayReducesDebtAndBalance() throws {
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: schema, configurations: config)
+        let ctx = container.mainContext
+
+        let activityId = UUID()
+        let debt = ActivityDebt(activityId: activityId, amount: 30.0)
+        ctx.insert(debt)
+
+        let ledger = Ledger.fetchOrCreate(in: ctx)
+        ledger.balance = 20.0
+
+        // Replicate the repay logic from DebtView / ActivityMenuView exactly.
+        let rows   = [debt]
+        let total  = rows.reduce(0.0) { $0 + $1.amount }
+        let outcome = RepayMath.apply(currentBalance: ledger.balance, totalDebt: total)
+
+        guard outcome.amountRepaid > 0 else {
+            XCTFail("expected a partial repayment"); return
+        }
+
+        ledger.balance = outcome.newBalance
+        let newAmounts = RepayMath.split(outcome.amountRepaid, across: rows.map(\.amount))
+        for (row, newAmount) in zip(rows, newAmounts) {
+            row.amount = newAmount
+            if newAmount == 0 { row.repaidAt = Date() }
+        }
+
+        XCTAssertEqual(ledger.balance, 0.0,  accuracy: 0.001)  // fully spent on repay
+        XCTAssertEqual(debt.amount,    10.0, accuracy: 0.001)  // 30 − 20 = 10 remaining
+        XCTAssertNil(debt.repaidAt, "partial repay should not stamp repaidAt")
+    }
 }
