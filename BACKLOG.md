@@ -23,7 +23,7 @@ Items deferred from active development. Verify or ship when ready.
 
 | Item | Notes |
 |---|---|
-| **Dark mode fix — SystemTheme neumorphic shadows** | Dark mode is currently broken: the neumorphic dual-shadow pattern (light shadow top-left + dark shadow bottom-right) is designed for light surfaces and inverts badly on dark backgrounds — producing bright white blobs on dark cards. Root cause: shadow colors in `NeuTheme`/`SystemTheme` are hardcoded to light-mode values and don't adapt to `colorScheme`. Fix requires a thorough audit of every shadow call site and defining a separate shadow token pair for dark mode (in dark mode the "light" shadow should be a subtly lighter tint of the surface, not white). This is a full dedicated session — not a quick patch. Do **not** mix with any feature work. Prerequisite: extract `.neuCard()` modifier first (tech debt item) so there is one place to fix rather than 15+. |
+| **Dark mode fix — SystemTheme neumorphic shadows** | ✅ Done — Session 45. Adaptive `Color(uiColor:)` tokens in `SystemTheme`. |
 | Sheet header buttons (Cancel / Save / Done) neumorphic styling | Buttons have correct pill shape but the header row sits slightly above the scroll content with a visible seam. Root cause: `.presentationBackground` + plain VStack doesn't fully match the navigation bar treatment. Investigate `UISheetPresentationController` background or a sticky-header approach inside the ScrollView. Low priority — buttons are functional and legible. |
 | Consolidate `formatDuration` helper | Duplicated in `ActivityListView.swift` and `SessionView.swift`. Extract to a shared `DurationFormatter.swift` or extension on `TimeInterval`. Zero user-visible impact — purely internal cleanup. |
 
@@ -47,8 +47,8 @@ Items deferred from active development. Verify or ship when ready.
 | 2 | ops | **Verify icon fix** | Session 21 fixed ActivityMenuView + DebtView to show the user's chosen icon. Confirm Gaming shows `gamecontroller.fill` (not hourglass) in both sheets on device/simulator. |
 | 3 | polish | **Tab bar — content scrolls behind it** | ✅ Done — Session 43. Solid background backing on NeuTabBar; lg top buffer. |
 | 4 | tech debt | **Integration tests for ledger-mutating flows** | SessionFinalizer.finalize and the repay flows have zero test coverage. Add tests with an in-memory ModelContainer. |
-| 5 | tech debt | **Extract `.neuCard()` view modifier** | Prerequisite for dark mode fix. Kills 15+ duplicate shadow call sites. |
-| 6 | polish | **Dark mode fix — SystemTheme shadows** | Prerequisite: item 5. Full dedicated session — do not mix with other work. |
+| 5 | tech debt | **Extract `.neuCard()` view modifier** | ✅ Done — Session 44. `NeuCardModifier.swift`, 3 sizes (.lg/.md/.sm), ~26 sites replaced. |
+| 6 | polish | **Dark mode fix — SystemTheme shadows** | ✅ Done — Session 45. Adaptive `Color(uiColor:)` tokens in `SystemTheme`; all ~50 shadow sites fixed. |
 | 7 | tech debt | **Performance audit with Instruments** | Measure before any optimisation. Physical device only. See Post-v1.1 entry for full spec. |
 
 ---

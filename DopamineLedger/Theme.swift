@@ -143,8 +143,20 @@ struct SystemTheme: Theme {
         negative:        .red,
         neutral:         .blue,
         divider:         Color(.separator),
-        shadowDark:      Color.black.opacity(0.15),
-        shadowLight:     Color.white.opacity(0.7)
+        // Adaptive shadows: light mode gets the standard neumorphic pair;
+        // dark mode flips to values that don't produce white blobs on dark surfaces.
+        // Color(uiColor:) resolves at render time from the active trait collection —
+        // the same mechanism used by Color(.systemBackground).
+        shadowDark: Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor.black.withAlphaComponent(0.40)
+                : UIColor.black.withAlphaComponent(0.15)
+        }),
+        shadowLight: Color(uiColor: UIColor { trait in
+            trait.userInterfaceStyle == .dark
+                ? UIColor.white.withAlphaComponent(0.08)
+                : UIColor.white.withAlphaComponent(0.70)
+        })
     )
 
     let typography = ThemeTypography(

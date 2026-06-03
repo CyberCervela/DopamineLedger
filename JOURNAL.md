@@ -5,6 +5,50 @@
 
 ---
 
+## Session 45 — 2026-06-03
+
+**Focus:** Polish fix — dark mode neumorphic shadows broken in SystemTheme.
+
+**Shipped:** `DopamineLedger/Theme.swift` — two tokens changed in `SystemTheme.colors`.
+
+**Bug:** `SystemTheme.shadowLight = Color.white.opacity(0.7)` and `shadowDark = Color.black.opacity(0.15)` are hardcoded light-mode values. When the device is in dark mode and the user selects the System theme (`preferredColorScheme: nil` — the only theme that follows the device), these produced glaring white blobs on dark card surfaces.
+
+**Fix:** Replaced both tokens with `Color(uiColor: UIColor { traitCollection in ... })` adaptive colors. This is the same mechanism iOS uses internally for `Color(.systemBackground)` — the color resolves at render time from the active trait collection, not at init time. Light mode values are identical to before. Dark mode gets:
+- `shadowLight → white @ 8%` (barely-there highlight, no blob)
+- `shadowDark → black @ 40%` (visible depth against dark surface)
+
+**Why one file:** Every single `.shadow()` call across all ~50 sites in the app reads from `theme.colors.shadowLight` / `theme.colors.shadowDark`. Fixing the tokens fixes all sites atomically — no view files touched. The `.neuCard()` extractor from Session 44 was the prerequisite that made this practical (previously ~26 sites would have needed per-site shadow overrides).
+
+**NeuTheme and PixelArtTheme unaffected:** Both force a `preferredColorScheme` (`.light` and `.dark` respectively), so the UIColor adaptive resolver always picks the same variant — no behavioural change.
+
+**Confirmed on simulator:** SystemTheme + dark mode → clean subtle depth on all cards, filter pills, grid tiles, buttons. SystemTheme + light mode → identical to before.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 item #4: integration tests for ledger-mutating flows.
+
+---
+
+## Session 44 — 2026-06-03
+
+**Focus:** Tech debt — extract `.neuCard()` view modifier (v1.1 item #5).
+
+**Shipped:** `DopamineLedger/Views/NeuCardModifier.swift` (new), 14 view files updated.
+
+**What changed:** The 4-step neumorphic card chain (`background(surface)` → `clipShape(RoundedRectangle)` → `shadow(shadowLight)` → `shadow(shadowDark)`) was duplicated ~26 times across the codebase. Extracted into a single `.neuCard(_ size: NeuCardSize = .md)` `ViewModifier` with three sizes: `.lg` (radius 10, offset ±6), `.md` (radius 8, offset ±5, default), `.sm` (radius 6, offset ±4).
+
+**Left intentionally inline:** Circle icon bubbles (different clip approach), stateful/conditional shadows (`selected`, `canRepay`, `filled`), `NeuTextButton`/`NeuIconButton` (already isolated files), `cornerRadius − 2` nesting card, single drop-shadow on Stop button.
+
+**Before/after screenshots confirmed pixel-identical.** Net: −19 lines, 16 files changed.
+
+**Why this matters:** This is the prerequisite for the dark mode shadow fix. Previously a shadow colour change meant editing 26 sites; now it's one.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 item #6: dark mode shadow fix (prerequisite now done).
+
+---
+
 ## Session 43 — 2026-06-03
 
 **Focus:** Polish fix — tab bar transparent gutters let scroll content bleed through.
