@@ -213,6 +213,19 @@ struct SessionView: View {
         } message: {
             Text(lBundle.l("session.linked_app.not_installed.message"))
         }
+        // Push a Live Activity credit update once per minute so the Dynamic Island
+        // stays in sync between pause/resume events. Int(elapsed / 60) increments
+        // each new minute; .task(id:) fires a fresh task every time id changes.
+        // The guard prevents a spurious push while the session clock is frozen.
+        .task(id: Int(elapsed / 60)) {
+            guard !session.isPaused else { return }
+            LiveActivityService.update(
+                adjustedStart: session.startedAt.addingTimeInterval(session.totalPausedSeconds),
+                isPaused:      false,
+                pausedElapsed: 0,
+                creditsMoved:  creditsMoved
+            )
+        }
     }
 
     // Opens the activity's linked app directly via its URL scheme.

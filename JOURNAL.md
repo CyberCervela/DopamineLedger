@@ -5,6 +5,26 @@
 
 ---
 
+## Session 40 — 2026-06-03
+
+**Focus:** Bug fix — Live Activity credit counter stuck at 0.0 for all session types.
+
+**Shipped:** `DopamineLedger/Views/SessionView.swift` — one change.
+
+**Bug:** Dynamic Island expanded view showed "0.0 cr earned/spent" and never updated during a running session. The only time `creditsMoved` was pushed to the Live Activity was on pause/resume events. Any session run without a pause/resume would show 0.0 for its entire duration.
+
+**Why it looked spender-specific:** The bug report noted charger sessions "working" (129.9 cr earned in one screenshot). That charger session had been paused and resumed at some point, which triggered an update. Short sessions (under ~5 minutes) on either kind would reliably show 0.0 because no pause/resume had happened. The backlog hypothesis about a sign issue was a red herring — all `creditsMoved` values passed to the service are computed as positive (`ratePerSecond * elapsed * multiplier`) on both sides.
+
+**Fix:** Added `.task(id: Int(elapsed / 60))` to the `content` view. `TimelineView` already re-renders every second, so `Int(elapsed / 60)` ticks up once per minute — `.task(id:)` cancels the previous task and starts a fresh one each time `id` changes, firing a `LiveActivityService.update()` push. The guard `!session.isPaused` prevents a duplicate push while the clock is frozen (pause/resume events already send their own updates).
+
+**Confirmed on device:** Dynamic Island showed "0.0 cr earned" at 4:44, then "48.0 cr earned" at 5:35 — correct update at the first minute boundary.
+
+**What to pick up next:**
+- App Store Connect still "In Review" as of 2026-06-03.
+- Burn-down rate wrong during active session (BACKLOG bug #4).
+
+---
+
 ## Session 39 — 2026-06-02
 
 **Focus:** Export / Import — full implementation. Confirmed working on device by user.
