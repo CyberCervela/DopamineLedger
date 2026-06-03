@@ -5,6 +5,26 @@
 
 ---
 
+## Session 49 — 2026-06-03
+
+**Focus:** Two bug fixes introduced by Session 48's long-press gesture change.
+
+**Bug 1 — Template re-add ignored archived activity (`AddActivityView.swift`)**
+
+Root cause: the `.fromTemplate` name-match check (`caseInsensitiveCompare`) fetches all activities including archived ones. When "Meditation" existed as `isArchived == true`, applying the template found it, updated its fields, but left `isArchived = true` — so it stayed hidden and nothing appeared on the home screen. One-line fix: `existing.isArchived = false` in the match branch. Applying a template is an explicit user intent to bring that activity back.
+
+**Bug 2 — Scroll blocked over activity rows (`ActivityListView.swift`)**
+
+Root cause: `.simultaneousGesture(LongPressGesture(...))` holds the touch during its recognition phase, preventing the `ScrollView`'s pan recognizer from claiming a drag. Fix: replaced with `.onLongPressGesture(minimumDuration: 0.4, maximumDistance: 10)` — the scroll-aware modifier that yields to pan gestures when the finger moves. Also replaced `@GestureState` (which requires the gesture value pipeline) with `@State var isPressing` driven by the `onPressingChanged:` callback. Both `ActivityRow` and `QuestRow` updated identically.
+
+**Confirmed on device:** Scrolling works over rows; long press still triggers sheet + haptic; template re-add restores archived activities.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 backlog: #1 (release on approval), #2 (verify icon fix on device), #7 (performance audit).
+
+---
+
 ## Session 48 — 2026-06-03
 
 **Focus:** Polish — replace iOS system context menu on activity/quest rows with a neumorphic long-press action sheet; rename NeuTheme display name from "Minimal" to "Dopamine".

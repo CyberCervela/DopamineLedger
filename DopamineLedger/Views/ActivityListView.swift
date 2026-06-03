@@ -585,7 +585,7 @@ private struct ActivityRow: View {
     let onLongPress: () -> Void
 
     @State private var pulsing = false
-    @GestureState private var isLongPressing = false
+    @State private var isPressing = false
 
     private var ratePerMinute: Double { activity.ratePerSecond * 60 }
     private var iconColor: Color {
@@ -674,17 +674,15 @@ private struct ActivityRow: View {
                 )
         )
         .contentShape(Rectangle())
-        .scaleEffect(isLongPressing ? 0.97 : 1.0)
-        .animation(.easeInOut(duration: 0.15), value: isLongPressing)
+        .scaleEffect(isPressing ? 0.97 : 1.0)
+        .animation(.easeInOut(duration: 0.15), value: isPressing)
         .onTapGesture { onTap() }
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.4)
-                .updating($isLongPressing) { value, state, _ in state = value }
-                .onEnded { _ in
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    onLongPress()
-                }
-        )
+        .onLongPressGesture(minimumDuration: 0.4, maximumDistance: 10) {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            onLongPress()
+        } onPressingChanged: { pressing in
+            isPressing = pressing
+        }
         .onAppear {
             guard isActive else { return }
             withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
@@ -703,7 +701,7 @@ private struct QuestRow: View {
     let onComplete:  () -> Void
     let onLongPress: () -> Void
 
-    @GestureState private var isLongPressing = false
+    @State private var isPressing = false
 
     var body: some View {
         HStack(spacing: theme.spacing.md) {
@@ -756,16 +754,14 @@ private struct QuestRow: View {
         }
         .padding(theme.spacing.lg)
         .neuCard()
-        .scaleEffect(isLongPressing ? 0.97 : 1.0)
-        .animation(.easeInOut(duration: 0.15), value: isLongPressing)
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.4)
-                .updating($isLongPressing) { value, state, _ in state = value }
-                .onEnded { _ in
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                    onLongPress()
-                }
-        )
+        .scaleEffect(isPressing ? 0.97 : 1.0)
+        .animation(.easeInOut(duration: 0.15), value: isPressing)
+        .onLongPressGesture(minimumDuration: 0.4, maximumDistance: 10) {
+            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            onLongPress()
+        } onPressingChanged: { pressing in
+            isPressing = pressing
+        }
     }
 }
 
