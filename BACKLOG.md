@@ -38,17 +38,23 @@ Items deferred from active development. Verify or ship when ready.
 
 ---
 
-## Next session — priority order
+## v1.1 — bugs & polish only
+
+**Scope rule:** No new features until v1.1 is submitted. Only bug fixes, UI polish, tech debt.
 
 | # | Type | Item | Notes |
 |---|---|---|---|
-| 1 | ops | **Release** | After Apple approval: click "Release this version" in App Store Connect. |
+| 1 | ops | **Release v1.0** | After Apple approval: click "Release this version" in App Store Connect. Then submit v1.1 build. |
 | 2 | ops | **Verify icon fix** | Session 21 fixed ActivityMenuView + DebtView to show the user's chosen icon. Confirm Gaming shows `gamecontroller.fill` (not hourglass) in both sheets on device/simulator. |
-| 3 | tech debt | **Integration tests for ledger-mutating flows** | SessionFinalizer.finalize and the repay flows in DebtView/ActivityMenuView have zero test coverage despite being the highest-consequence mutations. Add tests with an in-memory ModelContainer. Additive, zero UI risk. |
+| 3 | polish | **Tab bar — content scrolls behind it** | See UI polish entry below. Small, visible, no API risk. |
+| 4 | tech debt | **Integration tests for ledger-mutating flows** | SessionFinalizer.finalize and the repay flows have zero test coverage. Add tests with an in-memory ModelContainer. |
+| 5 | tech debt | **Extract `.neuCard()` view modifier** | Prerequisite for dark mode fix. Kills 15+ duplicate shadow call sites. |
+| 6 | polish | **Dark mode fix — SystemTheme shadows** | Prerequisite: item 5. Full dedicated session — do not mix with other work. |
+| 7 | tech debt | **Performance audit with Instruments** | Measure before any optimisation. Physical device only. See Post-v1.1 entry for full spec. |
 
 ---
 
-## Post-MVP features
+## Post-v1.1 features
 
 | Item | Notes |
 |---|---|

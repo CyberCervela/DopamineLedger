@@ -5,6 +5,28 @@
 
 ---
 
+## Session 42 — 2026-06-03
+
+**Focus:** Bug fix — idle spender burn-down ignored Peak Hours multiplier.
+
+**Shipped:** `DopamineLedger/Views/ActivityListView.swift` — one change in `ActivityRow.burndownSeconds`.
+
+**Bug:** The "~X left" estimate on idle spender rows used `balance / ratePerSecond` (base rate only). During peak hours, starting a session actually bills at `rate × 1.5`, so the displayed estimate was 50% too optimistic — e.g. Twitter/X at 10 cr/min showed ~59 min when the real cost would drain the balance in ~39 min.
+
+**Fix:** `burndownSeconds` now multiplies `ratePerSecond` by `PeakHoursService.multiplier` when `PeakHoursService.isCurrentlyPeak()` is true. Outside peak hours the multiplier is 1.0 — no change to existing behaviour.
+
+`PeakHoursService.isCurrentlyPeak()` reads `UserDefaults` directly so it's callable from a View struct with no environment injection.
+
+**Confirmed on device:** Twitter/X (10 cr/min, balance 591) showed ~39 min during peak hours (previously ~59 min).
+
+**Also this session:** Drafted App Store "What's New" copy for v1.1. Restructured BACKLOG.md for v1.1 scope (bugs & polish only, no new features). Saved v1.1 feature list and copy to memory.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 backlog: tab bar scroll fix, integration tests, `.neuCard()` extractor, dark mode shadows.
+
+---
+
 ## Session 41 — 2026-06-03
 
 **Focus:** Bug fix — burn-down label wrong during active spender sessions.

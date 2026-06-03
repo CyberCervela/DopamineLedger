@@ -578,7 +578,10 @@ private struct ActivityRow: View {
               !anySessionActive,
               balance > 0,
               activity.ratePerSecond > 0 else { return nil }
-        return balance / activity.ratePerSecond
+        // Use the peak-adjusted rate so the estimate matches what a session
+        // started right now would actually cost.
+        let peakMultiplier = PeakHoursService.isCurrentlyPeak() ? PeakHoursService.multiplier : 1.0
+        return balance / (activity.ratePerSecond * peakMultiplier)
     }
 
     private func formatDuration(_ seconds: Double) -> String {
