@@ -16,7 +16,6 @@ Items deferred from active development. Verify or ship when ready.
 
 | Bug | Observed | Suspected cause | Notes |
 |---|---|---|---|
-| **Burn-down rate wrong during active spender session** | Screenshot 1: Balance is 1,912.1 cr; active spender rate is 10 cr/min (Twitter/X). Expected burn-down ≈ 3h 11m. Displayed: "~31 h 52 m left". 1,912 ÷ 1 cr/min = 1,912 min = 31h 52m exactly — the calculation is using 1 cr/min instead of the activity's actual rate. | The burn-down display (`ActivityRow` or wherever the "X left" line is rendered) may be using a hardcoded or default rate of 1.0 instead of `activity.ratePerMinute` when a session is active. Alternatively the row hides its own burn-down during an active session and this number is a global fallback using the wrong rate. Needs investigation before code — check whether hiding burn-down during active sessions is intentional, and trace which code path produces the displayed value. | Possibly the burn-down is intentionally hidden on the active row (user asks "is this on purpose?") — but the calculation of the fallback global number is definitely wrong. |
 
 ---
 
@@ -45,10 +44,7 @@ Items deferred from active development. Verify or ship when ready.
 |---|---|---|---|
 | 1 | ops | **Release** | After Apple approval: click "Release this version" in App Store Connect. |
 | 2 | ops | **Verify icon fix** | Session 21 fixed ActivityMenuView + DebtView to show the user's chosen icon. Confirm Gaming shows `gamecontroller.fill` (not hourglass) in both sheets on device/simulator. |
-| 3 | bug | **Burn-down rate wrong during active session** | Balance 1 912 cr at 10 cr/min should show ~3h 11m; shows ~31h 52m (= balance ÷ 1 cr/min). Either the active-session rate is not fed to the burn-down calculation, or the burn-down intentionally hides on the active row and a global fallback uses a wrong default rate. Investigate before code. |
-| 4 | feature | **Auto-pause sessions after 6 hours** | See Post-MVP features entry for full spec. UNTimeIntervalNotificationTrigger at 21 600s; two notification actions wired to existing ResumeSessionIntent / StopSessionIntent; countdown resets on manual pause/resume. |
-| 5 | feature | **Activity list sort — most used / last used** | See Post-MTV features entry. Sort control in list header; creation order stays default; preference persisted via @AppStorage. Resolve design question first: interaction with existing filter tabs. |
-| 6 | tech debt | **Integration tests for ledger-mutating flows** | SessionFinalizer.finalize and the repay flows in DebtView/ActivityMenuView have zero test coverage despite being the highest-consequence mutations. Add tests with an in-memory ModelContainer. Additive, zero UI risk. |
+| 3 | tech debt | **Integration tests for ledger-mutating flows** | SessionFinalizer.finalize and the repay flows in DebtView/ActivityMenuView have zero test coverage despite being the highest-consequence mutations. Add tests with an in-memory ModelContainer. Additive, zero UI risk. |
 
 ---
 

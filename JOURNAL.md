@@ -5,6 +5,28 @@
 
 ---
 
+## Session 41 — 2026-06-03
+
+**Focus:** Bug fix — burn-down label wrong during active spender sessions.
+
+**Shipped:** `DopamineLedger/Views/ActivityListView.swift`, `DopamineLedger/Views/SessionView.swift`.
+
+**Two bugs fixed in one commit:**
+
+**Bug 1 — Idle spender rows showed misleading burn-down while a session was running.**
+`ActivityRow.burndownSeconds` had a `!isActive` guard that only hid the burn-down for the *active* activity's row. Idle spender rows on the home screen continued to show their burn-down based on the full pre-session balance. A user with a 1 cr/min idle spender would see "~31h 52m" while a 10 cr/min session was running — a correct calculation for that idle activity, but misleading because the balance is being actively drained at a much higher rate.
+
+Fix: added `anySessionActive: Bool` parameter to `ActivityRow`. The `burndownSeconds` guard now uses `!anySessionActive` instead of `!isActive`. All three `ActivityRow` call sites pass `!activeSessions.isEmpty`. The `isActive` parameter is kept (still drives the pulsing border and onAppear animation).
+
+**Bug 2 — `SessionView` burn-down ignored peak-hours multiplier.**
+`spenderRemaining / activity.ratePerSecond` used the base rate, not the peak-adjusted rate. During peak hours (1.5×), the displayed remaining time was ~50% too optimistic — the actual drain is at `ratePerSecond × timeMultiplier`. Fix: divided by `activity.ratePerSecond * session.timeMultiplier` instead.
+
+**What to pick up next:**
+- App Store still "In Review" as of 2026-06-03.
+- Backlog review and v1.1 planning (new direction: bugs + polish only, no new features before ship).
+
+---
+
 ## Session 40 — 2026-06-03
 
 **Focus:** Bug fix — Live Activity credit counter stuck at 0.0 for all session types.

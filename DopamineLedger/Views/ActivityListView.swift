@@ -288,13 +288,14 @@ struct ActivityListView: View {
             LazyVStack(spacing: theme.spacing.md) {
                 ForEach(items) { activity in
                     ActivityRow(
-                        activity:   activity,
-                        isActive:   isActive(activity),
-                        debtAmount: debtAmount(for: activity),
-                        balance:    ledger?.balance ?? 0,
-                        onTap:      { openActivity(activity) },
-                        onEdit:     { activityToEdit = activity },
-                        onDelete:   { delete(activity) }
+                        activity:        activity,
+                        isActive:        isActive(activity),
+                        anySessionActive: !activeSessions.isEmpty,
+                        debtAmount:      debtAmount(for: activity),
+                        balance:         ledger?.balance ?? 0,
+                        onTap:           { openActivity(activity) },
+                        onEdit:          { activityToEdit = activity },
+                        onDelete:        { delete(activity) }
                     )
                 }
             }
@@ -432,24 +433,26 @@ struct ActivityListView: View {
                                 }
                                 ForEach(catChargers) { activity in
                                     ActivityRow(
-                                        activity:   activity,
-                                        isActive:   isActive(activity),
-                                        debtAmount: debtAmount(for: activity),
-                                        balance:    ledger?.balance ?? 0,
-                                        onTap:      { openActivity(activity) },
-                                        onEdit:     { activityToEdit = activity },
-                                        onDelete:   { delete(activity) }
+                                        activity:        activity,
+                                        isActive:        isActive(activity),
+                                        anySessionActive: !activeSessions.isEmpty,
+                                        debtAmount:      debtAmount(for: activity),
+                                        balance:         ledger?.balance ?? 0,
+                                        onTap:           { openActivity(activity) },
+                                        onEdit:          { activityToEdit = activity },
+                                        onDelete:        { delete(activity) }
                                     )
                                 }
                                 ForEach(catSpenders) { activity in
                                     ActivityRow(
-                                        activity:   activity,
-                                        isActive:   isActive(activity),
-                                        debtAmount: debtAmount(for: activity),
-                                        balance:    ledger?.balance ?? 0,
-                                        onTap:      { openActivity(activity) },
-                                        onEdit:     { activityToEdit = activity },
-                                        onDelete:   { delete(activity) }
+                                        activity:        activity,
+                                        isActive:        isActive(activity),
+                                        anySessionActive: !activeSessions.isEmpty,
+                                        debtAmount:      debtAmount(for: activity),
+                                        balance:         ledger?.balance ?? 0,
+                                        onTap:           { openActivity(activity) },
+                                        onEdit:          { activityToEdit = activity },
+                                        onDelete:        { delete(activity) }
                                     )
                                 }
                             }
@@ -550,10 +553,15 @@ struct ActivityListView: View {
 private struct ActivityRow: View {
     @Environment(\.theme)          private var theme
     @Environment(\.languageBundle) private var lBundle
-    let activity:   Activity
-    let isActive:   Bool
-    let debtAmount: Double
-    let balance:    Double
+    let activity:        Activity
+    let isActive:        Bool
+    // True when any session is running (not just this activity's).
+    // Burn-down is hidden while any session is active — showing "X h left"
+    // on an idle spender while a different spender is draining the balance
+    // gives a misleading number (the balance will be lower when that session stops).
+    let anySessionActive: Bool
+    let debtAmount:      Double
+    let balance:         Double
     let onTap:    () -> Void
     let onEdit:   () -> Void
     let onDelete: () -> Void
@@ -567,7 +575,7 @@ private struct ActivityRow: View {
 
     private var burndownSeconds: Double? {
         guard activity.kind == .spender,
-              !isActive,
+              !anySessionActive,
               balance > 0,
               activity.ratePerSecond > 0 else { return nil }
         return balance / activity.ratePerSecond

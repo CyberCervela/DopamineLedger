@@ -121,8 +121,10 @@ struct SessionView: View {
                                              ? theme.colors.negative
                                              : theme.colors.textSecondary)
                         if activity.ratePerSecond > 0 {
+                            // Divide by the peak-adjusted rate so the estimate
+                            // matches what SessionFinalizer will actually bill.
                             Text(String(format: lBundle.l("row.activity.burndown"),
-                                        formatDuration(spenderRemaining / activity.ratePerSecond)))
+                                        formatDuration(spenderRemaining / (activity.ratePerSecond * session.timeMultiplier))))
                                 .font(theme.typography.caption)
                                 .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
                                                  ? theme.colors.negative
