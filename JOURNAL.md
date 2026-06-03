@@ -5,6 +5,24 @@
 
 ---
 
+## Session 43 — 2026-06-03
+
+**Focus:** Polish fix — tab bar transparent gutters let scroll content bleed through.
+
+**Shipped:** `DopamineLedger/Views/ContentView.swift` — two modifiers added to `NeuTabBar`.
+
+**Bug:** `NeuTabBar` renders a neumorphic pill with transparent areas around it — the 16pt horizontal gutters beside the pill and the 8pt gap below it were completely transparent. Scroll content visible in those regions created a visual bleed-through at the bar edge, making the last list row appear to clip hard against the bar.
+
+**Fix:** Added `.padding(.top, theme.spacing.lg)` (16pt buffer above the pill, matching the gap the filter bar leaves below itself) and `.background(theme.colors.background.ignoresSafeArea(.container, edges: .bottom))` after all padding. The background fills the full bar area — gutters, buffer, and home-indicator strip — with a solid `background` colour. The `.safeAreaInset` scroll clearance was already correct; this was purely a visual backing issue.
+
+**Confirmed on simulator:** Last row has symmetrical breathing room above the pill. No content bleed-through in gutters.
+
+**What to pick up next:**
+- App Store still "In Review."
+- v1.1 backlog: integration tests, `.neuCard()` extractor, dark mode shadows.
+
+---
+
 ## Session 42 — 2026-06-03
 
 **Focus:** Bug fix — idle spender burn-down ignored Peak Hours multiplier.
