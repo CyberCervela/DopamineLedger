@@ -4,6 +4,88 @@ Items deferred from active development. Verify or ship when ready.
 
 ---
 
+## Structured product roadmap
+
+Structured items carry a unique ID (`DL-XX`), type (`FEATURE` / `RESEARCH` / `IDEA`), and a priority tier. All Tier 1 items are ready to build. Tier 3–4 require PM sign-off before moving to active development. Items without a `DL-XX` ID are older unstructured entries — they remain valid.
+
+---
+
+### Tier 1 — Quick wins / high-impact polish
+
+| ID | Type | Item |
+|---|---|---|
+| DL-14 | FEATURE | Color-coded active session border (green = charger, red = spender) |
+| DL-13 | FEATURE | Abbreviate large credit numbers (K / M / B) |
+| DL-12 | FEATURE | Pin active activity to top of list while session is running |
+| DL-15 | FEATURE | Time-limited spender session with user-set alarm |
+| DL-10 | FEATURE | iOS Home Screen widget (WidgetKit — distinct from existing Live Activity) |
+
+#### DL-14 · Color-coded border on active activity cards
+Pulsing border already ships (`ActivityRow`, FEATURES.md). **Enhancement:** verify whether the current implementation differentiates charger vs spender color. If it uses a single accent color, update to branch on `activity.kind`: `theme.colors.positive` (green) for charger, `theme.colors.negative` (red) for spender. No layout change — purely cosmetic.
+
+#### DL-13 · Abbreviate large credit numbers (K / M / B)
+All credit balance and session-total displays abbreviate at ≥ 1 000: `1 200` → `1.2K`, `1 500 000` → `1.5M`. Pure display concern — model values unchanged. Implement as a `Double` extension (`.abbreviated`). Apply to: `BalanceCard`, `ActivityRow` debt chips, `SessionView` hero value, `DebtView`, `ActivityMenuView`, `DashboardView`, `HistoryView` credit lines.
+
+#### DL-12 · Pin active activity to top of list
+When a session is running, sort its activity to position 0 in the list (view-layer sort only — no model changes). Revert immediately on session end. Consider a subtle "ACTIVE" badge to explain the position. Related to the existing activity-sort backlog item below.
+
+#### DL-15 · Time-limited spender session with built-in alarm
+Optional duration picker at session start (e.g. "30 min of YouTube"). Schedules a `UNUserNotificationCenter` notification at `startTime + duration`. Session does not auto-stop — notification is an alarm only; the open-ended session model is preserved. Cancel notification on early manual stop. Distinct title: "⏰ Time's up on [Activity]". **Not the same as the 6-hour auto-pause item** — that is a system safety net; this is user-defined intentional time-boxing.
+
+#### DL-10 · iOS Home Screen widget (WidgetKit)
+Small widget: current credit balance + active session indicator. Medium widget: balance + last 2–3 activities. Data sharing between app and widget via App Group (`UserDefaults(suiteName:)` or shared store — write a brief recommendation before implementing). Must respect `Theme` colors. Tapping deep-links to the app's home screen. **Distinct from the existing `DopamineLedgerWidgets/` lock-screen / Dynamic Island widget** — this is a new home screen widget target.
+
+---
+
+### Tier 2 — Meaningful new features
+
+| ID | Type | Item |
+|---|---|---|
+| DL-02 | FEATURE | Credits over time graph (charger vs spender, Swift Charts) |
+| DL-06 | FEATURE | Multi-step quest (goal with checklist) |
+| DL-09 | FEATURE | Caveman Mode (binary create/consume with retroactive tagging) |
+
+#### DL-02 · Credits over time graph
+Swift Charts (iOS 16+, no third-party library). Grouped/stacked bar chart: charger credits (green) vs spender credits (red) per day, with a day/week toggle. Data source: `Session` records grouped by `startedAt` day, summing `creditsMoved`. Extends `DashboardView` — does not replace existing stats. Handle empty state gracefully.
+
+#### DL-06 · Multi-step quest (goal with checklist)
+New `Quest` subtype: a goal with multiple `QuestTask` records (name + `isCompleted`). Credits awarded only when all tasks are checked off — one-time award per completion, reset required to repeat. Completed goals shown in a separate section, not deleted. **Write a SwiftData model proposal before implementing** — the existing `Quest` model is in production; any extension must be a safe lightweight migration.
+
+#### DL-09 · Caveman Mode
+Two-state session with no activity selection upfront: "Creating" (charger) or "Consuming" (spender). Retroactive tagging to an activity after the session ends; credits applied at that activity's rate. Supports grouping multiple sessions into a single "chunk." Siri intents: `StartCavemanCharger` / `StartCavemanSpender`. **Design-first session required** — data model and UI flow TBD before any code.
+
+---
+
+### Tier 3 — Research / spec required before build
+
+| ID | Type | Item | Deliverable |
+|---|---|---|---|
+| DL-01 | RESEARCH | Smart device lock via credits (HomeKit / smart plug) | `RESEARCH-DL-01-smart-lock.md` |
+| DL-05 | RESEARCH | *(private — details stored locally, not in this repo)* | local file only |
+| DL-11 | RESEARCH | Android feasibility study | `RESEARCH-DL-11-android.md` |
+
+**DL-01 — Smart device lock:** Investigate HomeKit-enabled smart plug as a "TV lock" proxy, Apple TV lockout APIs, latency/reliability, and the UX of the "pay credits to unlock" flow. No code until spec is written.
+
+**DL-11 — Android feasibility:** Flutter vs React Native vs native Kotlin/Jetpack Compose. Key API mappings: SwiftData → Room, ActivityKit → ?, WidgetKit → Glance. Rough effort estimate in weeks.
+
+---
+
+### Tier 4 — Future ideas (PM sign-off required before any action)
+
+| ID | Type | Item |
+|---|---|---|
+| DL-03 | IDEA | Sleep Mode / recurring rest quest (auto-stop after inactivity) |
+| DL-07 | IDEA | Share and discover activity profiles / routines (requires backend) |
+| DL-08 | IDEA | Convert decayed credits to debt repayment (dependent on credit decay feature) |
+
+**DL-03:** A toggle or recurring quest that auto-stops a session after inactivity, or rewards the user for stopping on time. Two paths: (a) global sleep-mode toggle; (b) recurring "rest" quest. PM to decide direction before any code.
+
+**DL-07:** Export activity config as a shareable profile; others import it as a template. Potential monetisation: curated profiles from athletes/students/creators. Requires backend infrastructure — out of scope until a meaningful user base exists.
+
+**DL-08:** If credit decay ships (see "Credit decay — anti-hoarding mechanic" in Post-v1.1 section below), allow expiring credits to redirect toward paying off activity debt rather than evaporating. Dependent on credit decay being designed and built first.
+
+---
+
 ## Data ownership
 
 | Item | Notes |
