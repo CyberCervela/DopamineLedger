@@ -242,7 +242,7 @@ private struct SessionHistoryRow: View {
     private var creditsText: String {
         guard let c = resolvedCredits else { return "" }
         let abs = Swift.abs(c)
-        let fmt = abs.formatted(.number.precision(.fractionLength(0...1)))
+        let fmt = abs.abbreviated
         return c > 0 ? "+\(fmt)" : "−\(fmt)"
     }
 
@@ -335,7 +335,7 @@ private struct BundledSessionHistoryRow: View {
     private var totalCreditsText: String {
         guard let c = totalResolved else { return "" }
         let abs = Swift.abs(c)
-        let fmt = abs.formatted(.number.precision(.fractionLength(0...1)))
+        let fmt = abs.abbreviated
         return c > 0 ? "+\(fmt)" : "−\(fmt)"
     }
 
@@ -422,7 +422,7 @@ private struct BundleDetailRow: View {
     private var creditsText: String {
         guard let activity else { return "" }
         let credits = activity.ratePerSecond * session.elapsed
-        let fmt = credits.formatted(.number.precision(.fractionLength(0...1)))
+        let fmt = credits.abbreviated
         return activity.kind == .charger ? "+\(fmt)" : "−\(fmt)"
     }
 
@@ -495,7 +495,7 @@ private struct QuestHistoryRow: View {
 
             Spacer()
 
-            Text("+\(quest.payoffCredits.formatted(.number.precision(.fractionLength(0...1))))")
+            Text("+\(quest.payoffCredits.abbreviated)")
                 .font(theme.typography.bodyStrong)
                 .foregroundStyle(theme.colors.positive)
         }

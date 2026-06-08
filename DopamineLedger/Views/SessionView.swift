@@ -82,7 +82,7 @@ struct SessionView: View {
                     .textCase(.uppercase)
             }
 
-            Text(creditsMoved.formatted(.number.precision(.fractionLength(0...1))))
+            Text(creditsMoved.abbreviated)
                 .font(.system(size: 64, weight: .light, design: .rounded).monospacedDigit())
                 .foregroundStyle(paused ? theme.colors.textSecondary
                                         : isOverrun ? theme.colors.negative
@@ -110,12 +110,12 @@ struct SessionView: View {
                     // Show remaining balance before zero, or live debt once overrun.
                     if isOverrun {
                         Text(String(format: lBundle.l("session.live_debt"),
-                                    spenderLiveDebt.formatted(.number.precision(.fractionLength(0...1)))))
+                                    spenderLiveDebt.abbreviated))
                             .font(theme.typography.caption)
                             .foregroundStyle(theme.colors.negative)
                     } else {
                         Text(String(format: lBundle.l("session.balance_remaining"),
-                                    spenderRemaining.formatted(.number.precision(.fractionLength(0...1)))))
+                                    spenderRemaining.abbreviated))
                             .font(theme.typography.caption)
                             .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
                                              ? theme.colors.negative

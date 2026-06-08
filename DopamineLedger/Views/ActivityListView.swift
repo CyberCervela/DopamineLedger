@@ -648,7 +648,7 @@ private struct ActivityRow: View {
                 }
                 if debtAmount > 0 {
                     Text(String(format: lBundle.l("row.activity.debt"),
-                                debtAmount.formatted(.number.precision(.fractionLength(0...1)))))
+                                debtAmount.abbreviated))
                         .font(theme.typography.caption)
                         .foregroundStyle(.white)
                         .padding(.horizontal, theme.spacing.sm)
@@ -722,7 +722,7 @@ private struct QuestRow: View {
                     .foregroundStyle(theme.colors.textPrimary)
                 HStack(spacing: theme.spacing.sm) {
                     Text(String(format: lBundle.l("row.quest.payoff"),
-                                quest.payoffCredits.formatted(.number.precision(.fractionLength(0...1)))))
+                                quest.payoffCredits.abbreviated))
                         .font(theme.typography.caption)
                         .foregroundStyle(theme.colors.positive)
                     if let cadence = quest.recurringCadence {

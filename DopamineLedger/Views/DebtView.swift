@@ -76,7 +76,7 @@ struct DebtView: View {
                 .font(theme.typography.caption)
                 .foregroundStyle(theme.colors.textSecondary)
                 .kerning(2)
-            Text(ledger?.balance ?? 0, format: .number.precision(.fractionLength(0...1)))
+            Text((ledger?.balance ?? 0).abbreviated)
                 .font(theme.typography.display)
                 .foregroundStyle(theme.colors.textPrimary)
                 .contentTransition(.numericText())
@@ -109,7 +109,7 @@ struct DebtView: View {
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
                 Text(String(format: lBundle.l("debt.credits_owed"),
-                            total.formatted(.number.precision(.fractionLength(0...1)))))
+                            total.abbreviated))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.negative)
             }
