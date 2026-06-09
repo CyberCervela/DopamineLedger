@@ -283,7 +283,7 @@ private struct ActivitySummaryRow: View {
                 Text(summary.name)
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
-                Text("\(sessionLabel) · \(formatDuration(summary.totalElapsed))")
+                Text("\(sessionLabel) · \(summary.totalElapsed.formattedDuration)")
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }
@@ -392,17 +392,6 @@ private struct SectionEmptyState: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, theme.spacing.xl)
     }
-}
-
-// formatDuration is also in ActivityListView and SessionView — backlog item
-// exists to consolidate into a shared utility.
-private func formatDuration(_ seconds: TimeInterval) -> String {
-    let totalMins = Int(seconds / 60)
-    if totalMins < 1  { return "< 1 min" }
-    if totalMins < 60 { return "\(totalMins) min" }
-    let hours = totalMins / 60
-    let mins  = totalMins % 60
-    return mins == 0 ? "\(hours) h" : "\(hours) h \(mins) m"
 }
 
 #Preview {

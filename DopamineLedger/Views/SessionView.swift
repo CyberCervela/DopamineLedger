@@ -124,7 +124,7 @@ struct SessionView: View {
                             // Divide by the peak-adjusted rate so the estimate
                             // matches what SessionFinalizer will actually bill.
                             Text(String(format: lBundle.l("row.activity.burndown"),
-                                        formatDuration(spenderRemaining / (activity.ratePerSecond * session.timeMultiplier))))
+                                        (spenderRemaining / (activity.ratePerSecond * session.timeMultiplier)).formattedDuration))
                                 .font(theme.typography.caption)
                                 .foregroundStyle(spenderRemaining < sessionStartBalance * 0.2
                                                  ? theme.colors.negative
@@ -283,15 +283,6 @@ struct SessionView: View {
         SessionFinalizer.finalize(session: session, in: context)
         presented = nil
         dismiss()
-    }
-
-    private func formatDuration(_ seconds: Double) -> String {
-        let totalMins = Int(seconds / 60)
-        if totalMins < 1 { return "< 1 min" }
-        if totalMins < 60 { return "\(totalMins) min" }
-        let hours = totalMins / 60
-        let mins  = totalMins % 60
-        return mins == 0 ? "\(hours) h" : "\(hours) h \(mins) m"
     }
 
     private func formatElapsed(_ seconds: TimeInterval) -> String {

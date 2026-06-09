@@ -302,7 +302,12 @@ struct ActivityListView: View {
 
     @ViewBuilder
     private var activityList: some View {
-        let items = filteredActivities
+        let activeId = activeSessions.first?.activityId
+        // View-layer sort only — active activity floats to position 0 while a
+        // session runs, then the list reverts to creation order on stop.
+        let items = filteredActivities.sorted { a, b in
+            a.id == activeId && b.id != activeId
+        }
         if items.isEmpty {
             emptyState(
                 icon:    filter == .chargers ? .charger : (filter == .spenders ? .spender : .balance),
@@ -433,11 +438,32 @@ struct ActivityListView: View {
         if activities.isEmpty && filteredQuests.isEmpty {
             homeEmptyState
         } else {
+            let activeId = activeSessions.first?.activityId
             LazyVStack(spacing: theme.spacing.xl) {
+                // Running activity pinned to position 0 so the user can always
+                // reach it without scrolling to find it in its category section.
+                // Its entry in the category sections below is filtered out to
+                // avoid showing the same card twice.
+                if let activeId,
+                   let pinned = activities.first(where: { $0.id == activeId }) {
+                    ActivityRow(
+                        activity:         pinned,
+                        isActive:         true,
+                        anySessionActive: true,
+                        debtAmount:       debtAmount(for: pinned),
+                        balance:          ledger?.balance ?? 0,
+                        onTap:            { openActivity(pinned) },
+                        onLongPress:      { activityToAction = pinned }
+                    )
+                }
                 ForEach(ActivityCategory.allCases, id: \.self) { cat in
                     let catQuests   = filteredQuests.filter { ($0.category ?? .other) == cat }
-                    let catChargers = activities.filter { ($0.category ?? .other) == cat && $0.kind == .charger }
-                    let catSpenders = activities.filter { ($0.category ?? .other) == cat && $0.kind == .spender }
+                    let catChargers = activities.filter { a in
+                        (a.category ?? .other) == cat && a.kind == .charger && a.id != activeId
+                    }
+                    let catSpenders = activities.filter { a in
+                        (a.category ?? .other) == cat && a.kind == .spender && a.id != activeId
+                    }
                     if !catQuests.isEmpty || !catChargers.isEmpty || !catSpenders.isEmpty {
                         VStack(alignment: .leading, spacing: theme.spacing.md) {
                             Text(lBundle.l(cat.labelKey).uppercased())
@@ -603,15 +629,6 @@ private struct ActivityRow: View {
         return balance / (activity.ratePerSecond * peakMultiplier)
     }
 
-    private func formatDuration(_ seconds: Double) -> String {
-        let totalMins = Int(seconds / 60)
-        if totalMins < 1 { return "< 1 min" }
-        if totalMins < 60 { return "\(totalMins) min" }
-        let hours = totalMins / 60
-        let mins  = totalMins % 60
-        return mins == 0 ? "\(hours) h" : "\(hours) h \(mins) m"
-    }
-
     // Use the user-chosen icon, or fall back to the semantic kind icon for
     // activities created before the icon picker existed (default = "circle").
     private var rowIcon: Image {
@@ -634,15 +651,27 @@ private struct ActivityRow: View {
             }
 
             VStack(alignment: .leading, spacing: theme.spacing.xxs) {
-                Text(activity.name)
-                    .font(theme.typography.bodyStrong)
-                    .foregroundStyle(theme.colors.textPrimary)
+                HStack(spacing: theme.spacing.xs) {
+                    Text(activity.name)
+                        .font(theme.typography.bodyStrong)
+                        .foregroundStyle(theme.colors.textPrimary)
+                    if isActive {
+                        // Badge explains why this activity jumped to position 0.
+                        Text("ACTIVE")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(iconColor)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(iconColor.opacity(0.12))
+                            .clipShape(Capsule())
+                    }
+                }
                 Text(String(format: lBundle.l("session.rate"),
                             ratePerMinute.abbreviated))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
                 if let secs = burndownSeconds {
-                    Text(String(format: lBundle.l("row.activity.burndown"), formatDuration(secs)))
+                    Text(String(format: lBundle.l("row.activity.burndown"), secs.formattedDuration))
                         .font(theme.typography.caption)
                         .foregroundStyle(theme.colors.textSecondary)
                 }
@@ -669,7 +698,7 @@ private struct ActivityRow: View {
         .overlay(
             RoundedRectangle(cornerRadius: theme.spacing.cornerRadius)
                 .strokeBorder(
-                    isActive ? theme.colors.accent.opacity(pulsing ? 1.0 : 0.25) : Color.clear,
+                    isActive ? (activity.kind == .charger ? theme.colors.positive : theme.colors.negative).opacity(pulsing ? 1.0 : 0.25) : Color.clear,
                     lineWidth: 1.5
                 )
         )

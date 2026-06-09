@@ -14,9 +14,9 @@ Structured items carry a unique ID (`DL-XX`), type (`FEATURE` / `RESEARCH` / `ID
 
 | ID | Type | Item |
 |---|---|---|
-| DL-14 | FEATURE | Color-coded active session border (green = charger, red = spender) |
-| DL-13 | FEATURE | Abbreviate large credit numbers (K / M / B) |
-| DL-12 | FEATURE | Pin active activity to top of list while session is running |
+| ~~DL-14~~ | ~~FEATURE~~ | ~~Color-coded active session border (green = charger, red = spender)~~ | ✅ Session 51 |
+| ~~DL-13~~ | ~~FEATURE~~ | ~~Abbreviate large credit numbers (K / M / B)~~ | ✅ Session 50 |
+| ~~DL-12~~ | ~~FEATURE~~ | ~~Pin active activity to top of list while session is running~~ | ✅ Session 51 |
 | DL-15 | FEATURE | Time-limited spender session with user-set alarm |
 | DL-10 | FEATURE | iOS Home Screen widget (WidgetKit — distinct from existing Live Activity) |
 
@@ -28,6 +28,8 @@ All credit balance and session-total displays abbreviate at ≥ 1 000: `1 200` �
 
 #### DL-12 · Pin active activity to top of list
 When a session is running, sort its activity to position 0 in the list (view-layer sort only — no model changes). Revert immediately on session end. Consider a subtle "ACTIVE" badge to explain the position. Related to the existing activity-sort backlog item below.
+
+**DL-12 follow-up — auto-scroll to top on session start:** When DL-12 pins the active activity, the user may have scrolled down before tapping Start, leaving the newly-pinned row off-screen. Fix: when a session starts, programmatically scroll the list to the top (`.scrollTo` on a `ScrollViewReader`, or a `@State var scrollToTop: Bool` trigger). Apply to all three list surfaces: "All" tab, "Chargers" tab, "Spenders" tab. Scope is a few lines per surface — no model change.
 
 #### DL-15 · Time-limited spender session with built-in alarm
 Optional duration picker at session start (e.g. "30 min of YouTube"). Schedules a `UNUserNotificationCenter` notification at `startTime + duration`. Session does not auto-stop — notification is an alarm only; the open-ended session model is preserved. Cancel notification on early manual stop. Distinct title: "⏰ Time's up on [Activity]". **Not the same as the 6-hour auto-pause item** — that is a system safety net; this is user-defined intentional time-boxing.
@@ -107,6 +109,7 @@ Two directions to explore (not mutually exclusive — design session required be
 
 | Bug | Observed | Suspected cause | Notes |
 |---|---|---|---|
+| **SourceKit false-positive errors in IDE** | Claude Code's SourceKit diagnostics show "Cannot find type 'Activity' in scope", "External macro implementation type 'SwiftDataMacros.QueryMacro' could not be found" etc. on every file open, even when the build succeeds cleanly. These are not real errors. | `xcode-select` points at Command Line Tools, not Xcode.app — SourceKit lacks the Xcode framework paths and macro plugins needed to resolve SwiftData macros and app-level types. | Fix: `sudo xcode-select --switch /Applications/Xcode.app` (or `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`). Verify with `xcode-select -p` — should return the Xcode.app path, not `/Library/Developer/CommandLineTools`. This is a machine-level setting; only needs to be done once per machine. |
 
 ---
 
@@ -116,7 +119,7 @@ Two directions to explore (not mutually exclusive — design session required be
 |---|---|
 | **Dark mode fix — SystemTheme neumorphic shadows** | ✅ Done — Session 45. Adaptive `Color(uiColor:)` tokens in `SystemTheme`. |
 | Sheet header buttons (Cancel / Save / Done) neumorphic styling | Buttons have correct pill shape but the header row sits slightly above the scroll content with a visible seam. Root cause: `.presentationBackground` + plain VStack doesn't fully match the navigation bar treatment. Investigate `UISheetPresentationController` background or a sticky-header approach inside the ScrollView. Low priority — buttons are functional and legible. |
-| Consolidate `formatDuration` helper | Duplicated in `ActivityListView.swift` and `SessionView.swift`. Extract to a shared `DurationFormatter.swift` or extension on `TimeInterval`. Zero user-visible impact — purely internal cleanup. |
+| Consolidate `formatDuration` helper | ✅ Done — Session 51. Extracted to `Extensions/TimeInterval+Format.swift` (`.formattedDuration`); removed 3 private copies from `ActivityListView`, `SessionView`, `DashboardView`. |
 
 ---
 

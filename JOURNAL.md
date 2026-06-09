@@ -5,6 +5,40 @@
 
 ---
 
+## Session 51 — 2026-06-09
+
+**Focus:** DL-14 (color-coded active border) + DL-12 (pin active activity to top) + tech debt (consolidate `formatDuration`). SourceKit false-positive errors documented in Bug fixes.
+
+### DL-14 — Color-coded active session border
+
+`ActivityRow` border was using `theme.colors.accent` for all active sessions. Changed to `theme.colors.positive` (green) for chargers, `theme.colors.negative` (red) for spenders. One-line change in the `.overlay` modifier.
+
+### DL-12 — Pin active activity to top of list
+
+Three changes to `ActivityListView.swift`:
+
+**"ACTIVE" badge:** When `isActive == true`, a small colored capsule appears inline with the activity name (`background: iconColor.opacity(0.12)`). Color matches the new border — green for charger, red for spender — for visual coherence. Explains why the card jumped to position 0.
+
+**Charger/Spender filter tabs (`activityList`):** `filteredActivities` sorted before rendering with `sorted { a, b in a.id == activeId && b.id != activeId }`. View-layer only — no model change. Reverts automatically when the session ends.
+
+**"All" tab (`combinedList`):** Active activity pinned at absolute position 0 (above all category sections) using a conditional `ActivityRow` block at the top of the `LazyVStack`. The pinned activity is excluded from its category section via `a.id != activeId` filter on `catChargers`/`catSpenders` — prevents the same card appearing twice.
+
+**Follow-up added to backlog:** Auto-scroll to top on session start. When the user scrolls down before tapping Start, the newly-pinned card can be off-screen. `ScrollViewReader` + `.scrollTo` at session-start time would fix this.
+
+### Tech debt — Consolidate `formatDuration`
+
+Extracted the identical three-copy implementation into `Extensions/TimeInterval+Format.swift` (`.formattedDuration` computed property). Removed private `formatDuration` from `ActivityListView`, `SessionView`, and `DashboardView`. Call sites updated to `secs.formattedDuration`. The widget's `formatElapsed` (clock format "01:23:45") is a different function and was left in place.
+
+### SourceKit false-positive errors — documented
+
+Added a bug entry to `BACKLOG.md` with root cause and fix: `xcode-select` pointing at Command Line Tools instead of Xcode.app causes SourceKit to fail resolving SwiftData macros and app types. Fix: `sudo xcode-select --switch /Applications/Xcode.app`. Build itself has always succeeded (`BUILD SUCCEEDED`).
+
+**What to pick up next:**
+- App Store still "In Review." Release on approval.
+- Next Tier 1: DL-15 (time-limited spender session with alarm) or DL-12 follow-up (auto-scroll to top on session start — quick, a few lines).
+
+---
+
 ## Session 50 — 2026-06-09
 
 **Focus:** Backlog restructure + DL-13 (abbreviate large credit numbers) + two bug fixes.
