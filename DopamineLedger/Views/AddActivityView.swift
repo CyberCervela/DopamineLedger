@@ -235,7 +235,7 @@ struct AddActivityView: View {
                     if let rate = parsedRate {
                         let hintKey = kind == .charger ? "activity.hint.earns" : "activity.hint.spends"
                         Text(String(format: lBundle.l(hintKey),
-                                    rate.formatted(.number.precision(.fractionLength(1)))))
+                                    rate.abbreviated))
                             .font(theme.typography.caption)
                             .foregroundStyle(kind == .charger ? theme.colors.positive : theme.colors.negative)
                             .multilineTextAlignment(.center)

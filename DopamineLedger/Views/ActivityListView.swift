@@ -638,7 +638,7 @@ private struct ActivityRow: View {
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
                 Text(String(format: lBundle.l("session.rate"),
-                            ratePerMinute.formatted(.number.precision(.fractionLength(0...1)))))
+                            ratePerMinute.abbreviated))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
                 if let secs = burndownSeconds {

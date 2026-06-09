@@ -38,7 +38,7 @@ struct SettingsView: View {
     @State private var pendingImport:    ExportData? = nil
 
     private enum SettingsAlert: Identifiable {
-        case wipe, mailFallback, importConfirm, importError
+        case wipe, mailFallback, importConfirm, importError, debugSeed
         var id: Self { self }
     }
     @State private var notifStatus: UNAuthorizationStatus = .notDetermined
@@ -154,6 +154,15 @@ struct SettingsView: View {
                     title: Text(lBundle.l("alert.import.error")),
                     message: Text(lBundle.l("alert.import.error.message")),
                     dismissButton: .default(Text(lBundle.l("common.done")))
+                )
+            case .debugSeed:
+                return Alert(
+                    title: Text("Load Test Data?"),
+                    message: Text("This will replace all current data with the built-in seed dataset."),
+                    primaryButton: .destructive(Text("Load")) {
+                        do { try DebugSeeder.forceSeed(in: context) } catch {}
+                    },
+                    secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
                 )
             }
         }
@@ -470,12 +479,7 @@ struct SettingsView: View {
                 // in DEBUG builds; never visible to App Store users.
                 #if DEBUG
                 Button {
-                    if let data = DataExporter.decodeBundleSeed() {
-                        pendingImport = data
-                        activeAlert = .importConfirm
-                    } else {
-                        activeAlert = .importError
-                    }
+                    activeAlert = .debugSeed
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: theme.spacing.xxs) {

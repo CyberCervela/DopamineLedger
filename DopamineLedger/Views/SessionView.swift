@@ -133,7 +133,7 @@ struct SessionView: View {
                     }
                 }
                 Text(String(format: lBundle.l("session.rate"),
-                            (activity.ratePerSecond * 60).formatted(.number.precision(.fractionLength(0...1)))))
+                            (activity.ratePerSecond * 60).abbreviated))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }

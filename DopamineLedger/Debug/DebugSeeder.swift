@@ -20,6 +20,23 @@ enum DebugSeeder {
         // Any existing activities mean the store has been used before — bail out.
         let existing = (try? context.fetch(FetchDescriptor<Activity>())) ?? []
         guard existing.isEmpty else { return }
+        seedCore(in: context)
+    }
+
+    // Force-wipe + reseed — used by Settings → Load Test Data in DEBUG builds.
+    // Unlike seedIfNeeded, this always runs regardless of existing data.
+    @MainActor
+    static func forceSeed(in context: ModelContext) throws {
+        try context.delete(model: Session.self)
+        try context.delete(model: ActivityDebt.self)
+        try context.delete(model: Quest.self)
+        try context.delete(model: Activity.self)
+        try context.delete(model: Ledger.self)
+        try context.save()
+        seedCore(in: context)
+    }
+
+    private static func seedCore(in context: ModelContext) {
 
         let now = Date()
 
@@ -88,7 +105,7 @@ enum DebugSeeder {
         // Set balance directly — represents a plausible running total
         // given the session and quest history above.
         context.insert(Ledger(balance: 420))
-    }
+    } // end seedCore
 
     // Creates one closed session with an absolute startedAt derived from `now`.
     private static func makeSession(
