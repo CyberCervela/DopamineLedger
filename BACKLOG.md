@@ -77,12 +77,21 @@ Two-state session with no activity selection upfront: "Creating" (charger) or "C
 | DL-03 | IDEA | Sleep Mode / recurring rest quest (auto-stop after inactivity) |
 | DL-07 | IDEA | Share and discover activity profiles / routines (requires backend) |
 | DL-08 | IDEA | Convert decayed credits to debt repayment (dependent on credit decay feature) |
+| DL-16 | IDEA | Rethink credit economy — rate cap and/or auto-balanced time-for-time model |
 
 **DL-03:** A toggle or recurring quest that auto-stops a session after inactivity, or rewards the user for stopping on time. Two paths: (a) global sleep-mode toggle; (b) recurring "rest" quest. PM to decide direction before any code.
 
 **DL-07:** Export activity config as a shareable profile; others import it as a template. Potential monetisation: curated profiles from athletes/students/creators. Requires backend infrastructure — out of scope until a meaningful user base exists.
 
 **DL-08:** If credit decay ships (see "Credit decay — anti-hoarding mechanic" in Post-v1.1 section below), allow expiring credits to redirect toward paying off activity debt rather than evaporating. Dependent on credit decay being designed and built first.
+
+**DL-16:** Rethink the credit economy — rate caps and/or auto-balanced time-for-time model.
+
+Two directions to explore (not mutually exclusive — design session required before any code):
+
+**Path A — Rate cap (quick fix):** Enforce a maximum cr/min in the activity editor (e.g. 60 cr/min). Prevents extreme values from breaking the display and keeps the economy meaningful — a 125,000 cr/min activity trivially overwhelms any charger. Implementation is trivial; the design question is what the right cap is and whether it should be user-visible.
+
+**Path B — Auto-balanced economy (deeper rethink):** Remove user-defined credit rates entirely. The system defines rates so that "X minutes of creation gives you X minutes (or fewer) of consumption." Credits become a crystallisation of time ratios rather than an arbitrary number the user sets. This directly encodes the "create more than you consume" philosophy into the economy itself — the user can't game it by setting a charger rate of 10,000 and a spender rate of 1. Open design questions: How are charger rates differentiated (is 20 min of exercise worth more than 20 min of reading)? Does user agency over rates belong to the philosophy or undermine it? How would existing activities migrate? This is a significant product direction change — it should be discussed as a philosophy question before a product question.
 
 ---
 
