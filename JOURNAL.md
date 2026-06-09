@@ -5,6 +5,46 @@
 
 ---
 
+## Session 50 — 2026-06-09
+
+**Focus:** Backlog restructure + DL-13 (abbreviate large credit numbers) + two bug fixes.
+
+### Backlog restructure
+
+Merged a PM-authored backlog update file into `BACKLOG.md`. Introduced a structured product roadmap section with unique IDs (`DL-XX`), types, and four priority tiers. Key decisions made during the merge:
+
+- **DL-05** (companion hardware device) is classified private — appears in the public `BACKLOG.md` only as an ID with no description. Full details stored at `~/Desktop/RESEARCH-DL-05-private.md` (outside the repo). Monetisation strategy also added to that private file (pricing model, candidate premium features, business structure notes, what was publicly signalled in the App Store listing).
+- All other DL-01 through DL-15 items integrated with full detail.
+- **DL-16** added at end of session: rethink the credit economy — rate cap (Path A) vs. auto-balanced time-for-time model (Path B). Captured as a Tier 4 idea requiring a philosophy discussion before any code. See entry in BACKLOG.md.
+
+### DL-13 — Abbreviate large credit numbers (K / M / B)
+
+**Shipped:** `DopamineLedger/Extensions/Double+Credits.swift` (new), 7 view files updated.
+
+New `Double.abbreviated` extension: numbers below 100,000 display as before (up to 1 decimal); at 100,000+ they abbreviate to K / M / B. Threshold chosen at 100K (not 1K) because the balance is a net figure — hitting 1K is common in normal use, hitting 100K is rare. Examples: `99,999` → `"99,999"`, `100,000` → `"100K"`, `1,234,567` → `"1.2M"`.
+
+23 call sites updated across `BalanceCard`, `SessionView`, `DebtView`, `ActivityMenuView`, `ActivityListView`, `DashboardView`, `HistoryView`, and `AddActivityView`. Rate displays (`cr/min`) were initially skipped on the reasoning that rates are small by design, but were updated after device testing showed the inconsistency is visible and confusing regardless of intent.
+
+`BalanceCard` note: the digit-roll animation (`.contentTransition(.numericText())`) is preserved — below 100K it animates exactly as before; above 100K it cross-fades. Acceptable tradeoff given how rarely the threshold is crossed.
+
+### Bug fix — Load Test Data failing
+
+**Root cause:** The `#if DEBUG` "Load Test Data" button in Settings reads from a bundled `seed-data.json` file via `DataExporter.decodeBundleSeed()`. That file was never created — Session 39 deferred it as a manual step. `decodeBundleSeed()` returned nil, triggering the `importError` alert ("Import Failed — Make sure it's a valid Dopamine Ledger backup").
+
+**Fix:** Bypassed the JSON file entirely. Added `DebugSeeder.forceSeed(in:)` — a `@MainActor` method that wipes all existing data and calls the existing `seedCore()` seed logic (extracted from the old `seedIfNeeded` body). Added a `debugSeed` case to `SettingsAlert` with its own confirmation dialog. The button now sets `activeAlert = .debugSeed`; on confirm, calls `forceSeed`. No JSON file needed, no file to fall out of sync with the data model.
+
+**Why not create the JSON file:** `DebugSeeder` already has a well-maintained realistic dataset in Swift. Maintaining a parallel JSON file that must stay in sync with the `ExportData` struct is fragile — the unit test (`testExportImportRoundTrip`) tests the round-trip logic separately.
+
+### Bug fix — Rate caption in AddActivityView not abbreviated
+
+`AddActivityView:238` used `.fractionLength(1)` (always 1 decimal, no abbreviation) for the activity hint caption ("This activity earns/spends X cr/min"). Changed to `.abbreviated`.
+
+**What to pick up next:**
+- App Store still "In Review." Release on approval.
+- Next Tier 1 item: DL-14 (verify charger/spender color differentiation on active border) or DL-12 (pin active activity to top of list).
+
+---
+
 ## Session 49 — 2026-06-03
 
 **Focus:** Two bug fixes introduced by Session 48's long-press gesture change.
