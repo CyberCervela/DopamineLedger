@@ -38,7 +38,10 @@ struct SettingsView: View {
     @State private var pendingImport:    ExportData? = nil
 
     private enum SettingsAlert: Identifiable {
-        case wipe, mailFallback, importConfirm, importError, debugSeed
+        case wipe, mailFallback, importConfirm, importError
+        #if DEBUG
+        case debugSeed
+        #endif
         var id: Self { self }
     }
     @State private var notifStatus: UNAuthorizationStatus = .notDetermined
@@ -155,6 +158,7 @@ struct SettingsView: View {
                     message: Text(lBundle.l("alert.import.error.message")),
                     dismissButton: .default(Text(lBundle.l("common.done")))
                 )
+            #if DEBUG
             case .debugSeed:
                 return Alert(
                     title: Text("Load Test Data?"),
@@ -164,6 +168,7 @@ struct SettingsView: View {
                     },
                     secondaryButton: .cancel(Text(lBundle.l("common.cancel")))
                 )
+            #endif
             }
         }
     }

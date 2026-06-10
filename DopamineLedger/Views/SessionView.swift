@@ -41,7 +41,6 @@ struct SessionView: View {
         // SessionFinalizer will compute at stop time.
         let creditsMoved  = activity.ratePerSecond * elapsed * session.timeMultiplier
         let paused        = session.isPaused
-        let creditsKey        = activity.kind == .charger ? "session.credits_earned" : "session.credits_spent"
         let creditsCaptionKey = activity.kind == .charger ? "session.credits_earned_caption" : "session.credits_spent_caption"
         let statusKey     = paused ? "session.paused" : (activity.kind == .charger ? "session.charging" : "session.spending")
 
