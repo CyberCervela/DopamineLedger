@@ -1,0 +1,253 @@
+// QAScreenshotWalk.swift
+// Resubmission-QA screenshot harness. NOT part of the shipping app — this is a
+// ui-testing bundle that drives the Debug build through every reviewer-visible
+// screen and saves a PNG per screen, named per the QA matrix convention:
+//   <screen>-<device>-<theme>-<scheme>.png
+//
+// Why a UI test and not a shell script: simctl has no tap injection, and
+// AppleScript clicking needs assistive-access permissions and is coordinate-
+// fragile. XCUITest taps by accessibility label, waits for elements properly,
+// and runs identically on every simulator device.
+//
+// Configuration comes from the environment (forwarded by xcodebuild via
+// TEST_RUNNER_*):
+//   DL_QA_DIR    — host directory for PNGs (simulator processes share the host FS)
+//   DL_QA_DEVICE — device tag for filenames ("17promax", "se3", ...)
+//   DL_QA_THEME  — theme tag ("neu" / "system")
+//   DL_QA_SCHEME — scheme tag ("light" / "dark" / "light-fr", ...)
+// Theme / language / appearance are set EXTERNALLY (defaults write + simctl ui)
+// before the run; the harness just photographs whatever is configured.
+
+import XCTest
+
+final class QAScreenshotWalk: XCTestCase {
+
+    var app: XCUIApplication!
+    var dir = "/tmp/dl-qa"
+    var tag = "device-neu-light"
+
+    override func setUpWithError() throws {
+        continueAfterFailure = true   // a missed element should not abort the whole walk
+        let env = ProcessInfo.processInfo.environment
+        dir = env["DL_QA_DIR"] ?? dir
+        let device = env["DL_QA_DEVICE"] ?? "device"
+        let theme  = env["DL_QA_THEME"]  ?? "neu"
+        let scheme = env["DL_QA_SCHEME"] ?? "light"
+        tag = "\(device)-\(theme)-\(scheme)"
+        try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
+        // The notification-permission alert fires on the first spender session
+        // start. Answer it deterministically so screenshots stay clean: Allow by
+        // default; Don't Allow when the run is the QA-34 denied-state pass.
+        let deny = env["DL_QA_DENY_NOTIF"] == "1"
+        addUIInterruptionMonitor(withDescription: "notification permission") { alert in
+            let button = alert.buttons[deny ? "Don't Allow" : "Allow"]
+            if button.exists { button.tap(); return true }
+            return false
+        }
+        app = XCUIApplication()
+        app.launch()
+    }
+
+    // MARK: - Helpers
+
+    private func shoot(_ screen: String) {
+        // Small settle delay so transitions/animations finish before capture.
+        usleep(600_000)
+        let png = XCUIScreen.main.screenshot().pngRepresentation
+        let url = URL(fileURLWithPath: "\(dir)/\(screen)-\(tag).png")
+        try? png.write(to: url)
+    }
+
+    @discardableResult
+    private func tap(_ element: XCUIElement, _ what: String, timeout: TimeInterval = 5) -> Bool {
+        guard element.waitForExistence(timeout: timeout) else {
+            XCTFail("missing: \(what)"); return false
+        }
+        element.tap()
+        return true
+    }
+
+    // Taps at an absolute point in window coordinates — used for the two
+    // icon-only header buttons (gear / +) that have no text label. Anchored to
+    // the home title's frame so it adapts to every device's safe-area inset.
+    private func tapAtPoint(_ p: CGPoint) {
+        let base = app.coordinate(withNormalizedOffset: .zero)
+        base.withOffset(CGVector(dx: p.x, dy: p.y)).tap()
+    }
+
+    private var homeTitle: XCUIElement { app.staticTexts["Dopamine Ledger"] }
+
+    // "Done" is ambiguous: quest rows on the home screen have a Done button, and
+    // stacked sheets each have a Done pill. The sheet's pill is the LAST match in
+    // the accessibility hierarchy, so tap the last hittable one.
+    private func tapSheetDone() {
+        let all = app.buttons.matching(identifier: "Done").allElementsBoundByIndex
+        if let last = all.last(where: { $0.isHittable }) { last.tap() }
+        else { XCTFail("no hittable Done pill") }
+        usleep(400_000)
+    }
+
+    private func openSettings() {
+        _ = homeTitle.waitForExistence(timeout: 5)
+        tapAtPoint(CGPoint(x: 30, y: homeTitle.frame.midY))   // gear is leading-aligned
+    }
+
+    private func openAddSheet() {
+        _ = homeTitle.waitForExistence(timeout: 5)
+        let w = app.frame.width
+        tapAtPoint(CGPoint(x: w - 30, y: homeTitle.frame.midY)) // + is trailing-aligned
+    }
+
+    private func replaceText(in field: XCUIElement, with text: String) {
+        field.tap()
+        // Select-all then type replaces reliably regardless of cursor position.
+        field.doubleTap()
+        app.menuItems["Select All"].exists ? app.menuItems["Select All"].tap() : ()
+        field.typeText(text)
+    }
+
+    // MARK: - The walk
+
+    func test01CoreScreens() {
+        // ---- Home: all four filter tabs (seeded data) ----
+        _ = homeTitle.waitForExistence(timeout: 10)
+        shoot("home-all")
+        tap(app.buttons["Chargers"].firstMatch, "Chargers tab");  shoot("home-chargers")
+        tap(app.buttons["Spenders"].firstMatch, "Spenders tab");  shoot("home-spenders")
+        tap(app.buttons["Quests"].firstMatch,   "Quests tab");    shoot("home-quests")
+        tap(app.buttons["All"].firstMatch,      "All tab")
+
+        // ---- Stats: three scopes ----
+        tap(app.buttons["Stats"].firstMatch, "Stats tab"); shoot("stats-today")
+        if app.buttons["This Week"].exists { app.buttons["This Week"].tap(); shoot("stats-week") }
+        if app.buttons["All Time"].exists  { app.buttons["All Time"].tap();  shoot("stats-alltime") }
+
+        // ---- History ----
+        tap(app.buttons["History"].firstMatch, "History tab"); shoot("history")
+        tap(app.buttons["Home"].firstMatch, "Home tab")
+
+        // ---- Settings + Privacy ----
+        openSettings()
+        if app.staticTexts["Settings"].waitForExistence(timeout: 4) {
+            shoot("settings-top")
+            app.swipeUp(); app.swipeUp()
+            shoot("settings-bottom")
+            if app.staticTexts["Privacy Policy"].firstMatch.exists {
+                app.staticTexts["Privacy Policy"].firstMatch.tap()
+                shoot("privacy")
+                tapSheetDone()   // privacy sheet
+            }
+            tapSheetDone()       // settings sheet
+        }
+
+        // ---- Add flow: choice sheet, template gallery, create-own + cap hint ----
+        openAddSheet()
+        if app.staticTexts["Add Activity"].waitForExistence(timeout: 4) {
+            shoot("addchoice")
+            tap(app.staticTexts["Choose from Template"].firstMatch, "template path")
+            if app.staticTexts["Templates"].waitForExistence(timeout: 4) {
+                shoot("templates")
+                tap(app.staticTexts["Deep Work"].firstMatch, "Deep Work template")
+                shoot("addactivity-template")
+                // Cancel pops the pushed form back to the gallery (it does NOT
+                // close the sheet), so cancel the gallery as well.
+                tap(app.buttons["Cancel"].firstMatch, "cancel template form")
+                if app.staticTexts["Templates"].waitForExistence(timeout: 3) {
+                    tap(app.buttons["Cancel"].firstMatch, "cancel gallery")
+                }
+            }
+        }
+        usleep(800_000)   // let the sheet dismissal settle before re-opening
+        // Re-open: create your own (cancel above may have closed the whole sheet)
+        if !app.staticTexts["Add Activity"].exists { openAddSheet() }
+        if app.staticTexts["Add Activity"].waitForExistence(timeout: 4) {
+            tap(app.staticTexts["Create Your Own"].firstMatch, "create-own path")
+            if app.staticTexts["New Activity"].waitForExistence(timeout: 4) {
+                let name = app.textFields.element(boundBy: 0)
+                tap(name, "name field"); name.typeText("QA Charger")
+                // Over-cap rate → red max hint + disabled Save (F-09)
+                let rate = app.textFields.element(boundBy: 1)
+                replaceText(in: rate, with: "100")
+                app.swipeUp()   // bring the rate field + hint into view
+                shoot("addactivity-overcap")
+                replaceText(in: rate, with: "12")
+                shoot("addactivity-create")
+                tap(app.buttons["Save"].firstMatch, "save activity")
+            }
+        }
+
+        // ---- Charger session: confirm sheet → running → ACTIVE pin → stop ----
+        if app.staticTexts["QA Charger"].waitForExistence(timeout: 5) {
+            app.staticTexts["QA Charger"].firstMatch.tap()
+            if app.buttons["Start session"].waitForExistence(timeout: 4) {
+                shoot("activitymenu-charger")
+                app.buttons["Start session"].firstMatch.tap()
+                _ = app.buttons["Stop"].waitForExistence(timeout: 4)
+                shoot("session-charger")
+                if app.buttons["Pause"].exists {
+                    app.buttons["Pause"].tap(); shoot("session-paused")
+                    if app.buttons["Resume"].exists { app.buttons["Resume"].tap() }
+                }
+                // Swipe the sheet down — session survives; home should show the
+                // pinned row with the localized ACTIVE badge (DL-12 + F-04).
+                app.swipeDown(velocity: .fast)
+                shoot("home-active-pinned")
+                // Reopen and stop.
+                if app.staticTexts["QA Charger"].firstMatch.waitForExistence(timeout: 4) {
+                    app.staticTexts["QA Charger"].firstMatch.tap()
+                    if app.buttons["Stop"].waitForExistence(timeout: 4) { app.buttons["Stop"].tap() }
+                }
+            }
+        }
+
+        // ---- Spender session (seeded "Doomscrolling") ----
+        if app.staticTexts["Doomscrolling"].firstMatch.waitForExistence(timeout: 5) {
+            app.staticTexts["Doomscrolling"].firstMatch.tap()
+            // Cleared state shows "Start session"; debt state shows "Start session anyway"
+            let start = app.buttons["Start session"].exists
+                ? app.buttons["Start session"]
+                : app.buttons["Start session anyway"]
+            if start.waitForExistence(timeout: 4) {
+                shoot("activitymenu-spender")
+                start.firstMatch.tap()
+                _ = app.buttons["Stop"].waitForExistence(timeout: 4)
+                shoot("session-spender")
+                if app.buttons["Stop"].exists { app.buttons["Stop"].tap() }
+            } else {
+                // Menu without a start button (unexpected state): swipe it away.
+                app.swipeDown(velocity: .fast)
+            }
+        }
+
+        // ---- Debt sheet via balance card tap-through ----
+        let debtRow = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'debt'")).firstMatch
+        if debtRow.exists {
+            debtRow.tap()
+            if app.staticTexts["Debt"].waitForExistence(timeout: 4) {
+                shoot("debt")
+                tapSheetDone()   // debt sheet
+            }
+        }
+    }
+
+    // Wipes all data via the Danger Zone to capture the first-launch empty state.
+    // Run LAST and only when DL_QA_EMPTY=1 (destructive; the DEBUG seeder
+    // repopulates on next launch because the store is empty again).
+    func test02EmptyStates() throws {
+        guard ProcessInfo.processInfo.environment["DL_QA_EMPTY"] == "1" else {
+            throw XCTSkip("empty-state pass not requested")
+        }
+        _ = homeTitle.waitForExistence(timeout: 10)
+        openSettings()
+        guard app.staticTexts["Settings"].waitForExistence(timeout: 4) else { return }
+        app.swipeUp(); app.swipeUp()
+        tap(app.staticTexts["Wipe all data"].firstMatch, "wipe row")
+        // System alert confirmation.
+        let confirm = app.alerts.buttons["Wipe everything"]
+        if confirm.waitForExistence(timeout: 4) { confirm.tap() }
+        _ = homeTitle.waitForExistence(timeout: 5)
+        shoot("home-empty")
+        tap(app.buttons["Stats"].firstMatch, "Stats tab");   shoot("stats-empty")
+        tap(app.buttons["History"].firstMatch, "History tab"); shoot("history-empty")
+    }
+}

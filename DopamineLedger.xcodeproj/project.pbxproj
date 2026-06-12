@@ -44,6 +44,7 @@
 		A20EF031C12D94946BDFBBD1 /* AddQuestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E384A5EA6024739125C1550C /* AddQuestView.swift */; };
 		A3A7E162DB65380C6870201C /* DataExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D3870ABDB39AD2369ACA42 /* DataExporter.swift */; };
 		A55BFE80ACABC142C58DDEA9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = BB1B2B0AF80C9AC908D77450 /* Localizable.xcstrings */; };
+		A797F056FBF851F2539A3F52 /* QAScreenshotWalk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B88953B94A1A1AF5AB9144 /* QAScreenshotWalk.swift */; };
 		A7FA6C24A94E294EE725919A /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A7DA0815CFD74A5A1D1BD8A /* NotificationScheduler.swift */; };
 		A9B9FE669492BCFA78D9A809 /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE10CAA151CB6066F1C8A3C4 /* SoundPlayer.swift */; };
 		B89135976CA03D376F7D949C /* BalanceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73063F24F4207DCD725418F /* BalanceCard.swift */; };
@@ -78,6 +79,13 @@
 			remoteGlobalIDString = 74E54054CB17E55A294ECBE0;
 			remoteInfo = DopamineLedgerWidgets;
 		};
+		BEB95EC6F68A1828E3335523 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 63ADBC32C47998FCAE858711 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E69120AD4ADE44BF6D36ACA0;
+			remoteInfo = DopamineLedger;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -108,9 +116,11 @@
 		211E81845C8E9C8FE90C87D4 /* LaunchImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = LaunchImage.png; sourceTree = "<group>"; };
 		2395C755095E2803B843A85D /* SessionLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLiveActivity.swift; sourceTree = "<group>"; };
 		24F586D6E6319A3FAE8B1C9A /* DopamineLedgerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DopamineLedgerApp.swift; sourceTree = "<group>"; };
+		38B88953B94A1A1AF5AB9144 /* QAScreenshotWalk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QAScreenshotWalk.swift; sourceTree = "<group>"; };
 		413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DopamineLedgerWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		444E3DE0F22E15564BDBA5F7 /* RepayMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepayMath.swift; sourceTree = "<group>"; };
 		4E56BCF1C99A7618E1C677FD /* ActivityMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityMenuView.swift; sourceTree = "<group>"; };
+		5068ECFF92CCF7A60F531124 /* DopamineLedgerUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DopamineLedgerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		576DB65077E0F12E2E4679C8 /* Double+Credits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Credits.swift"; sourceTree = "<group>"; };
 		5A3A10BF39D48EC4310D260D /* SessionActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivityAttributes.swift; sourceTree = "<group>"; };
 		5B813B8C566B27ABA3F7B15E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -207,6 +217,7 @@
 			children = (
 				81157DE817A5C07419A4F7AF /* DopamineLedger.app */,
 				D3CDF352E91511E6561E28E5 /* DopamineLedgerTests.xctest */,
+				5068ECFF92CCF7A60F531124 /* DopamineLedgerUITests.xctest */,
 				413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */,
 			);
 			name = Products;
@@ -241,10 +252,19 @@
 			children = (
 				0A8E9DE82389D8BF6CF6E180 /* DopamineLedger */,
 				92843329AF4291957A304FAB /* DopamineLedgerTests */,
+				7F8C8BB00632937DE19F697B /* DopamineLedgerUITests */,
 				D022895F464060179FE6F105 /* DopamineLedgerWidgets */,
 				B9236BDA897E6745295BCB36 /* Frameworks */,
 				463088C4671F850066047D81 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		7F8C8BB00632937DE19F697B /* DopamineLedgerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				38B88953B94A1A1AF5AB9144 /* QAScreenshotWalk.swift */,
+			);
+			path = DopamineLedgerUITests;
 			sourceTree = "<group>";
 		};
 		92843329AF4291957A304FAB /* DopamineLedgerTests */ = {
@@ -363,6 +383,24 @@
 			productReference = 413A7D7E474E2F44A679E863 /* DopamineLedgerWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		D389DC9853FA715480F94F33 /* DopamineLedgerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3498F379722C8F27ECA70F0B /* Build configuration list for PBXNativeTarget "DopamineLedgerUITests" */;
+			buildPhases = (
+				FEB73D6EF72D57246B6F0B04 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F839E8E792F7DC96E81EA5E9 /* PBXTargetDependency */,
+			);
+			name = DopamineLedgerUITests;
+			packageProductDependencies = (
+			);
+			productName = DopamineLedgerUITests;
+			productReference = 5068ECFF92CCF7A60F531124 /* DopamineLedgerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 05141E6CF3E76B48DEB7C7B3 /* Build configuration list for PBXNativeTarget "DopamineLedger" */;
@@ -401,6 +439,11 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					D389DC9853FA715480F94F33 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = E69120AD4ADE44BF6D36ACA0;
+					};
 					E69120AD4ADE44BF6D36ACA0 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -429,6 +472,7 @@
 			targets = (
 				E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */,
 				1039CB380E1D9F9882B477ED /* DopamineLedgerTests */,
+				D389DC9853FA715480F94F33 /* DopamineLedgerUITests */,
 				74E54054CB17E55A294ECBE0 /* DopamineLedgerWidgets */,
 			);
 		};
@@ -518,6 +562,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FEB73D6EF72D57246B6F0B04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A797F056FBF851F2539A3F52 /* QAScreenshotWalk.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -530,6 +582,11 @@
 			isa = PBXTargetDependency;
 			target = E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */;
 			targetProxy = AE3F5BAC645BB85CF169E557 /* PBXContainerItemProxy */;
+		};
+		F839E8E792F7DC96E81EA5E9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E69120AD4ADE44BF6D36ACA0 /* DopamineLedger */;
+			targetProxy = BEB95EC6F68A1828E3335523 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -573,6 +630,42 @@
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
+		};
+		20721B9E29D26B39571B0150 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cibercervela.DopamineLedgerUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DopamineLedger;
+			};
+			name = Debug;
+		};
+		32717E8273745B450FBA41A4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.cibercervela.DopamineLedgerUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DopamineLedger;
+			};
+			name = Release;
 		};
 		404B87F8BA13B7948D43B80C /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -785,6 +878,15 @@
 			buildConfigurations = (
 				15B36ED6C0F437707D3E3FC3 /* Debug */,
 				0D387406FC6DB76B3BF46F49 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3498F379722C8F27ECA70F0B /* Build configuration list for PBXNativeTarget "DopamineLedgerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20721B9E29D26B39571B0150 /* Debug */,
+				32717E8273745B450FBA41A4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

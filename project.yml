@@ -99,7 +99,34 @@ targets:
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/DopamineLedger.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DopamineLedger"
         GENERATE_INFOPLIST_FILE: YES   # unit-test bundles don't need a hand-written plist
 
+  # QA screenshot harness (resubmission visual matrix). Lives in its own scheme
+  # so `make test` stays fast — run explicitly via the DopamineLedgerUITests
+  # scheme. Test-only bundle; never ships in the app archive.
+  DopamineLedgerUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: DopamineLedgerUITests
+    dependencies:
+      - target: DopamineLedger
+    settings:
+      base:
+        TEST_TARGET_NAME: DopamineLedger
+        GENERATE_INFOPLIST_FILE: YES
+
 schemes:
+  # Separate scheme for the QA screenshot harness so the main scheme's test
+  # action (and `make test`) stays unit-tests-only and fast.
+  DopamineLedgerUITests:
+    build:
+      targets:
+        DopamineLedger: all
+        DopamineLedgerUITests: [test]
+    test:
+      targets:
+        - DopamineLedgerUITests
+
   DopamineLedger:
     build:
       targets:

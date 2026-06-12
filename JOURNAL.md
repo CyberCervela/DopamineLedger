@@ -5,6 +5,62 @@
 
 ---
 
+## Resubmission QA — 2026-06-12 (in progress)
+
+**Context:** v1.0 (build 1) rejected under Guideline 5.6. One-shot resubmission
+pass on branch `resubmission-qa`, orchestrated per `ORCHESTRATION-PROMPT.md` /
+`RESUBMISSION-CHECKLIST.md`. Claude (Fable 5) orchestrated review, planning and
+verification; Opus 4.8 subagents executed each scoped work packet; every packet
+gated on build + full test suite + orchestrator diff review before commit.
+
+### Phase A — full code review
+
+Reviewed every file in app, widgets, tests, project config, assets, and the
+string catalog. Output: `qa/REVIEW-FINDINGS.md` — 29 findings (3 blockers,
+14 fixes, 1 doc conflict, 10 PM-blessed accepts, 1 in-scope feature).
+Baseline at review time: BUILD SUCCEEDED, 46/46 tests, privacy URL 200, string
+catalog complete (all keyed strings × 7 languages).
+
+**PM triage decisions (2026-06-12):** version → 1.0.1 (build 2); rate cap
+approved (60 cr/min activities, 10 000 quest payoff); keep all 7 languages in
+the picker (re-confirming D-007); all 10 `accept` findings blessed as-is.
+
+### Phase B — fixes (one commit per packet, evidence in each message)
+
+| Packet | Finding | What a reviewer/user would have seen | Fix |
+|---|---|---|---|
+| P1 | F-02/QA-02 | Resubmitting with the same version/build as the rejected binary | 1.0.1 (2) in app + widget plists, in lockstep |
+| P2 | F-04/05/06 | ACTIVE badge / "YESTERDAY" / template rates stuck in English when in-app language ≠ device language | Routed through `lBundle`; new `history.yesterday` key ×7 |
+| P3 | F-07/08 | Editing a quest worth ≥1 000 permanently disabled Save; French decimal commas rejected in both editors | `Double(userInput:)` tolerant parser + grouping-free field seeding; 8 tests |
+| P4 | F-13/QA-30 | Malformed import file could crash or silently wipe data via autosaved pending deletes | `applyImport` rolls back on throw; 6 malformed-import tests (empty/garbage/truncated/wrong-schema/50K-row/untouched-on-failure) |
+| P5 | F-10/14/18 | "Contact developer" never opened Mail (undeclared-scheme `canOpenURL` always false); stray Release print; stale CJK comment | Direct `open()` with completion fallback; `#if DEBUG` gate; comment + FEATURES.md + checklist aligned with D-007 |
+| P6 | F-12 | Siri-started sessions silently lost the Peak Hours 1.5× bonus | Multiplier stamped identically to the tap path |
+| P7 | F-15 | Three different duration formats across screens; header comment claimed swipe-dismiss disabled | All call sites on shared `.formattedDuration`; comment fixed |
+| P8 | F-16 | Day headers repeat across years → duplicate ForEach IDs → undefined History rendering after 12 months | Groups keyed by day-start `Date` |
+| P9 | F-11 | Wipe/import mid-session left a zombie Live Activity on the Lock Screen + stale alarms | Notifications cancelled + Live Activity ended before data removal |
+| P10 | F-09/DL-16-A | No input ceiling — pasted `1e15` rates broke displays and the economy | PM-approved caps (60 cr/min, 10 000), red localized hint ×7, Save disabled; no clamping, stored data untouched; 3 boundary tests |
+| P11 | F-17/DL-12 | Starting a session from a scrolled list hid the pinned ACTIVE row | Auto-scroll to top on the session-start edge (covers Siri starts too) |
+
+Test suite grew 46 → 63, all green at every gate.
+
+### Phase C — visual QA matrix (in progress)
+
+Built `DopamineLedgerUITests` (QAScreenshotWalk): a label-driven XCUITest
+harness + `qa/run-matrix.sh` that walks every reviewer-visible screen and saves
+`<screen>-<device>-<theme>-<scheme>.png` to `qa/resubmission/`. Own scheme, so
+`make test` stays unit-only; the bundle never ships. First cell
+(17 Pro Max / Dopamine / light): 23 screens, walk PASSED. Spot-verified: F-09
+red cap hint + dimmed Save; DL-12/F-04 pinned row with localized ACTIVE badge;
+session/debt/settings/templates all correct.
+
+**Deviations to flag:** no iPhone SE simulator was installed (created one on
+iOS 26.5); only the iOS 26.5 runtime is installed, so QA-32's 17.x runtime pass
+needs a runtime download (static API audit passed) — PM call.
+
+*(Entry updated as the matrix and Phase D complete.)*
+
+---
+
 ## Session 51 — 2026-06-09
 
 **Focus:** DL-14 (color-coded active border) + DL-12 (pin active activity to top) + tech debt (consolidate `formatDuration`). SourceKit false-positive errors documented in Bug fixes.
