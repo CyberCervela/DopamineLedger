@@ -286,6 +286,29 @@ final class QAScreenshotWalk: XCTestCase {
         }
     }
 
+    // Focused add-activity capture for the FR/DE spot passes (QA-26): the full
+    // walk's add-flow can be skipped if an earlier sheet misbehaves, so this
+    // runs the editor path in isolation from a fresh launch. Captures the
+    // choice sheet, the editor, and the over-cap hint (new ×7 string from F-09).
+    func test03AddActivitySpot() throws {
+        guard ProcessInfo.processInfo.environment["DL_QA_ADDSPOT"] == "1" else {
+            throw XCTSkip("add-activity spot pass not requested")
+        }
+        _ = homeTitle.waitForExistence(timeout: 10)
+        openAddSheet()
+        if app.staticTexts[L("Add Activity")].waitForExistence(timeout: 4) {
+            shoot("addchoice")
+            tap(app.staticTexts[L("Create Your Own")].firstMatch, "create-own path")
+            if app.staticTexts[L("New Activity")].waitForExistence(timeout: 4) {
+                shoot("addactivity-create")
+                let rate = app.textFields.element(boundBy: 1)
+                replaceText(in: rate, with: "100")
+                app.swipeUp()
+                shoot("addactivity-overcap")
+            }
+        }
+    }
+
     // Wipes all data via the Danger Zone to capture the first-launch empty state.
     // Run LAST and only when DL_QA_EMPTY=1 (destructive; the DEBUG seeder
     // repopulates on next launch because the store is empty again).

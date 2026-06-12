@@ -53,11 +53,50 @@ harness + `qa/run-matrix.sh` that walks every reviewer-visible screen and saves
 red cap hint + dimmed Save; DL-12/F-04 pinned row with localized ACTIVE badge;
 session/debt/settings/templates all correct.
 
-**Deviations to flag:** no iPhone SE simulator was installed (created one on
-iOS 26.5); only the iOS 26.5 runtime is installed, so QA-32's 17.x runtime pass
-needs a runtime download (static API audit passed) — PM call.
+**Matrix results (complete):** 9/9 device×theme×scheme cells passed (SE 3rd gen
+/ iPhone 17 / 17 Pro Max × Dopamine-light / System-light / System-dark), plus
+empty states, iPad Pro 11" compatibility mode (QA-22, full core-flow walk),
+notification-denied flow (QA-34 — charger + spender sessions work end-to-end
+without permission), FR + DE spot passes incl. the new cap-hint strings, and
+Dynamic Type at XXXL + max accessibility size (QA-33). ~280 screenshots in
+`qa/resubmission/` (local-only; gitignored), all reviewed both directions.
+**Zero visual defects found.**
 
-*(Entry updated as the matrix and Phase D complete.)*
+**Mid-pass additions:**
+- F-31 (PM-reported on device): first Export Data tap presented a blank share
+  sheet — boolean-driven `.sheet` raced its optional URL payload. Fixed with
+  `sheet(item:)` (commit 98cafcd). Packet P12.
+- F-29 logged (FR copy nit "Créer votre propre" — PM judgment, QA-26).
+- F-32 logged: typography uses fixed point sizes, so Dynamic Type does nothing
+  (which is also why nothing clips at any size). Accept → v1.1+ backlog.
+- Caught and scrubbed a real DEVELOPMENT_TEAM id that Xcode injected into
+  project.pbxproj mid-pass — never committed (public repo).
+
+### Phase D — final assembly (2026-06-12)
+
+- Re-ran the full Phase 2 static audit on the assembled tree: hardcoded-string
+  sweep clean (remaining hits: DEBUG-gated, email literal, numerals),
+  zero `try!`/`fatalError`/`as!`, zero network symbols, privacy URL 200.
+- **Release-configuration audit (QA-11): PASS** — full UI walk against a
+  Release build on a fresh install; "Load Test Data" and all debug surfaces
+  absent; Settings shows 1.0.1 (2). Bonus: this run is also the reviewer's
+  first-launch experience (empty state → create → session) and it passed.
+- Final gate: `make generate && make build` → BUILD SUCCEEDED, **0 warnings**;
+  63/63 tests green.
+- `docs/app-review-notes.md` finalized with real counts (214 string keys ×7
+  languages, 63 tests, ~280 screenshots, 3 devices). Two bracketed lines wait
+  on PM hardware items.
+
+**Deviations / open:** only the iOS 26.5 simulator runtime is installed —
+QA-32's 17.x runtime pass needs a ~7 GB download (static API audit found
+nothing above the 17.0 floor); PM to decide. No iPhone SE simulator existed;
+one was created on 26.5.
+
+**Remaining (all PM):** QA-01 icon asset, QA-03 Mac/Vision Pro availability,
+QA-04 eligibility date, QA-14 listing edit (`docs/appstore-listing-fix.md`),
+QA-23–27 device pass + FR review (F-29!), QA-35 ASC sweep, QA-28 paste notes,
+QA-29 archive/upload/submit. Merge of `resubmission-qa` → `main` is the PM's
+call after their device pass.
 
 ---
 
