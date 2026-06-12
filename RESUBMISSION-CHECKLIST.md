@@ -81,10 +81,12 @@ product decision.
       guard actually excludes it from Release config.
 - [ ] **QA-08 Localization completeness.** Script a pass over
       `Localizable.xcstrings`: every key must have a non-empty value for
-      en, fr, de, es (the four picker-visible languages). Report any key
-      that falls back to English in fr/de/es, any value identical to its key
-      name, and any value still in English in a non-en locale. ZH/JA/KO are
-      hidden from the picker — confirm the picker filter still excludes them.
+      ALL SEVEN picker-visible languages (en, fr, de, es, zh-Hans, ja, ko).
+      Report any key that falls back to English in a non-en locale and any
+      value identical to its key name. *(Updated 2026-06-12: this item
+      originally said ZH/JA/KO were hidden from the picker — that was stale.
+      All 7 languages are active per D-007, Session 28, PM-signed-off;
+      re-confirmed by the PM during resubmission triage.)*
 - [ ] **QA-09 Hardcoded-string sweep.** Grep view files for `Text("` with
       raw literals (not `lBundle.l(`). Every user-visible string must route
       through localization. Fix stragglers in all 4 visible languages.

@@ -30,7 +30,7 @@
 | Per-activity debt chip on spender rows | `done` | `Views/ActivityListView.swift` (ActivityRow) | |
 | Icon picker (31 curated SF Symbols) | `done` | `IconResolver.swift`, `Views/AddActivityView.swift` | Activity.iconName persisted |
 | About section in Settings (version, contact, privacy, repo) | `done` | `Views/SettingsView.swift` | Privacy URL → `https://cybercervela.github.io/DopamineLedger/privacy.html` |
-| In-app language switcher (EN / FR / DE / ES) | `done` | `Views/SettingsView.swift`, `Localization/LanguageBundle.swift` | CJK strings present in catalog but hidden from picker |
+| In-app language switcher (EN / FR / DE / ES / ZH / JA / KO) | `done` | `Views/SettingsView.swift`, `Localization/LanguageBundle.swift` | All 7 languages active in picker since Session 28 (D-007); CJK reviewed and accepted by PM |
 | Foreground notification delivery | `done` | `Services/NotificationScheduler.swift`, `DopamineLedgerApp.swift` | `NotificationCenterDelegate` wired at app init |
 | Live balance / debt display in SessionView | `done` | `Views/SessionView.swift` | Shows "X remaining" → turns red → "X in debt · 2× rate" |
 | Chill mode (allow spender start with debt) | `done` | `Views/SettingsView.swift`, `Views/ActivityMenuView.swift` | `@AppStorage("chillMode")` |
