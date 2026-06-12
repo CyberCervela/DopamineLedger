@@ -67,6 +67,13 @@ contradicts checklist/docs — PM arbitrates.
 | F-27 | `Views/DashboardView.swift:310`, `Views/HistoryView.swift:196-198` | localization | accept | `RelativeDateTimeFormatter` / `DateFormatter` day-month headers follow the **device** locale rather than the in-app language — already documented in-code as "acceptable for MVP". Consistent, low-impact, and correct for the common case (in-app language == device language). |
 | F-28 | `Views/HistoryView.swift:468-470` | dead-code | accept | `QuestHistoryRow` falls back on `iconName == "circle"` but `Quest` defaults to `"star"` — the fallback branch is unreachable. Harmless: "star" is a valid SF Symbol and renders correctly. Note for the future quest-icon work. |
 
+## Found during Phase C visual QA (added 2026-06-12)
+
+| ID | Location | Category | Severity | Finding |
+|---|---|---|---|---|
+| F-29 | `Localizable.xcstrings` key `activity.add.create.own` (fr) | localization (copy) | PM-judgment | FR value "Créer votre propre" is grammatically dangling ("create your own" with no noun — a native speaker expects e.g. "Créer la vôtre" or "Créer une activité"). Surfaced for the PM's QA-26 native FR pass; one-string fix if confirmed. |
+| F-30 | Stats number formatting | localization (info) | accept | Grouping separators follow the device region (e.g. "+1'140" with a Swiss region). Locale-correct behaviour, not a bug — noted so App Store screenshots are taken with the intended region set. |
+
 ## Checklist items verified clean during this review
 
 | QA-ID | Status | Evidence |
