@@ -229,8 +229,10 @@ struct SettingsView: View {
     // can recognise their target language even before switching. Writing to
     // @AppStorage("languageCode") propagates back to DopamineLedgerApp, which
     // re-injects the bundle and re-renders the whole hierarchy — instant switch.
-    // CJK languages are prepared in the string catalog but hidden from the
-    // picker until a native speaker can verify the translations.
+    // All seven languages — including the three CJK ones — are active in the
+    // picker. CJK was activated after PM review (DECISIONS.md D-007): the user, a
+    // native French speaker fluent in two of the three CJK languages, reviewed and
+    // accepted the translation quality.
     private let visibleLanguages: [SupportedLanguage] = [.en, .fr, .de, .es, .zhHans, .ja, .ko]
 
     private var languageSection: some View {
@@ -549,10 +551,19 @@ struct SettingsView: View {
 
                 Button {
                     let url = URL(string: "mailto:cibercervela@pm.me")!
-                    if UIApplication.shared.canOpenURL(url) {
-                        UIApplication.shared.open(url)
-                    } else {
-                        activeAlert = .mailFallback
+                    // We deliberately do NOT gate this on `canOpenURL`. Since iOS 9
+                    // that check returns false for any scheme not declared in
+                    // LSApplicationQueriesSchemes, and `mailto` isn't declared here —
+                    // so it always failed and every user got the fallback alert.
+                    // `open(_:options:completionHandler:)` needs no such declaration;
+                    // it actually attempts the launch and reports success async on the
+                    // main queue, so we only fall back to copy-the-address when it can't
+                    // open (e.g. Mail uninstalled). Setting @State here is safe — the
+                    // completion runs on main.
+                    UIApplication.shared.open(url, options: [:]) { success in
+                        if !success {
+                            activeAlert = .mailFallback
+                        }
                     }
                 } label: {
                     aboutLinkRow(lBundle.l("settings.about.contact"))
@@ -641,7 +652,11 @@ struct SettingsView: View {
             try context.delete(model: Ledger.self)
             try context.save()
         } catch {
+            // Keep the console quiet in release builds (QA-11); this is only a
+            // development aid for diagnosing a failed wipe.
+            #if DEBUG
             print("SettingsView.wipeAllData failed: \(error)")
+            #endif
         }
         dismiss()
     }
