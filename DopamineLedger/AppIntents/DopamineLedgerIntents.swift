@@ -120,6 +120,13 @@ struct StartSessionIntent: AppIntent {
         }
 
         let session = Session(activityId: fullActivity.id)
+        // Freeze the peak-hours multiplier at start time — identical to the in-app
+        // ActivityListView.startSession path. Voice-started and tap-started sessions
+        // must obey the same economy rules, or a Siri start during peak would silently
+        // bill at 1.0× while a tap would bill at 1.5×. PeakHoursService is safe to call
+        // here because it reads the window straight from UserDefaults, with no SwiftUI
+        // environment required.
+        session.timeMultiplier = PeakHoursService.isCurrentlyPeak() ? PeakHoursService.multiplier : 1.0
         context.insert(session)
         try context.save()
 
