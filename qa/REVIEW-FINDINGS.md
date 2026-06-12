@@ -73,6 +73,8 @@ contradicts checklist/docs — PM arbitrates.
 |---|---|---|---|---|
 | F-29 | `Localizable.xcstrings` key `activity.add.create.own` (fr) | localization (copy) | PM-judgment | FR value "Créer votre propre" is grammatically dangling ("create your own" with no noun — a native speaker expects e.g. "Créer la vôtre" or "Créer une activité"). Surfaced for the PM's QA-26 native FR pass; one-string fix if confirmed. |
 | F-30 | Stats number formatting | localization (info) | accept | Grouping separators follow the device region (e.g. "+1'140" with a Swiss region). Locale-correct behaviour, not a bug — noted so App Store screenshots are taken with the intended region set. |
+| F-31 | `Views/SettingsView.swift` export share sheet | visual-defect | **FIXED** | PM-reported on device: first Export Data tap presented a blank share sheet (boolean-driven `.sheet` raced its optional URL payload). Converted to `sheet(item:)` — cannot present without the payload. Commit 98cafcd. |
+| F-32 | All themes (`Theme.swift`, `NeuTheme.swift`) | accessibility (info) | accept → backlog | QA-33 result: the app's typography uses fixed point sizes (`Font.system(size:)` without `relativeTo:`), so text does not respond to Dynamic Type at all. Consequence: nothing clips or truncates at any size (QA-33 passes trivially — verified at XXXL and the largest accessibility size on SE + iPhone 17), but users who rely on larger text don't get it. Not a rejection driver; proper support is a theme-layer project → v1.1+ backlog. |
 
 ## Checklist items verified clean during this review
 
