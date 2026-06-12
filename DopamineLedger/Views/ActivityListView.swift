@@ -80,16 +80,36 @@ struct ActivityListView: View {
             .padding(.top,        theme.spacing.md)
             .padding(.bottom,     theme.spacing.lg)
 
-            ScrollView {
-                VStack(spacing: theme.spacing.xl) {
-                    switch filter {
-                    case .all:                  combinedList
-                    case .chargers, .spenders:  activityList
-                    case .quests:               questList
+            // ScrollViewReader lets us programmatically scroll when a session starts.
+            // DL-12 pins the active row to position 0, but if the user has scrolled
+            // down, that pinned row is off-screen and the pin looks like a no-op.
+            // We scroll back to the top so the newly-pinned active row is visible.
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: theme.spacing.xl) {
+                        switch filter {
+                        case .all:                  combinedList
+                        case .chargers, .spenders:  activityList
+                        case .quests:               questList
+                        }
+                    }
+                    .padding(.horizontal, theme.spacing.lg)
+                    .padding(.bottom,     theme.spacing.xxl)
+                    // Stable anchor at the top of the scroll content. One ScrollView
+                    // serves all four tabs, so this single id covers every surface.
+                    .id("listTop")
+                    // Fire only when a session STARTS (id goes nil -> non-nil), not
+                    // when it ends. We key on activeSessions.first?.id (the @Query of
+                    // running sessions) rather than startSession(for:) so this also
+                    // catches sessions launched via Siri while the app is open.
+                    .onChange(of: activeSessions.first?.id) { oldValue, newValue in
+                        if oldValue == nil, newValue != nil {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                proxy.scrollTo("listTop", anchor: .top)
+                            }
+                        }
                     }
                 }
-                .padding(.horizontal, theme.spacing.lg)
-                .padding(.bottom,     theme.spacing.xxl)
             }
         }
         .background(theme.colors.background.ignoresSafeArea())
