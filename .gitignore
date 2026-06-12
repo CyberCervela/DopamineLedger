@@ -297,3 +297,9 @@ ARCHIVED (INTIAL DL project)/
 
 # Screenshots from install-and-screenshot.sh
 /screenshot.png
+
+# Claude Code agent state — local machine knowledge; never publish
+.claude/
+
+# Prompts 
+ORCHESTRATION-PROMPT.md
