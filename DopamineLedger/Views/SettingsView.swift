@@ -32,8 +32,15 @@ struct SettingsView: View {
 
     @State private var showPrivacyPolicy: Bool = false
     @State private var activeAlert: SettingsAlert? = nil
-    @State private var isSharePresented: Bool   = false
-    @State private var shareURL:         URL?   = nil
+    // Identifiable wrapper so the share sheet is item-driven. A boolean-driven
+    // sheet + separate optional URL races presentation: the content closure can
+    // run before the URL write lands, presenting an empty sheet on first tap
+    // (PM-reproduced on device). sheet(item:) cannot present without its payload.
+    private struct ShareFile: Identifiable {
+        let url: URL
+        var id: String { url.absoluteString }
+    }
+    @State private var shareFile:        ShareFile? = nil
     @State private var isImporting:      Bool   = false
     @State private var pendingImport:    ExportData? = nil
 
@@ -93,11 +100,12 @@ struct SettingsView: View {
         .sheet(isPresented: $showPrivacyPolicy) {
             PrivacyPolicyView()
         }
-        // Share sheet for export — UIActivityViewController wrapped in SwiftUI
-        .sheet(isPresented: $isSharePresented, onDismiss: { shareURL = nil }) {
-            if let url = shareURL {
-                ShareSheetView(url: url)
-            }
+        // Share sheet for export — UIActivityViewController wrapped in SwiftUI.
+        // item-driven: SwiftUI only builds the sheet once shareFile is non-nil,
+        // so the URL is always present. It also auto-resets to nil on dismiss,
+        // which is why no onDismiss cleanup is needed here.
+        .sheet(item: $shareFile) { file in
+            ShareSheetView(url: file.url)
         }
         // File picker for import — .json type filter matches our backup files
         .fileImporter(
@@ -435,8 +443,8 @@ struct SettingsView: View {
                 // Export
                 Button {
                     if let url = DataExporter.exportToFile(context: context) {
-                        shareURL = url
-                        isSharePresented = true
+                        // Single state write — drives the item-based sheet above.
+                        shareFile = ShareFile(url: url)
                     }
                 } label: {
                     HStack {
