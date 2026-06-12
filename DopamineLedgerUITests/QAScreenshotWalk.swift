@@ -144,25 +144,43 @@ final class QAScreenshotWalk: XCTestCase {
         field.typeText(text)
     }
 
+
+    // Taps the last HITTABLE button with this (localized) label. Needed because
+    // ContentView keeps all three tabs mounted in a ZStack at opacity 0, so a
+    // hidden screen's buttons still exist in the accessibility tree — and some
+    // labels collide across screens in other languages (FR: filter "Tout" vs
+    // scope "Tout" for All Time). A bare query with 2+ matches crashes the test.
+    private func tapButton(_ en: String, _ what: String) {
+        let label = L(en)
+        let deadline = Date().addingTimeInterval(5)
+        while Date() < deadline {
+            let hittable = app.buttons.matching(identifier: label)
+                .allElementsBoundByIndex.filter { $0.isHittable }
+            if let target = hittable.last { target.tap(); usleep(300_000); return }
+            usleep(300_000)
+        }
+        XCTFail("missing/unhittable: \(what)")
+    }
+
     // MARK: - The walk
 
     func test01CoreScreens() {
         // ---- Home: all four filter tabs (seeded data) ----
         _ = homeTitle.waitForExistence(timeout: 10)
         shoot("home-all")
-        tap(app.buttons[L("Chargers")].firstMatch, "Chargers tab");  shoot("home-chargers")
-        tap(app.buttons[L("Spenders")].firstMatch, "Spenders tab");  shoot("home-spenders")
-        tap(app.buttons[L("Quests")].firstMatch,   "Quests tab");    shoot("home-quests")
-        tap(app.buttons[L("All")].firstMatch,      "All tab")
+        tapButton("Chargers", "Chargers tab");  shoot("home-chargers")
+        tapButton("Spenders", "Spenders tab");  shoot("home-spenders")
+        tapButton("Quests", "Quests tab");    shoot("home-quests")
+        tapButton("All", "All tab")
 
         // ---- Stats: three scopes ----
-        tap(app.buttons[L("Stats")].firstMatch, "Stats tab"); shoot("stats-today")
-        if app.buttons[L("This Week")].exists { app.buttons[L("This Week")].tap(); shoot("stats-week") }
-        if app.buttons[L("All Time")].exists  { app.buttons[L("All Time")].tap();  shoot("stats-alltime") }
+        tapButton("Stats", "Stats tab"); shoot("stats-today")
+        tapButton("This Week", "This Week scope"); shoot("stats-week")
+        tapButton("All Time", "All Time scope");  shoot("stats-alltime")
 
         // ---- History ----
-        tap(app.buttons[L("History")].firstMatch, "History tab"); shoot("history")
-        tap(app.buttons[L("Home")].firstMatch, "Home tab")
+        tapButton("History", "History tab"); shoot("history")
+        tapButton("Home", "Home tab")
 
         // ---- Settings + Privacy ----
         openSettings()
