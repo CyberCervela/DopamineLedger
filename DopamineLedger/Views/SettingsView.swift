@@ -644,6 +644,27 @@ struct SettingsView: View {
     }
 
     private func wipeAllData() {
+        // F-11: a wipe that just deletes the Session rows leaves orphaned system UI
+        // behind — the Live Activity keeps ticking on the Lock Screen forever, and the
+        // scheduled "balance empty" notifications still fire later against data that no
+        // longer exists. So before deleting anything, tear that system UI down.
+        //
+        // We deliberately do NOT route this through SessionFinalizer: finalize() would
+        // APPLY this partial session's credits to the ledger — but that ledger is about
+        // to be deleted, so those writes are pointless, and the user asked to delete
+        // everything, not to bank an in-flight session. Cancel notifications + end the
+        // Live Activity + delete is the honest reading of "delete all data".
+        let activeFetch = FetchDescriptor<Session>(predicate: #Predicate { $0.endedAt == nil })
+        if let active = try? context.fetch(activeFetch) {
+            for session in active {
+                // cancelSession is idempotent, so a stale/duplicate id is harmless.
+                NotificationScheduler.cancelSession(sessionId: session.id)
+            }
+        }
+        // One end() call tears down whichever single Live Activity is live (safe no-op
+        // if none). finalElapsed/creditsMoved are 0 because nothing is being banked.
+        LiveActivityService.end(finalElapsed: 0, creditsMoved: 0)
+
         do {
             try context.delete(model: Session.self)
             try context.delete(model: ActivityDebt.self)

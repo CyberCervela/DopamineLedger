@@ -146,6 +146,28 @@ enum DataExporter {
     // save() commits the wipe+restore together, so a partial import is impossible.
     @MainActor
     static func applyImport(_ exportData: ExportData, context: ModelContext) throws {
+        // F-11: a replace-all import has the same orphaned-system-UI hazard as a wipe —
+        // the current session's rows get deleted but the Live Activity keeps ticking and
+        // its "balance empty" notifications still fire against data that's gone. So before
+        // touching the data, cancel those notifications and end the Live Activity.
+        //
+        // This cleanup lives OUTSIDE the do/catch-with-rollback on purpose: it's system-UI
+        // teardown, not a SwiftData mutation, so there's nothing to roll back. Worst case
+        // after a failed import is that a still-running session lost its Live Activity —
+        // and the in-app recovery path (recoverLiveActivityIfNeeded in ActivityListView)
+        // restarts it automatically on the next app foreground, so it self-heals.
+        //
+        // Note: the imported data may itself contain a session with endedAt == nil (a
+        // backup taken mid-session). We do NOT try to resurrect a Live Activity for it
+        // here — that same recovery path picks it up on next foreground.
+        let activeFetch = FetchDescriptor<Session>(predicate: #Predicate { $0.endedAt == nil })
+        if let active = try? context.fetch(activeFetch) {
+            for session in active {
+                NotificationScheduler.cancelSession(sessionId: session.id)
+            }
+        }
+        LiveActivityService.end(finalElapsed: 0, creditsMoved: 0)
+
         do {
             try applyImportBody(exportData, context: context)
         } catch {
