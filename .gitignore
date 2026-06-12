@@ -303,3 +303,8 @@ ARCHIVED (INTIAL DL project)/
 
 # Prompts 
 ORCHESTRATION-PROMPT.md
+
+# Resubmission QA screenshot evidence — kept locally, reviewed by PM.
+# 42MB+ of PNGs do not belong in the public repo; the findings table in
+# qa/REVIEW-FINDINGS.md references them by filename.
+qa/resubmission/
