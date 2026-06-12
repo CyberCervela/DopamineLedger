@@ -1,7 +1,7 @@
 // SessionView.swift
-// The active-session sheet. Shown while a session is running; the only way
-// out is the STOP button (swipe-to-dismiss is disabled so users can't
-// orphan a running session by accident).
+// The active-session sheet. Shown while a session is running. The sheet can be
+// swiped down to dismiss — doing so does NOT stop the session; it keeps running
+// in the background and can be reopened from the pinned ACTIVE row.
 
 import SwiftUI
 import SwiftData
@@ -102,7 +102,9 @@ struct SessionView: View {
                         .foregroundStyle(activity.kind == .charger ? theme.colors.positive : theme.colors.negative)
                         .kerning(2)
                 }
-                Text(formatElapsed(elapsed))
+                // Use the shared TimeInterval.formattedDuration so the elapsed
+                // line matches every other duration in the app ("2 h 30 m").
+                Text(elapsed.formattedDuration)
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textSecondary)
                 if activity.kind == .spender {
@@ -282,13 +284,5 @@ struct SessionView: View {
         SessionFinalizer.finalize(session: session, in: context)
         presented = nil
         dismiss()
-    }
-
-    private func formatElapsed(_ seconds: TimeInterval) -> String {
-        let total = Int(seconds)
-        let h     = total / 3600
-        let m     = (total % 3600) / 60
-        if h > 0 { return m > 0 ? "\(h)h \(m) min" : "\(h)h" }
-        return m > 0 ? "\(m) min" : "< 1 min"
     }
 }

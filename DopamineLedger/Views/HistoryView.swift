@@ -202,17 +202,6 @@ struct HistoryView: View {
     }
 }
 
-// MARK: - Duration helper (shared by all row types in this file)
-
-// Defined at file scope so SessionHistoryRow, BundledSessionHistoryRow,
-// and BundleDetailRow can all use it without duplication.
-private func formatHistoryDuration(_ seconds: TimeInterval) -> String {
-    let total = Int(seconds)
-    let h = total / 3600
-    let m = (total % 3600) / 60
-    return h > 0 ? "\(h)h \(m)m" : "\(m) min"
-}
-
 // MARK: - Session row
 
 private struct SessionHistoryRow: View {
@@ -281,7 +270,9 @@ private struct SessionHistoryRow: View {
     }
 
     private var subtitleText: String {
-        "\(formatTime(session.startedAt)) · \(formatHistoryDuration(session.elapsed))"
+        // Shared TimeInterval.formattedDuration keeps the wording identical to
+        // the dashboard and session screens (one duration format everywhere).
+        "\(formatTime(session.startedAt)) · \(session.elapsed.formattedDuration)"
     }
 
     private func formatTime(_ date: Date) -> String {
@@ -356,7 +347,7 @@ private struct BundledSessionHistoryRow: View {
         let startTime = f.string(from: sessions.last?.startedAt  ?? sessions[0].startedAt)
         let endTime   = f.string(from: sessions.first?.endedAt   ?? sessions[0].startedAt)
         let countStr  = String(format: lBundle.l("history.bundle.sessions"), sessions.count)
-        let duration  = formatHistoryDuration(totalElapsed)
+        let duration  = totalElapsed.formattedDuration
         return "\(startTime) → \(endTime) · \(countStr) · \(duration)"
     }
 
@@ -437,7 +428,7 @@ private struct BundleDetailRow: View {
         let f = DateFormatter()
         f.timeStyle = .short
         f.dateStyle = .none
-        return "\(f.string(from: session.startedAt)) · \(formatHistoryDuration(session.elapsed))"
+        return "\(f.string(from: session.startedAt)) · \(session.elapsed.formattedDuration)"
     }
 
     var body: some View {
