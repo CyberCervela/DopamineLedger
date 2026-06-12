@@ -52,7 +52,10 @@ struct HistoryView: View {
     }
 
     // Merged, sorted (newest first), bundled, and grouped by calendar day.
-    private var dayGroups: [(header: String, entries: [HistoryEntry])] {
+    // We carry the day-start `Date` alongside the display header: the header
+    // string ("EEE d MMM", no year) is NOT unique across years, so it can't be
+    // a stable ForEach identity. The Date key is.
+    private var dayGroups: [(day: Date, header: String, entries: [HistoryEntry])] {
         let activityMap = Dictionary(uniqueKeysWithValues: allActivities.map { ($0.id, $0) })
         let calendar    = Calendar.current
 
@@ -119,7 +122,7 @@ struct HistoryView: View {
             }
         }
 
-        return groups.map { (header: dayHeader(for: $0.key, calendar: calendar), entries: $0.entries) }
+        return groups.map { (day: $0.key, header: dayHeader(for: $0.key, calendar: calendar), entries: $0.entries) }
     }
 
     var body: some View {
@@ -134,7 +137,10 @@ struct HistoryView: View {
             } else {
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: theme.spacing.xl) {
-                        ForEach(dayGroups, id: \.header) { group in
+                        // Key on the day-start Date, not the header string:
+                        // "MON 26 MAY" repeats every year, so header IDs would
+                        // collide after 12 months and confuse SwiftUI's diffing.
+                        ForEach(dayGroups, id: \.day) { group in
                             VStack(alignment: .leading, spacing: theme.spacing.md) {
                                 Text(group.header)
                                     .font(theme.typography.caption)
