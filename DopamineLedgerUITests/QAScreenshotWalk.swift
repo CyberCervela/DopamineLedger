@@ -26,6 +26,43 @@ final class QAScreenshotWalk: XCTestCase {
     var dir = "/tmp/dl-qa"
     var tag = "device-neu-light"
 
+    // Localized tap labels for the FR/DE spot passes (QA-26). The harness taps
+    // by visible label, so non-EN walks need the catalog's translations for the
+    // dozen labels the walk touches. Values mirror Localizable.xcstrings.
+    private static let labels: [String: [String: String]] = [
+        "fr": ["All": "Tout", "Chargers": "Chargeurs", "Spenders": "Dépenseurs",
+               "Quests": "Quêtes", "Home": "Accueil", "Stats": "Stats",
+               "History": "Historique", "This Week": "Cette semaine", "All Time": "Tout",
+               "Settings": "Paramètres", "Privacy Policy": "Politique de confidentialité",
+               "Add Activity": "Ajouter une activité",
+               "Choose from Template": "Choisir un modèle",
+               "Create Your Own": "Créer votre propre", "Templates": "Modèles",
+               "New Activity": "Nouvelle activité", "Cancel": "Annuler",
+               "Save": "Enregistrer", "Done": "Terminé",
+               "Start session": "Démarrer la session",
+               "Start session anyway": "Commencer quand même",
+               "Stop": "Stop", "Pause": "Pause", "Resume": "Reprendre",
+               "Debt": "Dettes"],
+        "de": ["All": "Alle", "Chargers": "Lader", "Spenders": "Ausgeber",
+               "Quests": "Quests", "Home": "Start", "Stats": "Statistiken",
+               "History": "Chronik", "This Week": "Diese Woche", "All Time": "Gesamt",
+               "Settings": "Einstellungen", "Privacy Policy": "Datenschutzrichtlinie",
+               "Add Activity": "Aktivität hinzufügen",
+               "Choose from Template": "Vorlage auswählen",
+               "Create Your Own": "Eigene erstellen", "Templates": "Vorlagen",
+               "New Activity": "Neue Aktivität", "Cancel": "Abbrechen",
+               "Save": "Speichern", "Done": "Fertig",
+               "Start session": "Sitzung starten",
+               "Start session anyway": "Trotzdem starten",
+               "Stop": "Stopp", "Pause": "Pause", "Resume": "Fortsetzen",
+               "Debt": "Schulden"],
+    ]
+    private var lang = "en"
+    // Resolves an English label to the active walk language.
+    private func L(_ en: String) -> String {
+        Self.labels[lang]?[en] ?? en
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = true   // a missed element should not abort the whole walk
         let env = ProcessInfo.processInfo.environment
@@ -33,6 +70,7 @@ final class QAScreenshotWalk: XCTestCase {
         let device = env["DL_QA_DEVICE"] ?? "device"
         let theme  = env["DL_QA_THEME"]  ?? "neu"
         let scheme = env["DL_QA_SCHEME"] ?? "light"
+        lang = env["DL_QA_LANG"] ?? "en"
         tag = "\(device)-\(theme)-\(scheme)"
         try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true)
         // The notification-permission alert fires on the first spender session
@@ -81,7 +119,7 @@ final class QAScreenshotWalk: XCTestCase {
     // stacked sheets each have a Done pill. The sheet's pill is the LAST match in
     // the accessibility hierarchy, so tap the last hittable one.
     private func tapSheetDone() {
-        let all = app.buttons.matching(identifier: "Done").allElementsBoundByIndex
+        let all = app.buttons.matching(identifier: L("Done")).allElementsBoundByIndex
         if let last = all.last(where: { $0.isHittable }) { last.tap() }
         else { XCTFail("no hittable Done pill") }
         usleep(400_000)
@@ -112,28 +150,28 @@ final class QAScreenshotWalk: XCTestCase {
         // ---- Home: all four filter tabs (seeded data) ----
         _ = homeTitle.waitForExistence(timeout: 10)
         shoot("home-all")
-        tap(app.buttons["Chargers"].firstMatch, "Chargers tab");  shoot("home-chargers")
-        tap(app.buttons["Spenders"].firstMatch, "Spenders tab");  shoot("home-spenders")
-        tap(app.buttons["Quests"].firstMatch,   "Quests tab");    shoot("home-quests")
-        tap(app.buttons["All"].firstMatch,      "All tab")
+        tap(app.buttons[L("Chargers")].firstMatch, "Chargers tab");  shoot("home-chargers")
+        tap(app.buttons[L("Spenders")].firstMatch, "Spenders tab");  shoot("home-spenders")
+        tap(app.buttons[L("Quests")].firstMatch,   "Quests tab");    shoot("home-quests")
+        tap(app.buttons[L("All")].firstMatch,      "All tab")
 
         // ---- Stats: three scopes ----
-        tap(app.buttons["Stats"].firstMatch, "Stats tab"); shoot("stats-today")
-        if app.buttons["This Week"].exists { app.buttons["This Week"].tap(); shoot("stats-week") }
-        if app.buttons["All Time"].exists  { app.buttons["All Time"].tap();  shoot("stats-alltime") }
+        tap(app.buttons[L("Stats")].firstMatch, "Stats tab"); shoot("stats-today")
+        if app.buttons[L("This Week")].exists { app.buttons[L("This Week")].tap(); shoot("stats-week") }
+        if app.buttons[L("All Time")].exists  { app.buttons[L("All Time")].tap();  shoot("stats-alltime") }
 
         // ---- History ----
-        tap(app.buttons["History"].firstMatch, "History tab"); shoot("history")
-        tap(app.buttons["Home"].firstMatch, "Home tab")
+        tap(app.buttons[L("History")].firstMatch, "History tab"); shoot("history")
+        tap(app.buttons[L("Home")].firstMatch, "Home tab")
 
         // ---- Settings + Privacy ----
         openSettings()
-        if app.staticTexts["Settings"].waitForExistence(timeout: 4) {
+        if app.staticTexts[L("Settings")].waitForExistence(timeout: 4) {
             shoot("settings-top")
             app.swipeUp(); app.swipeUp()
             shoot("settings-bottom")
-            if app.staticTexts["Privacy Policy"].firstMatch.exists {
-                app.staticTexts["Privacy Policy"].firstMatch.tap()
+            if app.staticTexts[L("Privacy Policy")].firstMatch.exists {
+                app.staticTexts[L("Privacy Policy")].firstMatch.tap()
                 shoot("privacy")
                 tapSheetDone()   // privacy sheet
             }
@@ -142,27 +180,27 @@ final class QAScreenshotWalk: XCTestCase {
 
         // ---- Add flow: choice sheet, template gallery, create-own + cap hint ----
         openAddSheet()
-        if app.staticTexts["Add Activity"].waitForExistence(timeout: 4) {
+        if app.staticTexts[L("Add Activity")].waitForExistence(timeout: 4) {
             shoot("addchoice")
-            tap(app.staticTexts["Choose from Template"].firstMatch, "template path")
-            if app.staticTexts["Templates"].waitForExistence(timeout: 4) {
+            tap(app.staticTexts[L("Choose from Template")].firstMatch, "template path")
+            if app.staticTexts[L("Templates")].waitForExistence(timeout: 4) {
                 shoot("templates")
                 tap(app.staticTexts["Deep Work"].firstMatch, "Deep Work template")
                 shoot("addactivity-template")
                 // Cancel pops the pushed form back to the gallery (it does NOT
                 // close the sheet), so cancel the gallery as well.
-                tap(app.buttons["Cancel"].firstMatch, "cancel template form")
-                if app.staticTexts["Templates"].waitForExistence(timeout: 3) {
-                    tap(app.buttons["Cancel"].firstMatch, "cancel gallery")
+                tap(app.buttons[L("Cancel")].firstMatch, "cancel template form")
+                if app.staticTexts[L("Templates")].waitForExistence(timeout: 3) {
+                    tap(app.buttons[L("Cancel")].firstMatch, "cancel gallery")
                 }
             }
         }
         usleep(800_000)   // let the sheet dismissal settle before re-opening
         // Re-open: create your own (cancel above may have closed the whole sheet)
-        if !app.staticTexts["Add Activity"].exists { openAddSheet() }
-        if app.staticTexts["Add Activity"].waitForExistence(timeout: 4) {
-            tap(app.staticTexts["Create Your Own"].firstMatch, "create-own path")
-            if app.staticTexts["New Activity"].waitForExistence(timeout: 4) {
+        if !app.staticTexts[L("Add Activity")].exists { openAddSheet() }
+        if app.staticTexts[L("Add Activity")].waitForExistence(timeout: 4) {
+            tap(app.staticTexts[L("Create Your Own")].firstMatch, "create-own path")
+            if app.staticTexts[L("New Activity")].waitForExistence(timeout: 4) {
                 let name = app.textFields.element(boundBy: 0)
                 tap(name, "name field"); name.typeText("QA Charger")
                 // Over-cap rate → red max hint + disabled Save (F-09)
@@ -172,21 +210,21 @@ final class QAScreenshotWalk: XCTestCase {
                 shoot("addactivity-overcap")
                 replaceText(in: rate, with: "12")
                 shoot("addactivity-create")
-                tap(app.buttons["Save"].firstMatch, "save activity")
+                tap(app.buttons[L("Save")].firstMatch, "save activity")
             }
         }
 
         // ---- Charger session: confirm sheet → running → ACTIVE pin → stop ----
         if app.staticTexts["QA Charger"].waitForExistence(timeout: 5) {
             app.staticTexts["QA Charger"].firstMatch.tap()
-            if app.buttons["Start session"].waitForExistence(timeout: 4) {
+            if app.buttons[L("Start session")].waitForExistence(timeout: 4) {
                 shoot("activitymenu-charger")
-                app.buttons["Start session"].firstMatch.tap()
-                _ = app.buttons["Stop"].waitForExistence(timeout: 4)
+                app.buttons[L("Start session")].firstMatch.tap()
+                _ = app.buttons[L("Stop")].waitForExistence(timeout: 4)
                 shoot("session-charger")
-                if app.buttons["Pause"].exists {
-                    app.buttons["Pause"].tap(); shoot("session-paused")
-                    if app.buttons["Resume"].exists { app.buttons["Resume"].tap() }
+                if app.buttons[L("Pause")].exists {
+                    app.buttons[L("Pause")].tap(); shoot("session-paused")
+                    if app.buttons[L("Resume")].exists { app.buttons[L("Resume")].tap() }
                 }
                 // Swipe the sheet down — session survives; home should show the
                 // pinned row with the localized ACTIVE badge (DL-12 + F-04).
@@ -195,7 +233,7 @@ final class QAScreenshotWalk: XCTestCase {
                 // Reopen and stop.
                 if app.staticTexts["QA Charger"].firstMatch.waitForExistence(timeout: 4) {
                     app.staticTexts["QA Charger"].firstMatch.tap()
-                    if app.buttons["Stop"].waitForExistence(timeout: 4) { app.buttons["Stop"].tap() }
+                    if app.buttons[L("Stop")].waitForExistence(timeout: 4) { app.buttons[L("Stop")].tap() }
                 }
             }
         }
@@ -204,15 +242,15 @@ final class QAScreenshotWalk: XCTestCase {
         if app.staticTexts["Doomscrolling"].firstMatch.waitForExistence(timeout: 5) {
             app.staticTexts["Doomscrolling"].firstMatch.tap()
             // Cleared state shows "Start session"; debt state shows "Start session anyway"
-            let start = app.buttons["Start session"].exists
-                ? app.buttons["Start session"]
-                : app.buttons["Start session anyway"]
+            let start = app.buttons[L("Start session")].exists
+                ? app.buttons[L("Start session")]
+                : app.buttons[L("Start session anyway")]
             if start.waitForExistence(timeout: 4) {
                 shoot("activitymenu-spender")
                 start.firstMatch.tap()
-                _ = app.buttons["Stop"].waitForExistence(timeout: 4)
+                _ = app.buttons[L("Stop")].waitForExistence(timeout: 4)
                 shoot("session-spender")
-                if app.buttons["Stop"].exists { app.buttons["Stop"].tap() }
+                if app.buttons[L("Stop")].exists { app.buttons[L("Stop")].tap() }
             } else {
                 // Menu without a start button (unexpected state): swipe it away.
                 app.swipeDown(velocity: .fast)
@@ -223,7 +261,7 @@ final class QAScreenshotWalk: XCTestCase {
         let debtRow = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'debt'")).firstMatch
         if debtRow.exists {
             debtRow.tap()
-            if app.staticTexts["Debt"].waitForExistence(timeout: 4) {
+            if app.staticTexts[L("Debt")].waitForExistence(timeout: 4) {
                 shoot("debt")
                 tapSheetDone()   // debt sheet
             }
@@ -239,7 +277,7 @@ final class QAScreenshotWalk: XCTestCase {
         }
         _ = homeTitle.waitForExistence(timeout: 10)
         openSettings()
-        guard app.staticTexts["Settings"].waitForExistence(timeout: 4) else { return }
+        guard app.staticTexts[L("Settings")].waitForExistence(timeout: 4) else { return }
         app.swipeUp(); app.swipeUp()
         tap(app.staticTexts["Wipe all data"].firstMatch, "wipe row")
         // System alert confirmation.
@@ -247,7 +285,7 @@ final class QAScreenshotWalk: XCTestCase {
         if confirm.waitForExistence(timeout: 4) { confirm.tap() }
         _ = homeTitle.waitForExistence(timeout: 5)
         shoot("home-empty")
-        tap(app.buttons["Stats"].firstMatch, "Stats tab");   shoot("stats-empty")
-        tap(app.buttons["History"].firstMatch, "History tab"); shoot("history-empty")
+        tap(app.buttons[L("Stats")].firstMatch, "Stats tab");   shoot("stats-empty")
+        tap(app.buttons[L("History")].firstMatch, "History tab"); shoot("history-empty")
     }
 }
