@@ -133,8 +133,31 @@ enum DataExporter {
 
     // Wipe all current data and restore from the decoded backup.
     // Throws if the SwiftData delete or save fails.
+    //
+    // ATOMICITY: the wipe (5 bulk deletes) and the restore (inserts) are all
+    // staged on the ModelContext and only persisted by the final save() below.
+    // But a context is left *dirty* if anything throws partway through — and the
+    // mainContext autosaves by default, so those pending deletes could later be
+    // flushed on their own, persisting a wipe with no restore (the exact data-loss
+    // a malformed import must never cause). We wrap the whole operation in a
+    // do/catch and call context.rollback() on any throw: rollback discards every
+    // unsaved change and resets the context to the last saved state, guaranteeing
+    // the user's existing data is left untouched on failure. On success the single
+    // save() commits the wipe+restore together, so a partial import is impossible.
     @MainActor
     static func applyImport(_ exportData: ExportData, context: ModelContext) throws {
+        do {
+            try applyImportBody(exportData, context: context)
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    // The actual wipe+restore. Kept private so the public applyImport above can
+    // wrap every exit path with rollback-on-throw without duplicating logic.
+    @MainActor
+    private static func applyImportBody(_ exportData: ExportData, context: ModelContext) throws {
         // Wipe — same order as SettingsView.wipeAllData()
         try context.delete(model: Session.self)
         try context.delete(model: ActivityDebt.self)

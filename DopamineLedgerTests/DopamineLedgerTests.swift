@@ -717,4 +717,157 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(Double(userInput: "-2,5"), -2.5)
         XCTAssertEqual(Double(userInput: "0"), 0.0)
     }
+
+    // MARK: - Malformed-import hardening (F-13 / QA-30)
+    //
+    // The Import flow (Settings → Danger Zone → Import) is reachable by an App
+    // Store reviewer, so it must survive any file a reviewer might point it at:
+    // empty, non-JSON, truncated, valid-JSON-wrong-schema, or huge. The contract
+    // is: decodeBackup(from:) returns nil for anything it can't parse (the UI then
+    // shows a friendly localized error), and applyImport never partially imports.
+    // These tests feed DataExporter real files on disk via the temporary directory,
+    // matching how the live document picker hands it a URL. Note decodeBackup calls
+    // startAccessingSecurityScopedResource(), which returns false for plain temp
+    // files — that's expected; its `defer` guard only stops accessing if it started.
+
+    // Helper: write `data` to a unique temp file and return its URL. Each test is
+    // responsible for removing the file it creates (we do so via addTeardownBlock
+    // so cleanup still runs if an assertion fails mid-test).
+    private func makeTempFile(_ data: Data, ext: String = "json") throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("dl-import-test-\(UUID().uuidString)")
+            .appendingPathExtension(ext)
+        try data.write(to: url)
+        addTeardownBlock { try? FileManager.default.removeItem(at: url) }
+        return url
+    }
+
+    // 1. Empty file (0 bytes) → JSONDecoder has nothing to decode → nil.
+    func testDecodeBackupEmptyFileReturnsNil() throws {
+        let url = try makeTempFile(Data())
+        XCTAssertNil(DataExporter.decodeBackup(from: url))
+    }
+
+    // 2. Non-JSON text → decode fails → nil.
+    func testDecodeBackupNonJSONReturnsNil() throws {
+        let url = try makeTempFile(Data("hello world".utf8), ext: "txt")
+        XCTAssertNil(DataExporter.decodeBackup(from: url))
+    }
+
+    // 3. Truncated JSON: take a valid export and cut it in half. The first half
+    // is no longer parseable JSON, so decode must fail rather than partially
+    // populate an ExportData.
+    @MainActor
+    func testDecodeBackupTruncatedJSONReturnsNil() throws {
+        // Build a real export to truncate so the test stays honest if the schema
+        // changes (a hand-written string could drift out of sync).
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let container = try ModelContainer(for: schema,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let ctx = container.mainContext
+        ctx.insert(Activity(name: "X", kind: .charger, ratePerMinute: 6.0,
+                            iconName: "bolt.fill", category: .focusLearning))
+        try ctx.save()
+
+        guard let validURL = DataExporter.exportToFile(context: ctx),
+              let validData = try? Data(contentsOf: validURL) else {
+            XCTFail("could not produce a valid export to truncate"); return
+        }
+        let half = validData.prefix(validData.count / 2)
+        let url = try makeTempFile(Data(half))
+        XCTAssertNil(DataExporter.decodeBackup(from: url))
+    }
+
+    // 4. Valid JSON, wrong schema: parses as JSON but is missing every required
+    // ExportData key, so Decodable throws keyNotFound → nil.
+    func testDecodeBackupWrongSchemaReturnsNil() throws {
+        let url = try makeTempFile(Data(#"{"foo": 1}"#.utf8))
+        XCTAssertNil(DataExporter.decodeBackup(from: url))
+    }
+
+    // 5. Huge file smoke test: a structurally valid ExportData carrying 50,000
+    // sessions must decode AND import without crashing or blowing the runtime
+    // budget. This exercises the loop in applyImport at scale, not just the parser.
+    @MainActor
+    func testHugeImportDoesNotCrash() throws {
+        let activityId = UUID()
+        let sessions: [SessionExport] = (0..<50_000).map { i in
+            SessionExport(
+                id: UUID(),
+                activityId: activityId,
+                startedAt: Date(timeIntervalSince1970: TimeInterval(i)),
+                endedAt: nil,
+                pausedAt: nil,
+                totalPausedSeconds: 0,
+                timeMultiplier: 1.0,
+                creditsMoved: 0
+            )
+        }
+        let big = ExportData(
+            version: 1,
+            exportedAt: Date(),
+            balance: 0,
+            activities: [],
+            sessions: sessions,
+            quests: [],
+            debts: []
+        )
+
+        // Round-trip through JSON on disk so we exercise the real decode path,
+        // then import into a fresh in-memory store.
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(big)
+        let url = try makeTempFile(data)
+
+        guard let decoded = DataExporter.decodeBackup(from: url) else {
+            XCTFail("huge but valid backup failed to decode"); return
+        }
+        XCTAssertEqual(decoded.sessions.count, 50_000)
+
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let container = try ModelContainer(for: schema,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let ctx = container.mainContext
+        try DataExporter.applyImport(decoded, context: ctx)
+
+        let imported = try ctx.fetch(FetchDescriptor<Session>())
+        XCTAssertEqual(imported.count, 50_000)
+    }
+
+    // 6. Existing data untouched on decode failure: this documents the end-to-end
+    // contract. When decodeBackup returns nil, the UI never calls applyImport, so
+    // the store is never wiped. We assert that explicitly: garbage decodes to nil
+    // AND the pre-existing row is still present (because applyImport was, correctly,
+    // never reached).
+    @MainActor
+    func testDecodeFailureLeavesExistingDataUntouched() throws {
+        let schema = Schema([Activity.self, Session.self, Quest.self,
+                             ActivityDebt.self, Ledger.self])
+        let container = try ModelContainer(for: schema,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let ctx = container.mainContext
+        let known = Activity(name: "Keep Me", kind: .charger, ratePerMinute: 6.0,
+                             iconName: "bolt.fill", category: .focusLearning)
+        ctx.insert(known)
+        try ctx.save()
+
+        // Attempt to decode garbage — must fail, so applyImport is never invoked.
+        let url = try makeTempFile(Data("not json at all".utf8), ext: "txt")
+        XCTAssertNil(DataExporter.decodeBackup(from: url))
+
+        let acts = try ctx.fetch(FetchDescriptor<Activity>())
+        XCTAssertEqual(acts.count, 1)
+        XCTAssertEqual(acts.first?.name, "Keep Me")
+    }
+
+    // 7. Rollback-on-throw (Part 1): forcing applyImport to throw requires
+    // injecting a failing ModelContext, which the current API does not allow.
+    // Per the packet, we deliberately do NOT refactor DataExporter for
+    // testability here, so this path is left unverified by an automated test.
+    // The rollback guard is exercised manually/by reasoning: any throw inside
+    // applyImport now calls context.rollback() before rethrowing, discarding the
+    // staged wipe so autosave cannot persist a partial import.
 }
