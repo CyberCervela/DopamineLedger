@@ -87,6 +87,9 @@ struct TemplateGalleryView: View {
 
 private struct TemplateRow: View {
     @Environment(\.theme) private var theme
+    // Needed so the rate string follows the in-app language picker (every other
+    // rate display in the app routes through lBundle); mirrors ActivityRow.
+    @Environment(\.languageBundle) private var lBundle
     let template: ActivityTemplate
 
     private var iconColor: Color {
@@ -110,7 +113,10 @@ private struct TemplateRow: View {
                 Text(template.name)
                     .font(theme.typography.bodyStrong)
                     .foregroundStyle(theme.colors.textPrimary)
-                Text(String(format: "%.1f cr/min", template.ratePerMinute))
+                // Match every other rate display: localised format string +
+                // the shared .abbreviated formatter (K/M/B), instead of a raw
+                // "%.1f cr/min" that bypassed both localisation and formatting.
+                Text(String(format: lBundle.l("session.rate"), template.ratePerMinute.abbreviated))
                     .font(theme.typography.caption)
                     .foregroundStyle(theme.colors.textSecondary)
             }

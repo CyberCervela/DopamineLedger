@@ -192,7 +192,10 @@ struct HistoryView: View {
     // DateFormatter respects device locale automatically for day/month names.
     private func dayHeader(for dayStart: Date, calendar: Calendar) -> String {
         if calendar.isDateInToday(dayStart)     { return lBundle.l("scope.today").uppercased() }
-        if calendar.isDateInYesterday(dayStart) { return "YESTERDAY" }
+        // Mirror the TODAY branch: localise via lBundle, then uppercase at the
+        // call site. The literal "YESTERDAY" was hardcoded English and ignored
+        // the in-app language picker.
+        if calendar.isDateInYesterday(dayStart) { return lBundle.l("history.yesterday").uppercased() }
         let f = DateFormatter()
         f.dateFormat = "EEE d MMM"
         return f.string(from: dayStart).uppercased()

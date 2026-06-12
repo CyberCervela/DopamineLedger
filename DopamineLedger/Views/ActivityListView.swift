@@ -657,7 +657,10 @@ private struct ActivityRow: View {
                         .foregroundStyle(theme.colors.textPrimary)
                     if isActive {
                         // Badge explains why this activity jumped to position 0.
-                        Text("ACTIVE")
+                        // Route through lBundle so the badge follows the in-app
+                        // language picker, not the device language — SwiftUI's
+                        // Text("ACTIVE") would resolve against the device locale.
+                        Text(lBundle.l("ACTIVE"))
                             .font(.system(size: 9, weight: .semibold))
                             .foregroundStyle(iconColor)
                             .padding(.horizontal, 5)
