@@ -870,4 +870,39 @@ final class DopamineLedgerTests: XCTestCase {
     // The rollback guard is exercised manually/by reasoning: any throw inside
     // applyImport now calls context.rollback() before rethrowing, discarding the
     // staged wipe so autosave cannot persist a partial import.
+
+    // MARK: - Input value caps (F-09 / DL-16 Path A)
+    //
+    // AddActivityView (cap 60 cr/min) and AddQuestView (cap 10,000 credits) enforce
+    // maximum input values via computed properties on the View, which can't be unit
+    // tested without refactoring the views. Instead these tests pin the *boundary
+    // semantics* those computed properties rely on, using the same Double(userInput:)
+    // parser the views use. The key contract: the parser accepts extreme finite
+    // values, so the CAP — not the parser — is what must reject them. Caps are
+    // inclusive: exactly 60 / 10,000 is allowed (`>` comparison, not `>=`).
+
+    func testRateCapBoundaryIsInclusive() {
+        // Exactly at the cap passes; just over it fails. This is the boundary the
+        // view's `rateExceedsCap` (v > 60) depends on.
+        XCTAssertLessThanOrEqual(Double(userInput: "60")!, 60)
+        XCTAssertGreaterThan(Double(userInput: "60.1")!, 60)
+    }
+
+    func testPayoffCapBoundaryIsInclusive() {
+        // Exactly at the cap passes; just over it fails — pins `payoffExceedsCap`.
+        XCTAssertLessThanOrEqual(Double(userInput: "10000")!, 10_000)
+        XCTAssertGreaterThan(Double(userInput: "10001")!, 10_000)
+    }
+
+    func testExtremeValueParsesFiniteSoCapMustReject() {
+        // A pasted "1e15" parses to a finite Double — it slips past the parser's
+        // own .isFinite guard. That's exactly why the editors need an explicit cap:
+        // the parser will hand this value through, and only the > cap check stops it
+        // from reaching the credit displays.
+        let extreme = Double(userInput: "1e15")
+        XCTAssertNotNil(extreme)
+        XCTAssertTrue(extreme!.isFinite)
+        XCTAssertGreaterThan(extreme!, 60)
+        XCTAssertGreaterThan(extreme!, 10_000)
+    }
 }

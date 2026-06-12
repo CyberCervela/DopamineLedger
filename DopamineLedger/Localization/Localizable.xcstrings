@@ -2028,6 +2028,52 @@
         }
       }
     },
+    "activity.rate.max_hint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximaler Satz: %@ Cr./Min."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum rate is %@ cr / min"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tasa máxima es %@ cr / min"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le taux maximum est de %@ cr / min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上限は %@ クレジット/分です"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최대 비율은 분당 %@ 크레딧입니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高费率为每分钟 %@ 积分"
+          }
+        }
+      }
+    },
     "activity.rate_suffix" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5291,6 +5337,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新建任务"
+          }
+        }
+      }
+    },
+    "quest.payoff.max_hint" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximale Belohnung: %@ Credits"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maximum reward is %@ credits"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La recompensa máxima es de %@ créditos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La récompense maximale est de %@ crédits"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報酬の上限は %@ クレジットです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최대 보상은 %@ 크레딧입니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高奖励为 %@ 积分"
           }
         }
       }

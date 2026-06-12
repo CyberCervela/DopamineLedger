@@ -122,14 +122,31 @@ struct AddActivityView: View {
 
     private var isEditing: Bool { if case .edit = mode { true } else { false } }
 
+    // Hard ceiling on the per-minute rate the editor will accept. 60 cr/min = 1
+    // credit/second. The highest in-app guidance preset is 10 cr/min (high-toxicity
+    // spender) and the highest charger preset is 6, so 60 leaves 6-10x headroom for
+    // power users while keeping every credit display sane. Without a cap a pasted
+    // extreme value (e.g. "1e15") parses finite, breaks the number displays, and
+    // makes the credit economy meaningless. Enforced at validation only — no silent
+    // clamping, and existing stored activities are untouched.
+    static let maxRatePerMinute: Double = 60
+
     private var parsedRate: Double? {
         // Double(userInput:) tolerates comma decimals ("2,5") so FR/DE/ES users
         // — whose decimal pad has no "." key — aren't locked out of Save.
         guard let v = Double(userInput: ratePerMinute), v > 0 else { return nil }
         return v
     }
+    // True only when the typed value parses AND exceeds the cap. A non-parsing or
+    // empty field is "not over the cap" — parsedRate == nil already blocks Save there,
+    // so we don't want to double-report it as a cap violation. Cap is inclusive:
+    // exactly 60 is allowed (`>` not `>=`).
+    private var rateExceedsCap: Bool {
+        guard let v = Double(userInput: ratePerMinute) else { return false }
+        return v > Self.maxRatePerMinute
+    }
     private var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty && parsedRate != nil
+        !name.trimmingCharacters(in: .whitespaces).isEmpty && parsedRate != nil && !rateExceedsCap
     }
 
     var body: some View {
@@ -234,7 +251,17 @@ struct AddActivityView: View {
                         }
                     }
 
-                    if let rate = parsedRate {
+                    // Over-cap takes priority: a value above the ceiling still parses
+                    // (so parsedRate is non-nil), so we must check the cap first and
+                    // replace the normal earns/spends hint with the red maximum warning.
+                    if rateExceedsCap {
+                        Text(String(format: lBundle.l("activity.rate.max_hint"),
+                                    Self.maxRatePerMinute.abbreviated))
+                            .font(theme.typography.caption)
+                            .foregroundStyle(theme.colors.negative)
+                            .multilineTextAlignment(.center)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    } else if let rate = parsedRate {
                         let hintKey = kind == .charger ? "activity.hint.earns" : "activity.hint.spends"
                         Text(String(format: lBundle.l(hintKey),
                                     rate.abbreviated))
@@ -246,6 +273,7 @@ struct AddActivityView: View {
                 }
                 .padding(theme.spacing.lg)
                 .animation(.easeInOut(duration: 0.2), value: parsedRate != nil)
+                .animation(.easeInOut(duration: 0.2), value: rateExceedsCap)
                 .animation(.easeInOut(duration: 0.2), value: kind)
             }
         }

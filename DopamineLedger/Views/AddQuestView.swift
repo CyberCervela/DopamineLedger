@@ -51,14 +51,28 @@ struct AddQuestView: View {
 
     private var isEditing: Bool { if case .edit = mode { true } else { false } }
 
+    // Hard ceiling on quest reward the editor will accept. Same display-sanity
+    // rationale as the activity rate cap: without a limit a pasted extreme value
+    // (e.g. "1e15") parses finite, breaks the credit displays, and makes the economy
+    // meaningless. 10,000 credits is generous for any single quest. Enforced at
+    // validation only — no silent clamping, existing stored quests are untouched.
+    static let maxPayoffCredits: Double = 10_000
+
     private var parsedPayoff: Double? {
         // Double(userInput:) tolerates comma decimals ("2,5") for FR/DE/ES users
         // and rejects non-finite input, so Save validation behaves consistently.
         guard let v = Double(userInput: payoff), v > 0 else { return nil }
         return v
     }
+    // True only when the typed value parses AND exceeds the cap. Cap is inclusive:
+    // exactly 10,000 is allowed (`>` not `>=`). A non-parsing field returns false
+    // because parsedPayoff == nil already blocks Save there.
+    private var payoffExceedsCap: Bool {
+        guard let v = Double(userInput: payoff) else { return false }
+        return v > Self.maxPayoffCredits
+    }
     private var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty && parsedPayoff != nil
+        !name.trimmingCharacters(in: .whitespaces).isEmpty && parsedPayoff != nil && !payoffExceedsCap
     }
 
     var body: some View {
@@ -153,7 +167,17 @@ struct AddQuestView: View {
                         .animation(.easeInOut(duration: 0.2), value: isRecurring)
                     }
 
-                    if let payoff = parsedPayoff {
+                    // Over-cap takes priority: a value above the ceiling still parses
+                    // (parsedPayoff non-nil), so we check the cap first and replace the
+                    // green reward hint with the red maximum warning.
+                    if payoffExceedsCap {
+                        Text(String(format: lBundle.l("quest.payoff.max_hint"),
+                                    Self.maxPayoffCredits.abbreviated))
+                            .font(theme.typography.caption)
+                            .foregroundStyle(theme.colors.negative)
+                            .multilineTextAlignment(.center)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    } else if let payoff = parsedPayoff {
                         Text(String(format: lBundle.l("quest.hint"),
                                     payoff.formatted(.number.precision(.fractionLength(0...1)))))
                             .font(theme.typography.caption)
@@ -164,6 +188,7 @@ struct AddQuestView: View {
                 }
                 .padding(theme.spacing.lg)
                 .animation(.easeInOut(duration: 0.2), value: parsedPayoff != nil)
+                .animation(.easeInOut(duration: 0.2), value: payoffExceedsCap)
             }
         }
         .presentationBackground(theme.colors.background)
