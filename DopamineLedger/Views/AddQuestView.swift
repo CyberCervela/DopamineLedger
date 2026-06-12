@@ -34,7 +34,15 @@ struct AddQuestView: View {
             _cadence     = State(initialValue: .daily)
         case .edit(let q):
             _name        = State(initialValue: q.name)
-            _payoff      = State(initialValue: q.payoffCredits.formatted(.number.precision(.fractionLength(0...1))))
+            // Seed the field with a plain, locale-independent string (dot decimal,
+            // no grouping separator). The previous `.formatted(...)` was locale-AWARE:
+            // a payoff of 1000 became "1,000" (en) or "1 000" (fr), which then failed
+            // to parse — Save stayed disabled forever when editing that quest.
+            // Drop the trailing ".0" so whole numbers show "1000", not "1000.0"
+            // (matches the 0...1 fraction display intent).
+            _payoff      = State(initialValue: q.payoffCredits.truncatingRemainder(dividingBy: 1) == 0
+                                     ? String(Int(q.payoffCredits))
+                                     : String(q.payoffCredits))
             _category    = State(initialValue: q.category ?? .other)
             _isRecurring = State(initialValue: q.recurringCadence != nil)
             _cadence     = State(initialValue: q.recurringCadence ?? .daily)
@@ -44,7 +52,9 @@ struct AddQuestView: View {
     private var isEditing: Bool { if case .edit = mode { true } else { false } }
 
     private var parsedPayoff: Double? {
-        guard let v = Double(payoff), v > 0 else { return nil }
+        // Double(userInput:) tolerates comma decimals ("2,5") for FR/DE/ES users
+        // and rejects non-finite input, so Save validation behaves consistently.
+        guard let v = Double(userInput: payoff), v > 0 else { return nil }
         return v
     }
     private var isValid: Bool {

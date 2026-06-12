@@ -27,4 +27,28 @@ extension Double {
         }
         return String(format: "%.1f", rounded) + suffix
     }
+
+    // Parses a number the user typed into a numeric/decimal-pad field.
+    //
+    // Why this exists: the plain `Double(_ string:)` initialiser is US-English
+    // only — it accepts "2.5" but NOT "2,5". On a French/German/Spanish device
+    // the decimal-pad key is "," so the user literally cannot type a dot, and
+    // `Double("2,5")` returns nil → Save silently disables. We normalise the
+    // comma to a dot before parsing so both conventions work.
+    //
+    // We do NOT use a locale-aware NumberFormatter here on purpose: the decimal
+    // pad has no grouping-separator key, so the input is always a bare number
+    // with at most one separator. A simple comma→dot swap is enough and avoids
+    // formatter edge cases. (Consequence: a literal "1,000" parses as 1.0, not
+    // a thousand — acceptable because users can't type grouped numbers on this
+    // keyboard, and seeded fields are kept grouping-free at the call site.)
+    init?(userInput: String) {
+        let normalised = userInput
+            .trimmingCharacters(in: .whitespaces)
+            .replacingOccurrences(of: ",", with: ".")
+        guard let value = Double(normalised), value.isFinite else { return nil }
+        // Reject "inf"/"nan": Double("inf") parses successfully and would slip
+        // past a `> 0` guard at the call site, so we filter non-finite here.
+        self = value
+    }
 }

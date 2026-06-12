@@ -123,7 +123,9 @@ struct AddActivityView: View {
     private var isEditing: Bool { if case .edit = mode { true } else { false } }
 
     private var parsedRate: Double? {
-        guard let v = Double(ratePerMinute), v > 0 else { return nil }
+        // Double(userInput:) tolerates comma decimals ("2,5") so FR/DE/ES users
+        // — whose decimal pad has no "." key — aren't locked out of Save.
+        guard let v = Double(userInput: ratePerMinute), v > 0 else { return nil }
         return v
     }
     private var isValid: Bool {

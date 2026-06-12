@@ -662,4 +662,59 @@ final class DopamineLedgerTests: XCTestCase {
         XCTAssertEqual(debt.amount,    10.0, accuracy: 0.001)  // 30 − 20 = 10 remaining
         XCTAssertNil(debt.repaidAt, "partial repay should not stamp repaidAt")
     }
+
+    // MARK: - Double(userInput:) — locale-tolerant numeric parsing
+    //
+    // Guards the editor sheets' rate/payoff parsing (AddActivityView,
+    // AddQuestView). The plain `Double(_:)` initialiser only accepts dot
+    // decimals, which locks out French/German/Spanish users whose decimal pad
+    // types "," — these tests pin down the tolerant behaviour. Note: the > 0 /
+    // negative / zero guards live at the call sites, so this helper itself only
+    // parses; it does not reject negatives or zero.
+
+    func testUserInputParsesDotDecimal() {
+        XCTAssertEqual(Double(userInput: "2.5"), 2.5)
+    }
+
+    func testUserInputParsesCommaDecimal() {
+        // The flagship fix: "2,5" (FR/DE/ES decimal pad) must parse to 2.5.
+        XCTAssertEqual(Double(userInput: "2,5"), 2.5)
+    }
+
+    func testUserInputTrimsWhitespace() {
+        XCTAssertEqual(Double(userInput: "  3.0  "), 3.0)
+        XCTAssertEqual(Double(userInput: " 4,5 "),  4.5)
+    }
+
+    func testUserInputParsesPlainInteger() {
+        XCTAssertEqual(Double(userInput: "1000"), 1000.0)
+    }
+
+    // Documented consequence of the comma→dot swap: a literal "1,000" becomes
+    // "1.000" = 1.0, NOT one thousand. This is acceptable because the decimal
+    // pad has no grouping-separator key (users can't type "1,000" by hand), and
+    // AddQuestView now seeds the field grouping-free so the round-trip is clean.
+    func testUserInputGroupingSeparatorBecomesDecimal() {
+        XCTAssertEqual(Double(userInput: "1,000"), 1.0)
+    }
+
+    func testUserInputRejectsEmptyString() {
+        XCTAssertNil(Double(userInput: ""))
+        XCTAssertNil(Double(userInput: "   "))
+    }
+
+    func testUserInputRejectsNonFinite() {
+        // Double("inf")/Double("nan") parse successfully and would slip past a
+        // `> 0` guard, so the helper must reject non-finite values itself.
+        XCTAssertNil(Double(userInput: "inf"))
+        XCTAssertNil(Double(userInput: "nan"))
+    }
+
+    // The helper parses negatives and zero (sign/zero filtering is the call
+    // site's job via its `> 0` guard) — pin that contract so a future refactor
+    // doesn't accidentally move the responsibility.
+    func testUserInputParsesNegativeAndZero() {
+        XCTAssertEqual(Double(userInput: "-2,5"), -2.5)
+        XCTAssertEqual(Double(userInput: "0"), 0.0)
+    }
 }
