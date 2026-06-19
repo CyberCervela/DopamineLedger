@@ -313,3 +313,7 @@ qa/resubmission/
 # repo and NOT part of any current release. Graduate it into the canonical
 # kit-for-next-claude/DESIGN_SYSTEM.md once reconciled and approved.
 Design System/
+
+# Economy analysis — contains the PM's (and friends') personal usage data and
+# v2 rate-tuning work. Local-only; never publish. See analysis/economics-rebalance-v2.md
+analysis/
