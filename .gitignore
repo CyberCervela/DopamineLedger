@@ -297,6 +297,9 @@ ARCHIVED (INTIAL DL project)/
 
 # Screenshots from install-and-screenshot.sh
 /screenshot.png
+# Scratch/dev theme screenshots in any folder — local-only, never publish.
+# (Does NOT match screenshots/appstore/*.png, so listing shots stay tracked.)
+screenshot-*.png
 
 # Claude Code agent state — local machine knowledge; never publish
 .claude/
